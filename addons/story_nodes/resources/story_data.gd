@@ -55,3 +55,18 @@ func get_node(id: StringName) -> StoryNode:
 			return node
 
 	return null
+
+
+func has_node(id: StringName) -> bool:
+	return get_node(id) != null
+
+
+func remove_node(id: StringName) -> void:
+	for link: StoryLink in links.keys():
+		if link.from == id or link.to == id:
+			remove_link(link)
+
+	for node: StoryNode in nodes:
+		if node.id == id:
+			nodes.erase(node)
+			return

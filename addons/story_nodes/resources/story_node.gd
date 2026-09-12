@@ -5,3 +5,5 @@ extends Resource
 @export var display_name: String = ""
 
 @export_multiline var description: String = ""
+
+var position: Vector2 = Vector2.ZERO

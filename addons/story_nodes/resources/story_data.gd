@@ -5,3 +5,5 @@ extends Resource
 @export var description: String = ''
 
 @export var nodes: Array[StoryNode] = []
+
+var links: Dictionary[StoryLink, Object] = { }

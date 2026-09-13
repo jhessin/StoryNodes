@@ -28,7 +28,7 @@ var _links: Dictionary[StoryLink, Object] = { }
 ## Node methods
 ## ===
 func add_node(node: StoryNode) -> void:
-	if has_node(node.id):
+	if node == null or node.id.is_empty() or has_node(node.id):
 		return
 
 	_nodes[node.id] = node
@@ -47,6 +47,9 @@ func has_nodes() -> bool:
 
 
 func remove_node(id: StringName) -> void:
+	if not has_node(id):
+		return
+
 	for link: StoryLink in _links.keys():
 		if link.from == id or link.to == id:
 			remove_link(link)

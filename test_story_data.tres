@@ -4,4 +4,6 @@
 
 [resource]
 script = ExtResource("1_lf8vb")
+title = "Test Story"
+description = "This is just a test story."
 metadata/_custom_type_script = "uid://d1basqvbqbe6v"

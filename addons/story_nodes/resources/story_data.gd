@@ -5,8 +5,23 @@ extends Resource
 @export var description: String = ''
 
 var nodes: Dictionary[StringName, StoryNode] = { }
+var node_list: Array[StoryNode]:
+	get:
+		return nodes.values()
+var node_ids: Array[StringName]:
+	get:
+		return nodes.keys()
+var node_count: int:
+	get:
+		return nodes.size()
 
 var links: Dictionary[StoryLink, Object] = { }
+var link_list: Array[StoryLink]:
+	get:
+		return links.keys()
+var link_count: int:
+	get:
+		return links.size()
 
 
 ## ===
@@ -27,12 +42,21 @@ func has_node(id: StringName) -> bool:
 	return get_node(id) != null
 
 
+func has_nodes() -> bool:
+	return not nodes.is_empty()
+
+
 func remove_node(id: StringName) -> void:
 	for link: StoryLink in links.keys():
 		if link.from == id or link.to == id:
 			remove_link(link)
 
 	nodes.erase(id)
+
+
+func clear_nodes() -> void:
+	clear_links()
+	nodes.clear()
 
 
 ## ===
@@ -52,6 +76,18 @@ func get_link(from: StringName, to: StringName) -> StoryLink:
 			return link
 
 	return null
+
+
+func get_links() -> Array[StoryLink]:
+	return link_list
+
+
+func has_link(from: StringName, to: StringName) -> bool:
+	return get_link(from, to) != null
+
+
+func has_links() -> bool:
+	return not links.is_empty()
 
 
 func remove_link(link: StoryLink) -> void:
@@ -78,5 +114,10 @@ func get_links_to(to: StringName) -> Array[StoryLink]:
 	return results
 
 
-func has_link(from: StringName, to: StringName) -> bool:
-	return get_link(from, to) != null
+func clear_links() -> void:
+	links.clear()
+
+
+func clear() -> void:
+	links.clear()
+	nodes.clear()

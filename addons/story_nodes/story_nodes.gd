@@ -9,10 +9,21 @@ func _enter_tree() -> void:
 
 	EditorInterface.get_editor_main_screen().add_child(story_graph_editor)
 
+	_make_visible(false)
+
 
 func _exit_tree() -> void:
 	if story_graph_editor != null:
 		story_graph_editor.queue_free()
+
+
+func _handles(object: Object) -> bool:
+	return object is StoryData
+
+
+func _edit(object: Object) -> void:
+	if object is StoryData:
+		story_graph_editor.set_story_data(object as StoryData)
 
 
 func _has_main_screen() -> bool:

@@ -15,9 +15,9 @@ func _init() -> void:
 	ending.id = &"ending"
 	ending.display_name = "Ending"
 
-	nodes.append(start)
-	nodes.append(choice)
-	nodes.append(ending)
+	add_node(start)
+	add_node(choice)
+	add_node(ending)
 
 	add_link(start.id, choice.id)
 	add_link(choice.id, ending.id)

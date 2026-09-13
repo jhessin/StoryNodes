@@ -1,8 +1,15 @@
 [gd_resource type="Resource" script_class="StoryData" format=3 uid="uid://bpw176a5nk1l8"]
 
+[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/story_node.gd" id="1_2yo20"]
 [ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="1_tp17x"]
+[ext_resource type="Resource" uid="uid://6r6hu3luchev" path="res://test_story_node.tres" id="2_mqq1i"]
+[ext_resource type="Resource" uid="uid://p2f6hub4j8tb" path="res://test_choice_node.tres" id="3_fej13"]
 
 [resource]
 script = ExtResource("1_tp17x")
 title = "Main Story"
 description = "The main story of the game."
+_nodes = Dictionary[StringName, ExtResource("1_2yo20")]({
+&"choice_node": ExtResource("3_fej13"),
+&"intro": ExtResource("2_mqq1i")
+})

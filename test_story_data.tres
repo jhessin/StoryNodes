@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TestStoryData" format=3 uid="uid://bcp5qnb3jc57"]
 
 [ext_resource type="Script" uid="uid://d1basqvbqbe6v" path="res://addons/story_nodes/examples/test_story_data.gd" id="1_lf8vb"]
+[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/story_node.gd" id="1_lfw1c"]
 
 [resource]
 script = ExtResource("1_lf8vb")

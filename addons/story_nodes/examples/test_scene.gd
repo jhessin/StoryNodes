@@ -1,27 +1,32 @@
-extends Node2D
+extends Node
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var story := TestStoryData.new()
+	var story := StoryData.new()
 
-	assert(story.has_node(&'start'))
-	assert(story.has_node(&'choice'))
-	assert(story.has_node(&'ending'))
+	var first := StoryNode.new()
+	first.id = &"first"
+	first.display_name = "First"
 
-	assert(story.get_links_from(&"start").size() == 1)
-	assert(story.get_links_to(&"ending").size() == 1)
+	var second := StoryNode.new()
+	second.id = &"second"
+	second.display_name = "Second"
 
-	story.remove_node(&'choice')
-	assert(story.has_node(&'ending'))
-	assert(story.get_links_to(&'ending').size() == 0)
-	assert(story.get_links().size() == 0)
+	story.add_node(first)
+	story.add_node(second)
+	story.add_link(&"first", &"second")
 
-	story.remove_node(&'ending')
-	assert(not story.has_node(&'ending'))
-	assert(story.get_links_to(&'ending').size() == 0)
+	var path := "user://story_test.tres"
 
+	ResourceSaver.save(story, path)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+	var loaded := ResourceLoader.load(path) as StoryData
+
+	if loaded == null:
+		push_error("Failed to load StoryData.")
+		return
+
+	print("Nodes: ", loaded.node_count)
+	print("Links: ", loaded.link_count)
+	print("First: ", loaded.get_node(&"first").display_name)
+	print("Connected: ", loaded.has_link(&"first", &"second"))

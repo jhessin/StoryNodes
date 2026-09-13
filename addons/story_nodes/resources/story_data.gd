@@ -19,8 +19,11 @@ var link_list: Array[StoryLink]:
 var link_count: int:
 	get:
 		return _links.size()
+
+@export_storage
 var _nodes: Dictionary[StringName, StoryNode] = { }
 
+@export_storage
 var _links: Dictionary[StoryLink, Object] = { }
 
 
@@ -44,6 +47,84 @@ func has_node(id: StringName) -> bool:
 
 func has_nodes() -> bool:
 	return not _nodes.is_empty()
+
+
+func get_next_nodes(id: StringName) -> Array[StoryNode]:
+	var results: Array[StoryNode] = []
+
+	for link: StoryLink in get_links_from(id):
+		var node := get_node(link.to)
+
+		if node != null:
+			results.append(node)
+
+	return results
+
+
+func is_start_node(id: StringName) -> bool:
+	return has_node(id) and not has_previous_nodes(id)
+
+
+func get_start_nodes() -> Array[StoryNode]:
+	var results: Array[StoryNode] = []
+
+	for node: StoryNode in node_list:
+		if not has_previous_nodes(node.id):
+			results.append(node)
+
+	return results
+
+
+func get_start_node() -> StoryNode:
+	var start_nodes := get_start_nodes()
+
+	if start_nodes.is_empty():
+		return null
+
+	return start_nodes[0]
+
+
+func is_end_node(id: StringName) -> bool:
+	return has_node(id) and not has_next_nodes(id)
+
+
+func get_end_nodes() -> Array[StoryNode]:
+	var results: Array[StoryNode] = []
+
+	for node: StoryNode in node_list:
+		if not has_next_nodes(node.id):
+			results.append(node)
+
+	return results
+
+
+func get_end_node() -> StoryNode:
+	var end_nodes := get_end_nodes()
+
+	if end_nodes.is_empty():
+		return null
+
+	return end_nodes[0]
+
+
+func has_next_nodes(id: StringName) -> bool:
+	return not get_links_from(id).is_empty()
+
+
+func has_previous_nodes(id: StringName) -> bool:
+	return not get_links_to(id).is_empty()
+
+
+func get_previous_nodes(id: StringName) -> Array[StoryNode]:
+	var results: Array[StoryNode] = []
+
+	for link: StoryLink in get_links_to(id):
+		var node := get_node(link.from)
+
+		if node != null:
+			results.append(node)
+
+	return results
 
 
 func remove_node(id: StringName) -> void:
@@ -104,6 +185,21 @@ func remove_link(link: StoryLink) -> void:
 	_links.erase(link)
 
 
+func remove_links_from(id: StringName) -> void:
+	for link: StoryLink in get_links_from(id):
+		remove_link(link)
+
+
+func remove_links_to(id: StringName) -> void:
+	for link: StoryLink in get_links_to(id):
+		remove_link(link)
+
+
+func remove_links(id: StringName) -> void:
+	remove_links_from(id)
+	remove_links_to(id)
+
+
 func get_links_from(from: StringName) -> Array[StoryLink]:
 	var results: Array[StoryLink] = []
 
@@ -131,3 +227,27 @@ func clear_links() -> void:
 func clear() -> void:
 	_links.clear()
 	_nodes.clear()
+
+
+func is_valid() -> bool:
+	for node: StoryNode in node_list:
+		if node == null:
+			return false
+
+		if node.id.is_empty():
+			return false
+
+		if get_node(node.id) != node:
+			return false
+
+	for link: StoryLink in link_list:
+		if link == null:
+			return false
+
+		if not has_node(link.from):
+			return false
+
+		if not has_node(link.to):
+			return false
+
+	return true

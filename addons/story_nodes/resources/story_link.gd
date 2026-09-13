@@ -1,7 +1,9 @@
 class_name StoryLink
-extends RefCounted
+extends Resource
 
+@export_storage
 var from: StringName = &""
+@export_storage
 var to: StringName = &""
 
 

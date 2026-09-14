@@ -3,7 +3,30 @@
 [ext_resource type="Script" uid="uid://dntj8bw5jkfdr" path="res://addons/story_nodes/resources/story_link.gd" id="1_juc8f"]
 [ext_resource type="Script" uid="uid://d1basqvbqbe6v" path="res://addons/story_nodes/examples/test_story_data.gd" id="1_lf8vb"]
 [ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/story_node.gd" id="1_lfw1c"]
+[ext_resource type="Script" uid="uid://c0hnlj3b8r0ny" path="res://addons/story_nodes/resources/story_character.gd" id="1_n0lxn"]
+[ext_resource type="Texture2D" uid="uid://d3vx2ujabmfem" path="res://icon.svg" id="2_uyrxn"]
 [ext_resource type="Script" uid="uid://di1clrtje6o4r" path="res://addons/story_nodes/resources/choice_node.gd" id="3_bugk3"]
+
+[sub_resource type="Resource" id="Resource_n0lxn"]
+script = ExtResource("1_n0lxn")
+name = "Bob"
+image = ExtResource("2_uyrxn")
+color = Color(0.21383226, 0.15410858, 0.64348185, 1)
+
+[sub_resource type="Resource" id="Resource_uyrxn"]
+script = ExtResource("1_n0lxn")
+name = "Alice"
+color = Color(0.96484375, 0.15998717, 0.7687194, 1)
+
+[sub_resource type="Resource" id="Resource_4s5rd"]
+script = ExtResource("1_n0lxn")
+name = "Steve"
+color = Color(0.108748056, 0.15191558, 0.6118008, 1)
+
+[sub_resource type="Resource" id="Resource_l3wce"]
+script = ExtResource("1_n0lxn")
+name = "Roger"
+color = Color(0.09376869, 0.41015625, 0.11407556, 1)
 
 [sub_resource type="Resource" id="Resource_bugk3"]
 script = ExtResource("1_juc8f")
@@ -19,24 +42,25 @@ to = &"ending"
 script = ExtResource("3_bugk3")
 id = &"choice"
 display_name = "Choice"
-position = Vector2(-80, 20)
+position = Vector2(1260, 320)
 
 [sub_resource type="Resource" id="Resource_pll83"]
 script = ExtResource("1_lfw1c")
 id = &"ending"
 display_name = "Ending"
-position = Vector2(520, 20)
+position = Vector2(2000, 120)
 
 [sub_resource type="Resource" id="Resource_3bb4y"]
 script = ExtResource("1_lfw1c")
 id = &"start"
 display_name = "Start"
-position = Vector2(-660, 20)
+position = Vector2(380, 80)
 
 [resource]
 script = ExtResource("1_lf8vb")
 title = "Test Story"
 description = "This is just a test story."
+_characters = Array[ExtResource("1_n0lxn")]([SubResource("Resource_n0lxn"), SubResource("Resource_uyrxn"), SubResource("Resource_4s5rd"), SubResource("Resource_l3wce")])
 _nodes = Dictionary[StringName, ExtResource("1_lfw1c")]({
 &"choice": SubResource("Resource_o2h1o"),
 &"ending": SubResource("Resource_pll83"),

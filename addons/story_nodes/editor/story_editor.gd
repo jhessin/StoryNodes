@@ -5,6 +5,7 @@ extends Control
 @onready var save_button: Button = %SaveButton
 @onready var file_list: StoryFileList = %StoryFileList
 @onready var graph_editor: StoryGraphEditor = %StoryGraphEditor
+@onready var characters_editor: StoryCharactersEditor = %StoryCharactersEditor
 
 
 func _ready() -> void:
@@ -14,4 +15,5 @@ func _ready() -> void:
 
 func set_story_data(data: StoryData) -> void:
 	graph_editor.set_story_data(data)
+	characters_editor.set_story_data(data)
 	EditorInterface.inspect_object(data, '', true)

@@ -22,3 +22,9 @@ func _init() -> void:
 
 	add_link(start.id, choice.id)
 	add_link(choice.id, ending.id)
+
+	var bob := StoryCharacter.new('Bob')
+	var alice := StoryCharacter.new('Alice')
+
+	add_character(bob)
+	add_character(alice)

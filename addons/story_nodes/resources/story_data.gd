@@ -20,12 +20,41 @@ var link_list: Array[StoryLink]:
 var link_count: int:
 	get:
 		return _links.size()
+var character_list: Array[StoryCharacter]:
+	get:
+		return _characters
+var character_count: int:
+	get:
+		return _characters.size()
+
+@export_storage
+var _characters: Array[StoryCharacter] = []
 
 @export_storage
 var _nodes: Dictionary[StringName, StoryNode] = { }
 
 @export_storage
 var _links: Dictionary[StoryLink, Object] = { }
+
+
+## ===
+## Character methods
+## ===
+func add_character(character: StoryCharacter) -> void:
+	if character == null:
+		return
+
+	if _characters.has(character):
+		return
+
+	_characters.append(character)
+
+
+func remove_character(character: StoryCharacter) -> void:
+	if character == null:
+		return
+
+	_characters.erase(character)
 
 
 ## ===

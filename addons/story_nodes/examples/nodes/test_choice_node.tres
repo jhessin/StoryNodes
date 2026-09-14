@@ -6,4 +6,4 @@
 script = ExtResource("1_p02j3")
 choices = Array[String](["Continue down the road", "Enter the village", "Return home"])
 id = &"choice_node"
-position = Vector2(-20, 0)
+position = Vector2(1380, 320)

@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://c4a4qa4i2eyvo"]
+
+[ext_resource type="Script" uid="uid://cysvoxmipomtu" path="res://addons/story_nodes/editor/story_characters_editor.gd" id="1_ib26s"]
+
+[node name="StoryCharactersEditor" type="Control" unique_id=2026666764]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ib26s")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=1002494069]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offsets = PackedInt32Array(859)
+split_offset = 859
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer" unique_id=831229507]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/VBoxContainer" unique_id=1907233038]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="HSplitContainer/VBoxContainer/HBoxContainer" unique_id=2018054156]
+layout_mode = 2
+text = "Characters"
+
+[node name="NewCharacterButton" type="Button" parent="HSplitContainer/VBoxContainer/HBoxContainer" unique_id=576208534]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+text = "New Character"
+icon_alignment = 2
+
+[node name="CharacterList" type="ItemList" parent="HSplitContainer/VBoxContainer" unique_id=961499584]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CharacterEditor" type="VBoxContainer" parent="HSplitContainer" unique_id=1804978727]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="HSplitContainer/CharacterEditor" unique_id=1045068075]
+layout_mode = 2
+text = "Name"
+
+[node name="NameEdit" type="LineEdit" parent="HSplitContainer/CharacterEditor" unique_id=1545596490]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ImageLabel" type="Label" parent="HSplitContainer/CharacterEditor" unique_id=304096620]
+layout_mode = 2
+text = "Image:"
+
+[node name="ImageEdit" type="EditorResourcePicker" parent="HSplitContainer/CharacterEditor" unique_id=809620737]
+unique_name_in_owner = true
+layout_mode = 2
+base_type = "Texture2D"
+
+[node name="ColorLabel" type="Label" parent="HSplitContainer/CharacterEditor" unique_id=1286990982]
+layout_mode = 2
+text = "Color"
+
+[node name="ColorEdit" type="ColorPickerButton" parent="HSplitContainer/CharacterEditor" unique_id=394184931]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(20, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DeleteButton" type="Button" parent="HSplitContainer/CharacterEditor" unique_id=569044033]
+unique_name_in_owner = true
+self_modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "Delete Character"

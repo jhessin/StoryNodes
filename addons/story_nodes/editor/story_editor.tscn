@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://c02ncjcobe5v" path="res://addons/story_nodes/editor/story_graph_editor.tscn" id="1_fa3ns"]
 [ext_resource type="Script" uid="uid://yhunnwje28xm" path="res://addons/story_nodes/editor/story_editor.gd" id="1_pd6of"]
 [ext_resource type="PackedScene" uid="uid://24fprmw7pj6" path="res://addons/story_nodes/editor/story_file_list.tscn" id="2_cgqcg"]
+[ext_resource type="PackedScene" uid="uid://c4a4qa4i2eyvo" path="res://addons/story_nodes/editor/story_characters_editor.tscn" id="4_rv5jg"]
 
 [node name="StoryEditor" type="Control" unique_id=1681135193]
 layout_mode = 3
@@ -58,6 +59,10 @@ layout_mode = 1
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
+
+[node name="StoryCharactersEditor" parent="VBoxContainer/HSplitContainer/TabContainer/Characters" unique_id=2026666764 instance=ExtResource("4_rv5jg")]
+unique_name_in_owner = true
+layout_mode = 1
 
 [node name="Variables" type="Control" parent="VBoxContainer/HSplitContainer/TabContainer" unique_id=1251236376]
 visible = false

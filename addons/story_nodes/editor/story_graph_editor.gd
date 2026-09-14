@@ -12,8 +12,10 @@ var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	graph_edit.right_disconnects = true
 	graph_edit.connection_request.connect(_on_connection_request)
 	graph_edit.disconnection_request.connect(_on_disconnection_request)
+	graph_edit.end_node_move.connect(_on_node_move)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -24,6 +26,26 @@ func _process(delta: float) -> void:
 func set_story_data(data: StoryData) -> void:
 	story_data = data
 	_refresh()
+
+
+func save_story() -> Error:
+	if story_data == null:
+		return ERR_UNCONFIGURED
+
+	return ResourceSaver.save(story_data)
+
+
+func _on_node_move() -> void:
+	if story_data == null:
+		return
+
+	for id: StringName in graph_nodes:
+		var graph_node: StoryGraphNode = graph_nodes[id]
+
+		if graph_node.story_node == null:
+			continue
+
+		graph_node.story_node.position = graph_node.position_offset
 
 
 func _refresh() -> void:

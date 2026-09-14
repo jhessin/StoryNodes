@@ -7,4 +7,5 @@ extends Resource
 
 @export_multiline var description: String = ""
 
+@export_storage
 var position: Vector2 = Vector2.ZERO

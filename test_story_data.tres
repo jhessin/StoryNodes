@@ -5,6 +5,16 @@
 [ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/story_node.gd" id="1_lfw1c"]
 [ext_resource type="Script" uid="uid://di1clrtje6o4r" path="res://addons/story_nodes/resources/choice_node.gd" id="3_bugk3"]
 
+[sub_resource type="Resource" id="Resource_juc8f"]
+script = ExtResource("1_juc8f")
+from = &"choice"
+to = &"ending"
+
+[sub_resource type="Resource" id="Resource_bugk3"]
+script = ExtResource("1_juc8f")
+from = &"start"
+to = &"choice"
+
 [sub_resource type="Resource" id="Resource_o2h1o"]
 script = ExtResource("3_bugk3")
 id = &"choice"
@@ -28,5 +38,9 @@ _nodes = Dictionary[StringName, ExtResource("1_lfw1c")]({
 &"choice": SubResource("Resource_o2h1o"),
 &"ending": SubResource("Resource_pll83"),
 &"start": SubResource("Resource_3bb4y")
+})
+_links = Dictionary[ExtResource("1_juc8f"), Object]({
+SubResource("Resource_juc8f"): null,
+SubResource("Resource_bugk3"): null
 })
 metadata/_custom_type_script = "uid://d1basqvbqbe6v"

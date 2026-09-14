@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://buysi0qty6euh"]
+
+[ext_resource type="PackedScene" uid="uid://c02ncjcobe5v" path="res://addons/story_nodes/editor/story_graph_editor.tscn" id="1_fa3ns"]
+[ext_resource type="Script" uid="uid://yhunnwje28xm" path="res://addons/story_nodes/editor/story_editor.gd" id="1_pd6of"]
+[ext_resource type="PackedScene" uid="uid://24fprmw7pj6" path="res://addons/story_nodes/editor/story_file_list.tscn" id="2_cgqcg"]
+
+[node name="StoryEditor" type="Control" unique_id=1681135193]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_pd6of")
+metadata/_edit_use_anchors_ = true
+
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=448193593]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="StoryFileList" type="Control" parent="HSplitContainer" unique_id=1548146669]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StoryFileList" parent="HSplitContainer/StoryFileList" unique_id=1708337001 instance=ExtResource("2_cgqcg")]
+layout_mode = 0
+
+[node name="TabContainer" type="TabContainer" parent="HSplitContainer" unique_id=1655635819]
+layout_mode = 2
+current_tab = 0
+
+[node name="Graph" type="Control" parent="HSplitContainer/TabContainer" unique_id=767870247]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="StoryGraphEditor" parent="HSplitContainer/TabContainer/Graph" unique_id=370073386 instance=ExtResource("1_fa3ns")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="Characters" type="Control" parent="HSplitContainer/TabContainer" unique_id=1913462449]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Variables" type="Control" parent="HSplitContainer/TabContainer" unique_id=1251236376]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="Custom Nodes" type="Control" parent="HSplitContainer/TabContainer" unique_id=230303278]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="Node" type="Node" parent="." unique_id=481547823]

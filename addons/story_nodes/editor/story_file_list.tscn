@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://24fprmw7pj6"]
+
+[ext_resource type="Script" uid="uid://lsjxv84bcvta" path="res://addons/story_nodes/editor/story_file_list.gd" id="1_uhe1e"]
+
+[node name="StoryFileList" type="Control" unique_id=1708337001]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_uhe1e")

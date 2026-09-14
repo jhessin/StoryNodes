@@ -1,9 +1,11 @@
 @tool
+class_name StoryGraphEditor
 extends Control
 
 const STORY_GRAPH_NODE := preload('res://addons/story_nodes/editor/story_graph_node.tscn')
 
 var story_data: StoryData
+var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
 
 @onready var graph_edit: GraphEdit = $GraphEdit
 
@@ -25,6 +27,8 @@ func set_story_data(data: StoryData) -> void:
 
 
 func _refresh() -> void:
+	graph_nodes.clear()
+
 	for child: Node in graph_edit.get_children():
 		if child is GraphNode:
 			child.queue_free()
@@ -33,13 +37,17 @@ func _refresh() -> void:
 		return
 
 	for node: StoryNode in story_data.node_list:
-		var graph_node := STORY_GRAPH_NODE.instantiate() as GraphNode
+		var graph_node := STORY_GRAPH_NODE.instantiate() as StoryGraphNode
 
 		graph_edit.add_child(graph_node)
 
 		graph_node.set_story_node(node)
 
-	_refresh_links
+		graph_nodes[node.id] = graph_node
+
+	await get_tree().process_frame
+
+	_refresh_links()
 
 
 func _refresh_links() -> void:
@@ -47,13 +55,13 @@ func _refresh_links() -> void:
 		return
 
 	for link: StoryLink in story_data.link_list:
-		var from_node := _get_graph_node(link.from)
-		var to_node := _get_graph_node(link.to)
+		var from_node: StoryGraphNode = graph_nodes.get(link.from)
+		var to_node: StoryGraphNode = graph_nodes.get(link.to)
 
 		if from_node == null or to_node == null:
 			continue
 
-		graph_edit.connect_node(from_node.story_data.id, 0, to_node.story_data.id, 0)
+		graph_edit.connect_node(from_node.name, 0, to_node.name, 0)
 
 
 func _get_graph_node(id: StringName) -> StoryGraphNode:
@@ -88,7 +96,6 @@ func _on_disconnection_request(
 	to_node: StringName,
 	to_port: int,
 ) -> void:
-	print('disconnect requested')
 	if story_data == null:
 		return
 
@@ -96,8 +103,6 @@ func _on_disconnection_request(
 
 	if link == null:
 		return
-
-	print('link exists')
 
 	story_data.remove_link(link)
 

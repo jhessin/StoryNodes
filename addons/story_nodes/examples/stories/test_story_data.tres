@@ -4,19 +4,12 @@
 [ext_resource type="Script" uid="uid://d1basqvbqbe6v" path="res://addons/story_nodes/examples/test_story_data.gd" id="1_lf8vb"]
 [ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/story_node.gd" id="1_lfw1c"]
 [ext_resource type="Script" uid="uid://c0hnlj3b8r0ny" path="res://addons/story_nodes/resources/story_character.gd" id="1_n0lxn"]
-[ext_resource type="Texture2D" uid="uid://d3vx2ujabmfem" path="res://icon.svg" id="2_uyrxn"]
 [ext_resource type="Script" uid="uid://di1clrtje6o4r" path="res://addons/story_nodes/resources/choice_node.gd" id="3_bugk3"]
-
-[sub_resource type="Resource" id="Resource_n0lxn"]
-script = ExtResource("1_n0lxn")
-name = "Bob Wehadababyitsaboy"
-image = ExtResource("2_uyrxn")
-color = Color(0.21383226, 0.15410858, 0.64348185, 1)
 
 [sub_resource type="Resource" id="Resource_uyrxn"]
 script = ExtResource("1_n0lxn")
-name = "Alice In Chains"
-color = Color(0.96484375, 0.15998717, 0.7687194, 1)
+name = "Alice"
+color = Color(0.75, 0.22265625, 0.6213797, 1)
 
 [sub_resource type="Resource" id="Resource_4s5rd"]
 script = ExtResource("1_n0lxn")
@@ -28,12 +21,12 @@ script = ExtResource("1_n0lxn")
 name = "Roger Rabit"
 color = Color(0.09376869, 0.41015625, 0.11407556, 1)
 
-[sub_resource type="Resource" id="Resource_bugk3"]
+[sub_resource type="Resource" id="Resource_n0lxn"]
 script = ExtResource("1_juc8f")
 from = &"start"
 to = &"choice"
 
-[sub_resource type="Resource" id="Resource_juc8f"]
+[sub_resource type="Resource" id="Resource_75tb0"]
 script = ExtResource("1_juc8f")
 from = &"choice"
 to = &"ending"
@@ -54,20 +47,20 @@ position = Vector2(2000, 120)
 script = ExtResource("1_lfw1c")
 id = &"start"
 display_name = "Start"
-position = Vector2(380, 80)
+position = Vector2(520, 420)
 
 [resource]
 script = ExtResource("1_lf8vb")
 title = "Test Story"
 description = "This is just a test story."
-_characters = Array[ExtResource("1_n0lxn")]([SubResource("Resource_n0lxn"), SubResource("Resource_uyrxn"), SubResource("Resource_4s5rd"), SubResource("Resource_l3wce")])
+_characters = Array[ExtResource("1_n0lxn")]([SubResource("Resource_uyrxn"), SubResource("Resource_4s5rd"), SubResource("Resource_l3wce")])
 _nodes = Dictionary[StringName, ExtResource("1_lfw1c")]({
 &"choice": SubResource("Resource_o2h1o"),
 &"ending": SubResource("Resource_pll83"),
 &"start": SubResource("Resource_3bb4y")
 })
 _links = Dictionary[ExtResource("1_juc8f"), Object]({
-SubResource("Resource_bugk3"): null,
-SubResource("Resource_juc8f"): null
+SubResource("Resource_n0lxn"): null,
+SubResource("Resource_75tb0"): null
 })
 metadata/_custom_type_script = "uid://d1basqvbqbe6v"

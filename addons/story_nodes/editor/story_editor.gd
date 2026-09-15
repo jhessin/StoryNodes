@@ -11,14 +11,24 @@ var _story_data: StoryData
 
 
 func _ready() -> void:
-	file_list.story_selected.connect(set_story_data)
+	file_list.story_selected.connect(_on_story_selected)
 	save_button.pressed.connect(_on_save_pressed)
 
 
 func set_story_data(data: StoryData) -> void:
+	if _story_data != null:
+		if _story_data.changed.is_connected(_on_story_changed):
+			_story_data.changed.disconnect(_on_story_changed)
+
 	_story_data = data
-	graph_editor.set_story_data(_story_data)
-	characters_editor.set_story_data(_story_data)
+
+	if _story_data != null:
+		_story_data.changed.connect(_on_story_changed)
+		file_list.mark_dirty(_story_data)
+
+	graph_editor.set_story_data(data)
+	characters_editor.set_story_data(data)
+
 	EditorInterface.inspect_object(_story_data, '', true)
 
 
@@ -26,7 +36,17 @@ func save_story() -> Error:
 	if _story_data == null:
 		return ERR_UNCONFIGURED
 
-	return ResourceSaver.save(_story_data)
+	var error := ResourceSaver.save(_story_data)
+
+	if error == OK:
+		_story_data.is_dirty = false
+		file_list.mark_dirty(_story_data)
+
+	return error
+
+
+func _on_story_selected(data: StoryData) -> void:
+	set_story_data(data)
 
 
 func _on_save_pressed() -> void:
@@ -36,3 +56,7 @@ func _on_save_pressed() -> void:
 		push_error('Failed to save story: %s' % error)
 	else:
 		prints('file saved')
+
+
+func _on_story_changed() -> void:
+	file_list.mark_dirty(_story_data)

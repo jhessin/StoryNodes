@@ -19,6 +19,39 @@ func _ready() -> void:
 		_refresh()
 
 
+func mark_dirty(data: StoryData) -> void:
+	if data == null:
+		return
+
+	for i: int in item_list.item_count:
+		var path := item_list.get_item_metadata(i) as String
+
+		if path != data.resource_path:
+			continue
+
+		var title := data.title
+
+		if title.is_empty():
+			title = path
+
+		if data.is_dirty:
+			title += '(*)'
+
+		item_list.set_item_text(i, title)
+		return
+
+
+func select_path(path: String) -> void:
+	selected_path = path
+
+	for i: int in item_list.item_count:
+		var item_path := item_list.get_item_metadata(i) as String
+
+		if item_path == path:
+			item_list.select(i)
+			return
+
+
 func _refresh() -> void:
 	item_list.clear()
 
@@ -58,6 +91,7 @@ func _scan_directory(directory: EditorFileSystemDirectory) -> void:
 			else:
 				item_list.add_item(resource.title)
 			item_list.set_item_metadata(item_list.item_count - 1, path)
+			mark_dirty(resource as StoryData)
 
 	for i: int in directory.get_subdir_count():
 		_scan_directory(directory.get_subdir(i))
@@ -68,8 +102,6 @@ func _on_item_selected(index: int) -> void:
 
 	if path.is_empty():
 		return
-
-	selected_path = path
 
 	var resource := load(path)
 

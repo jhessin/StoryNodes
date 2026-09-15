@@ -7,4 +7,4 @@ script = ExtResource("1_66v0v")
 id = &"intro"
 display_name = "Introduction"
 description = "The beginning of the story."
-position = Vector2(760, 180)
+position = Vector2(600, 40)

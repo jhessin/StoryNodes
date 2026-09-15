@@ -39,6 +39,7 @@ func _on_node_move() -> void:
 			continue
 
 		graph_node.story_node.position = graph_node.position_offset
+		_story_data.mark_changed()
 
 
 func _refresh() -> void:

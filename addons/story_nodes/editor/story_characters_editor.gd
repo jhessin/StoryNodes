@@ -33,6 +33,7 @@ func _on_color_changed(new_color: Color) -> void:
 		return
 
 	selected_character.color = new_color
+	_story_data.mark_changed()
 
 
 func _on_image_changed(resource: Resource) -> void:
@@ -40,6 +41,7 @@ func _on_image_changed(resource: Resource) -> void:
 		return
 
 	selected_character.image = resource as Texture2D
+	_story_data.mark_changed()
 
 
 func _on_delete_character_pressed() -> void:
@@ -72,6 +74,7 @@ func _on_name_changed(new_name: String) -> void:
 		return
 
 	character_list.set_item_text(selected_items[0], new_name)
+	_story_data.mark_changed()
 
 
 func _on_character_selected(index: int) -> void:

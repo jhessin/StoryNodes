@@ -27,6 +27,7 @@ var character_count: int:
 	get:
 		return _characters.size()
 
+var is_dirty: bool = false
 @export_storage
 var _characters: Array[StoryCharacter] = []
 
@@ -35,6 +36,11 @@ var _nodes: Dictionary[StringName, StoryNode] = { }
 
 @export_storage
 var _links: Dictionary[StoryLink, Object] = { }
+
+
+func mark_changed() -> void:
+	is_dirty = true
+	emit_changed()
 
 
 ## ===
@@ -48,6 +54,7 @@ func add_character(character: StoryCharacter) -> void:
 		return
 
 	_characters.append(character)
+	mark_changed()
 
 
 func remove_character(character: StoryCharacter) -> void:
@@ -55,6 +62,7 @@ func remove_character(character: StoryCharacter) -> void:
 		return
 
 	_characters.erase(character)
+	mark_changed()
 
 
 ## ===
@@ -65,6 +73,8 @@ func add_node(node: StoryNode) -> void:
 		return
 
 	_nodes[node.id] = node
+
+	mark_changed()
 
 
 func get_node(id: StringName) -> StoryNode:
@@ -166,11 +176,13 @@ func remove_node(id: StringName) -> void:
 			remove_link(link)
 
 	_nodes.erase(id)
+	mark_changed()
 
 
 func clear_nodes() -> void:
 	_links.clear()
 	_nodes.clear()
+	mark_changed()
 
 
 ## ===
@@ -187,6 +199,7 @@ func add_link(from: StringName, to: StringName) -> StoryLink:
 	var link := StoryLink.new(from, to)
 
 	_links[link] = null
+	mark_changed()
 
 	return link
 
@@ -213,16 +226,27 @@ func has_links() -> bool:
 
 func remove_link(link: StoryLink) -> void:
 	_links.erase(link)
+	mark_changed()
 
 
 func remove_links_from(id: StringName) -> void:
+	var has_changed := false
 	for link: StoryLink in get_links_from(id):
 		remove_link(link)
+		has_changed = true
+
+	if has_changed:
+		mark_changed()
 
 
 func remove_links_to(id: StringName) -> void:
+	var has_changed := false
 	for link: StoryLink in get_links_to(id):
 		remove_link(link)
+		has_changed = true
+
+	if has_changed:
+		mark_changed()
 
 
 func remove_links(id: StringName) -> void:
@@ -252,11 +276,13 @@ func get_links_to(to: StringName) -> Array[StoryLink]:
 
 func clear_links() -> void:
 	_links.clear()
+	mark_changed()
 
 
 func clear() -> void:
 	_links.clear()
 	_nodes.clear()
+	mark_changed()
 
 
 func is_valid() -> bool:

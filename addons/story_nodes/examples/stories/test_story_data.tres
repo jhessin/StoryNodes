@@ -8,18 +8,15 @@
 
 [sub_resource type="Resource" id="Resource_uyrxn"]
 script = ExtResource("1_n0lxn")
-name = "Alice"
-color = Color(0.75, 0.22265625, 0.6213797, 1)
+name = "Bob"
 
 [sub_resource type="Resource" id="Resource_4s5rd"]
 script = ExtResource("1_n0lxn")
-name = "Steve Bushimi"
-color = Color(0.108748056, 0.15191558, 0.6118008, 1)
+name = "Alice"
 
 [sub_resource type="Resource" id="Resource_l3wce"]
 script = ExtResource("1_n0lxn")
-name = "Roger Rabit"
-color = Color(0.09376869, 0.41015625, 0.11407556, 1)
+name = "Bob"
 
 [sub_resource type="Resource" id="Resource_n0lxn"]
 script = ExtResource("1_juc8f")
@@ -35,19 +32,19 @@ to = &"ending"
 script = ExtResource("3_bugk3")
 id = &"choice"
 display_name = "Choice"
-position = Vector2(1260, 320)
+position = Vector2(1200, 360)
 
 [sub_resource type="Resource" id="Resource_pll83"]
 script = ExtResource("1_lfw1c")
 id = &"ending"
 display_name = "Ending"
-position = Vector2(2000, 120)
+position = Vector2(1820, 340)
 
 [sub_resource type="Resource" id="Resource_3bb4y"]
 script = ExtResource("1_lfw1c")
 id = &"start"
 display_name = "Start"
-position = Vector2(520, 420)
+position = Vector2(540, 340)
 
 [resource]
 script = ExtResource("1_lf8vb")

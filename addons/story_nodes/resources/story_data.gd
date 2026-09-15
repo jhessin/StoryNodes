@@ -2,6 +2,8 @@
 class_name StoryData
 extends Resource
 
+const START_NODE_ID: StringName = &'start'
+
 @export var title: String = ''
 @export var description: String = ''
 
@@ -36,6 +38,10 @@ var _nodes: Dictionary[StringName, StoryNode] = { }
 
 @export_storage
 var _links: Dictionary[StoryLink, Object] = { }
+
+
+func _init() -> void:
+	_ensure_start()
 
 
 func mark_changed() -> void:
@@ -101,27 +107,8 @@ func get_next_nodes(id: StringName) -> Array[StoryNode]:
 	return results
 
 
-func is_start_node(id: StringName) -> bool:
-	return has_node(id) and not has_previous_nodes(id)
-
-
-func get_start_nodes() -> Array[StoryNode]:
-	var results: Array[StoryNode] = []
-
-	for node: StoryNode in node_list:
-		if not has_previous_nodes(node.id):
-			results.append(node)
-
-	return results
-
-
 func get_start_node() -> StoryNode:
-	var start_nodes := get_start_nodes()
-
-	if start_nodes.is_empty():
-		return null
-
-	return start_nodes[0]
+	return get_node(START_NODE_ID)
 
 
 func is_end_node(id: StringName) -> bool:
@@ -168,7 +155,7 @@ func get_previous_nodes(id: StringName) -> Array[StoryNode]:
 
 
 func remove_node(id: StringName) -> void:
-	if not has_node(id):
+	if not has_node(id) or id == START_NODE_ID:
 		return
 
 	for link: StoryLink in _links.keys():
@@ -182,6 +169,7 @@ func remove_node(id: StringName) -> void:
 func clear_nodes() -> void:
 	_links.clear()
 	_nodes.clear()
+	_ensure_start()
 	mark_changed()
 
 
@@ -307,3 +295,10 @@ func is_valid() -> bool:
 			return false
 
 	return true
+
+
+func _ensure_start() -> void:
+	if _nodes.has(START_NODE_ID):
+		return
+
+	_nodes[START_NODE_ID] = StoryNode.new(START_NODE_ID, 'Start')

@@ -42,6 +42,8 @@ func save_story() -> Error:
 		_story_data.is_dirty = false
 		file_list.mark_dirty(_story_data)
 
+	file_list.select_path(_story_data.resource_path)
+
 	return error
 
 

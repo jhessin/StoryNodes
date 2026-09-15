@@ -7,10 +7,6 @@
 [ext_resource type="Resource" uid="uid://6r6hu3luchev" path="res://addons/story_nodes/examples/stories/test_story_node.tres" id="2_mqq1i"]
 [ext_resource type="Resource" uid="uid://p2f6hub4j8tb" path="res://addons/story_nodes/examples/nodes/test_choice_node.tres" id="3_fej13"]
 
-[sub_resource type="Resource" id="Resource_bnnpx"]
-script = ExtResource("1_bnnpx")
-name = "Merlin"
-
 [sub_resource type="Resource" id="Resource_jpo5m"]
 script = ExtResource("1_fej13")
 from = &"intro"
@@ -20,7 +16,6 @@ to = &"choice_node"
 script = ExtResource("1_tp17x")
 title = "Main Story"
 description = "The main story of the game."
-_characters = Array[ExtResource("1_bnnpx")]([SubResource("Resource_bnnpx")])
 _nodes = Dictionary[StringName, ExtResource("1_2yo20")]({
 &"choice_node": ExtResource("3_fej13"),
 &"intro": ExtResource("2_mqq1i")

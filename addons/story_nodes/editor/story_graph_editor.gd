@@ -4,8 +4,8 @@ extends Control
 
 const STORY_GRAPH_NODE := preload('res://addons/story_nodes/editor/story_graph_node.tscn')
 
-var story_data: StoryData
 var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
+var _story_data: StoryData
 
 @onready var graph_edit: GraphEdit = $GraphEdit
 
@@ -24,19 +24,12 @@ func _process(delta: float) -> void:
 
 
 func set_story_data(data: StoryData) -> void:
-	story_data = data
+	_story_data = data
 	_refresh()
 
 
-func save_story() -> Error:
-	if story_data == null:
-		return ERR_UNCONFIGURED
-
-	return ResourceSaver.save(story_data)
-
-
 func _on_node_move() -> void:
-	if story_data == null:
+	if _story_data == null:
 		return
 
 	for id: StringName in graph_nodes:
@@ -55,10 +48,10 @@ func _refresh() -> void:
 		if child is GraphNode:
 			child.queue_free()
 
-	if story_data == null:
+	if _story_data == null:
 		return
 
-	for node: StoryNode in story_data.node_list:
+	for node: StoryNode in _story_data.node_list:
 		var graph_node := STORY_GRAPH_NODE.instantiate() as StoryGraphNode
 
 		graph_edit.add_child(graph_node)
@@ -73,10 +66,10 @@ func _refresh() -> void:
 
 
 func _refresh_links() -> void:
-	if story_data == null:
+	if _story_data == null:
 		return
 
-	for link: StoryLink in story_data.link_list:
+	for link: StoryLink in _story_data.link_list:
 		var from_node: StoryGraphNode = graph_nodes.get(link.from)
 		var to_node: StoryGraphNode = graph_nodes.get(link.to)
 
@@ -101,10 +94,10 @@ func _on_connection_request(
 	to_node: StringName,
 	to_port: int,
 ) -> void:
-	if story_data == null:
+	if _story_data == null:
 		return
 
-	var link := story_data.add_link(from_node, to_node)
+	var link := _story_data.add_link(from_node, to_node)
 
 	if link == null:
 		return
@@ -118,14 +111,14 @@ func _on_disconnection_request(
 	to_node: StringName,
 	to_port: int,
 ) -> void:
-	if story_data == null:
+	if _story_data == null:
 		return
 
-	var link := story_data.get_link(from_node, to_node)
+	var link := _story_data.get_link(from_node, to_node)
 
 	if link == null:
 		return
 
-	story_data.remove_link(link)
+	_story_data.remove_link(link)
 
 	graph_edit.disconnect_node(from_node, from_port, to_node, to_port)

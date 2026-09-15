@@ -9,23 +9,23 @@
 
 [sub_resource type="Resource" id="Resource_n0lxn"]
 script = ExtResource("1_n0lxn")
-name = "Bob"
+name = "Bob Wehadababyitsaboy"
 image = ExtResource("2_uyrxn")
 color = Color(0.21383226, 0.15410858, 0.64348185, 1)
 
 [sub_resource type="Resource" id="Resource_uyrxn"]
 script = ExtResource("1_n0lxn")
-name = "Alice"
+name = "Alice In Chains"
 color = Color(0.96484375, 0.15998717, 0.7687194, 1)
 
 [sub_resource type="Resource" id="Resource_4s5rd"]
 script = ExtResource("1_n0lxn")
-name = "Steve"
+name = "Steve Bushimi"
 color = Color(0.108748056, 0.15191558, 0.6118008, 1)
 
 [sub_resource type="Resource" id="Resource_l3wce"]
 script = ExtResource("1_n0lxn")
-name = "Roger"
+name = "Roger Rabit"
 color = Color(0.09376869, 0.41015625, 0.11407556, 1)
 
 [sub_resource type="Resource" id="Resource_bugk3"]

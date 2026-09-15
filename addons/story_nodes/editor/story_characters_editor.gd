@@ -2,8 +2,8 @@
 class_name StoryCharactersEditor
 extends Control
 
-var story_data: StoryData
 var selected_character: StoryCharacter
+var _story_data: StoryData
 
 @onready var image_edit: EditorResourcePicker = %ImageEdit
 @onready var color_edit: ColorPickerButton = %ColorEdit
@@ -24,7 +24,7 @@ func _ready() -> void:
 
 
 func set_story_data(data: StoryData) -> void:
-	story_data = data
+	_story_data = data
 	_refresh()
 
 
@@ -46,15 +46,16 @@ func _on_delete_character_pressed() -> void:
 	if selected_character == null:
 		return
 
-	if story_data == null:
+	if _story_data == null:
 		return
 
-	story_data.remove_character(selected_character)
+	_story_data.remove_character(selected_character)
 
 	selected_character = null
 
 	%NameEdit.clear()
-	image_edit.texture = null
+	color_edit.color = Color.WHITE
+	image_edit.edited_resource = null
 
 	_refresh()
 
@@ -74,7 +75,7 @@ func _on_name_changed(new_name: String) -> void:
 
 
 func _on_character_selected(index: int) -> void:
-	var character := story_data.character_list[index]
+	var character := _story_data.character_list[index]
 
 	selected_character = character
 
@@ -84,21 +85,29 @@ func _on_character_selected(index: int) -> void:
 
 
 func _on_new_character_pressed() -> void:
-	if story_data == null:
+	if _story_data == null:
 		return
 
 	var character := StoryCharacter.new('New Character')
 
-	story_data.add_character(character)
+	_story_data.add_character(character)
 
 	_refresh()
+
+	var index := _story_data.character_list.find(character)
+
+	if index == -1:
+		return
+
+	character_list.select(index)
+	_on_character_selected(index)
 
 
 func _refresh() -> void:
 	character_list.clear()
 
-	if story_data == null:
+	if _story_data == null:
 		return
 
-	for character: StoryCharacter in story_data.character_list:
+	for character: StoryCharacter in _story_data.character_list:
 		character_list.add_item(character.name)

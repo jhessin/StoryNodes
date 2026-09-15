@@ -32,19 +32,19 @@ to = &"ending"
 script = ExtResource("3_bugk3")
 id = &"choice"
 display_name = "Choice"
-position = Vector2(1200, 360)
+position = Vector2(1140, 340)
 
 [sub_resource type="Resource" id="Resource_pll83"]
 script = ExtResource("1_lfw1c")
 id = &"ending"
 display_name = "Ending"
-position = Vector2(1820, 340)
+position = Vector2(1740, 340)
 
 [sub_resource type="Resource" id="Resource_3bb4y"]
 script = ExtResource("1_lfw1c")
 id = &"start"
 display_name = "Start"
-position = Vector2(540, 340)
+position = Vector2(560, 340)
 
 [resource]
 script = ExtResource("1_lf8vb")

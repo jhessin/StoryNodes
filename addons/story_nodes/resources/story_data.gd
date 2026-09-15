@@ -41,6 +41,10 @@ var _nodes: Dictionary[StringName, StoryNode] = { }
 var _links: Dictionary[StoryLink, Object] = { }
 
 
+func _init() -> void:
+	_ensure_start()
+
+
 func mark_changed() -> void:
 	is_dirty = true
 	emit_changed()
@@ -105,6 +109,7 @@ func get_next_nodes(id: StringName) -> Array[StoryNode]:
 
 
 func get_start_node() -> StoryNode:
+	_ensure_start()
 	return get_node(START_NODE_ID)
 
 
@@ -166,7 +171,7 @@ func remove_node(id: StringName) -> void:
 func clear_nodes() -> void:
 	_links.clear()
 	_nodes.clear()
-	# _ensure_start()
+	_ensure_start()
 	mark_changed()
 
 
@@ -292,8 +297,14 @@ func is_valid() -> bool:
 			return false
 
 	return true
-# func _ensure_start() -> void:
-# 	if _nodes.has(START_NODE_ID):
-# 		return
-#
-# 	_nodes[START_NODE_ID] = StoryNode.new(START_NODE_ID, 'Start')
+
+
+func ensure_start_node() -> void:
+	_ensure_start()
+
+
+func _ensure_start() -> void:
+	if _nodes.has(START_NODE_ID):
+		return
+
+	_nodes[START_NODE_ID] = StoryNode.new(START_NODE_ID, 'Start')

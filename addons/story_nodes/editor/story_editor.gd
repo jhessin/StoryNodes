@@ -23,6 +23,7 @@ func set_story_data(data: StoryData) -> void:
 	_story_data = data
 
 	if _story_data != null:
+		_story_data.ensure_start_node()
 		_story_data.changed.connect(_on_story_changed)
 		file_list.mark_dirty(_story_data)
 		file_list.select_path(_story_data.resource_path)

@@ -25,11 +25,11 @@ func set_story_data(data: StoryData) -> void:
 	if _story_data != null:
 		_story_data.changed.connect(_on_story_changed)
 		file_list.mark_dirty(_story_data)
+		file_list.select_path(_story_data.resource_path)
+		call_deferred('_inspect_story')
 
 	graph_editor.set_story_data(data)
 	characters_editor.set_story_data(data)
-
-	EditorInterface.inspect_object(_story_data, '', true)
 
 
 func save_story() -> Error:
@@ -45,6 +45,12 @@ func save_story() -> Error:
 	file_list.select_path(_story_data.resource_path)
 
 	return error
+
+
+func _inspect_story() -> void:
+	if _story_data == null:
+		return
+	EditorInterface.inspect_object(_story_data, '', true)
 
 
 func _on_story_selected(data: StoryData) -> void:

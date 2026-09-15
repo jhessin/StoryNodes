@@ -30,6 +30,7 @@ var character_count: int:
 		return _characters.size()
 
 var is_dirty: bool = false
+
 @export_storage
 var _characters: Array[StoryCharacter] = []
 
@@ -38,10 +39,6 @@ var _nodes: Dictionary[StringName, StoryNode] = { }
 
 @export_storage
 var _links: Dictionary[StoryLink, Object] = { }
-
-
-func _init() -> void:
-	_ensure_start()
 
 
 func mark_changed() -> void:
@@ -75,7 +72,7 @@ func remove_character(character: StoryCharacter) -> void:
 ## Node methods
 ## ===
 func add_node(node: StoryNode) -> void:
-	if node == null or node.id.is_empty() or has_node(node.id):
+	if node == null or node.id.is_empty() or has_node(node.id) or node.id == START_NODE_ID:
 		return
 
 	_nodes[node.id] = node
@@ -169,7 +166,7 @@ func remove_node(id: StringName) -> void:
 func clear_nodes() -> void:
 	_links.clear()
 	_nodes.clear()
-	_ensure_start()
+	# _ensure_start()
 	mark_changed()
 
 
@@ -295,10 +292,8 @@ func is_valid() -> bool:
 			return false
 
 	return true
-
-
-func _ensure_start() -> void:
-	if _nodes.has(START_NODE_ID):
-		return
-
-	_nodes[START_NODE_ID] = StoryNode.new(START_NODE_ID, 'Start')
+# func _ensure_start() -> void:
+# 	if _nodes.has(START_NODE_ID):
+# 		return
+#
+# 	_nodes[START_NODE_ID] = StoryNode.new(START_NODE_ID, 'Start')

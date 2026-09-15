@@ -17,15 +17,6 @@ func _exit_tree() -> void:
 		story_editor.queue_free()
 
 
-func _handles(object: Object) -> bool:
-	return object is StoryData
-
-
-func _edit(object: Object) -> void:
-	if object is StoryData:
-		story_editor.set_story_data(object as StoryData)
-
-
 func _has_main_screen() -> bool:
 	return true
 
@@ -41,3 +32,8 @@ func _get_plugin_icon() -> Texture2D:
 func _make_visible(visible: bool) -> void:
 	if story_editor != null:
 		story_editor.visible = visible
+# func _handles(object: Object) -> bool:
+# 	return object is StoryData
+# func _edit(object: Object) -> void:
+# 	if object is StoryData:
+# 		story_editor.set_story_data(object as StoryData)

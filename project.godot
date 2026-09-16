@@ -37,3 +37,4 @@ renderer/rendering_method.mobile="gl_compatibility"
 [story_nodes]
 
 character_library_path="res://libraries/character_library.tres"
+variable_library_path="uid://c2c7aht7mct8o"

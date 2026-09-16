@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StoryVariableLibrary" format=3 uid="uid://c2c7aht7mct8o"]
+
+[ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="1_e0v8j"]
+[ext_resource type="Script" uid="uid://bnyn22r47o86c" path="res://addons/story_nodes/resources/story_variable_library.gd" id="2_e7d0r"]
+
+[sub_resource type="Resource" id="Resource_e0v8j"]
+script = ExtResource("1_e0v8j")
+name = "gold"
+type = 1
+default_value = 0
+
+[sub_resource type="Resource" id="Resource_e7d0r"]
+script = ExtResource("1_e0v8j")
+name = "knows_enoch"
+type = 0
+default_value = false
+
+[resource]
+script = ExtResource("2_e7d0r")
+_variables = Array[ExtResource("1_e0v8j")]([SubResource("Resource_e0v8j"), SubResource("Resource_e7d0r")])

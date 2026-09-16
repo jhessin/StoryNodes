@@ -1,0 +1,88 @@
+[gd_scene format=3 uid="uid://cpn8ntriy1h1a"]
+
+[ext_resource type="Script" uid="uid://da5rqaiuyl8mx" path="res://addons/story_nodes/editor/story_variables_editor.gd" id="1_qqe3b"]
+
+[node name="StoryVariablesEditor" type="HSplitContainer" unique_id=335402263]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_qqe3b")
+metadata/_custom_type_script = "uid://da5rqaiuyl8mx"
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2078826457]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Header" type="Label" parent="VBoxContainer" unique_id=1451185099]
+layout_mode = 2
+text = "Variables"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1832050266]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=573534718]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VariableList" type="ItemList" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=863854186]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="NewVariableButton" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=152259311]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "+ New Variable"
+
+[node name="VariableEditor" type="VBoxContainer" parent="." unique_id=1562127743]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="VariableEditor" unique_id=19620329]
+layout_mode = 2
+text = "Name:"
+
+[node name="NameEdit" type="LineEdit" parent="VariableEditor" unique_id=1664405954]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TypeLabel" type="Label" parent="VariableEditor" unique_id=245715143]
+layout_mode = 2
+text = "Type:"
+
+[node name="TypeOption" type="OptionButton" parent="VariableEditor" unique_id=1821970937]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 4
+popup/item_0/text = "Boolean"
+popup/item_0/id = 0
+popup/item_1/text = "Integer"
+popup/item_1/id = 1
+popup/item_2/text = "Float"
+popup/item_2/id = 2
+popup/item_3/text = "String"
+popup/item_3/id = 3
+
+[node name="DefaultValueLabel" type="Label" parent="VariableEditor" unique_id=394445187]
+layout_mode = 2
+text = "Default Value:"
+
+[node name="DefaultValueContainer" type="VBoxContainer" parent="VariableEditor" unique_id=423092033]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DeleteButton" type="Button" parent="VariableEditor" unique_id=1948017088]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 10
+text = "❌"
+alignment = 2

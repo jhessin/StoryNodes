@@ -2,7 +2,10 @@
 class_name StoryEditor
 extends Control
 
+const CHARACTER_LIBRARY_PATH: String = 'res://character_library.tres'
+
 var _story_data: StoryData
+var _character_library: StoryCharacterLibrary
 
 @onready var save_button: Button = %SaveButton
 @onready var file_list: StoryFileList = %StoryFileList
@@ -11,8 +14,12 @@ var _story_data: StoryData
 
 
 func _ready() -> void:
+	_load_character_library()
+
 	file_list.story_selected.connect(_on_story_selected)
 	save_button.pressed.connect(_on_save_pressed)
+
+	characters_editor.set_character_library(_character_library)
 
 
 func set_story_data(data: StoryData) -> void:
@@ -23,14 +30,17 @@ func set_story_data(data: StoryData) -> void:
 	_story_data = data
 
 	if _story_data != null:
+		if _story_data.character_library == null:
+			_story_data.character_library = _character_library
+
 		_story_data.ensure_start_node()
 		_story_data.changed.connect(_on_story_changed)
+
 		file_list.mark_dirty(_story_data)
 		file_list.select_path(_story_data.resource_path)
 		call_deferred('_inspect_story')
 
 	graph_editor.set_story_data(data)
-	characters_editor.set_story_data(data)
 
 
 func save_story() -> Error:
@@ -39,13 +49,40 @@ func save_story() -> Error:
 
 	var error := ResourceSaver.save(_story_data)
 
-	if error == OK:
-		_story_data.is_dirty = false
-		file_list.mark_dirty(_story_data)
+	if error != OK:
+		return error
 
+	_story_data.is_dirty = false
+	file_list.mark_dirty(_story_data)
 	file_list.select_path(_story_data.resource_path)
 
-	return error
+	error = save_character_library()
+
+	if error != OK:
+		return error
+
+	return OK
+
+
+func save_character_library() -> Error:
+	if _character_library == null:
+		return ERR_UNCONFIGURED
+
+	return ResourceSaver.save(_character_library)
+
+
+func _load_character_library() -> void:
+	if ResourceLoader.exists(CHARACTER_LIBRARY_PATH):
+		_character_library = ResourceLoader.load(CHARACTER_LIBRARY_PATH) as StoryCharacterLibrary
+		return
+
+	_character_library = StoryCharacterLibrary.new()
+	_character_library.resource_path = CHARACTER_LIBRARY_PATH
+
+	var error := ResourceSaver.save(_character_library)
+
+	if error != OK:
+		push_error('Failed to create character library: %s' % error)
 
 
 func _inspect_story() -> void:

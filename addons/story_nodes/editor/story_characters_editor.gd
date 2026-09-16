@@ -5,7 +5,7 @@ extends Control
 const ITEM_HEIGHT: float = 32.0
 
 var selected_character: StoryCharacter
-var _story_data: StoryData
+var _character_library: StoryCharacterLibrary
 
 @onready var image_edit: EditorResourcePicker = %ImageEdit
 @onready var color_edit: ColorPickerButton = %ColorEdit
@@ -25,8 +25,8 @@ func _ready() -> void:
 	color_edit.color_changed.connect(_on_color_changed)
 
 
-func set_story_data(data: StoryData) -> void:
-	_story_data = data
+func set_character_library(data: StoryCharacterLibrary) -> void:
+	_character_library = data
 	_refresh()
 
 
@@ -39,7 +39,7 @@ func _on_color_changed(new_color: Color) -> void:
 		return
 
 	selected_character.color = new_color
-	_story_data.mark_changed()
+	_character_library.emit_changed()
 
 
 func _on_image_changed(resource: Resource) -> void:
@@ -47,17 +47,17 @@ func _on_image_changed(resource: Resource) -> void:
 		return
 
 	selected_character.image = resource as Texture2D
-	_story_data.mark_changed()
+	_character_library.emit_changed()
 
 
 func _on_delete_character_pressed() -> void:
 	if selected_character == null:
 		return
 
-	if _story_data == null:
+	if _character_library == null:
 		return
 
-	_story_data.remove_character(selected_character)
+	_character_library.remove_character(selected_character)
 
 	selected_character = null
 
@@ -80,11 +80,11 @@ func _on_name_changed(new_name: String) -> void:
 		return
 
 	character_list.set_item_text(selected_items[0], new_name)
-	_story_data.mark_changed()
+	_character_library.emit_changed()
 
 
 func _on_character_selected(index: int) -> void:
-	var character := _story_data.character_list[index]
+	var character := _character_library.character_list[index]
 
 	selected_character = character
 
@@ -94,16 +94,16 @@ func _on_character_selected(index: int) -> void:
 
 
 func _on_new_character_pressed() -> void:
-	if _story_data == null:
+	if _character_library == null:
 		return
 
 	var character := StoryCharacter.new('New Character')
 
-	_story_data.add_character(character)
+	_character_library.add_character(character)
 
 	_refresh()
 
-	var index := _story_data.character_list.find(character)
+	var index := _character_library.character_list.find(character)
 
 	if index == -1:
 		return
@@ -115,10 +115,10 @@ func _on_new_character_pressed() -> void:
 func _refresh() -> void:
 	character_list.clear()
 
-	if _story_data == null:
+	if _character_library == null:
 		return
 
-	for character: StoryCharacter in _story_data.character_list:
+	for character: StoryCharacter in _character_library.character_list:
 		character_list.add_item(character.name)
 
 	_update_item_list_size()

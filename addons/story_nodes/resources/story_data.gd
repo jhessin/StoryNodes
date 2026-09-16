@@ -6,6 +6,7 @@ const START_NODE_ID: StringName = &'start'
 
 @export var title: String = ''
 @export var description: String = ''
+@export var character_library: StoryCharacterLibrary
 
 var node_list: Array[StoryNode]:
 	get:
@@ -24,15 +25,16 @@ var link_count: int:
 		return _links.size()
 var character_list: Array[StoryCharacter]:
 	get:
-		return _characters
+		if character_library == null:
+			return []
+		return character_library.character_list
 var character_count: int:
 	get:
-		return _characters.size()
+		if character_library == null:
+			return 0
+		return character_library.character_count
 
 var is_dirty: bool = false
-
-@export_storage
-var _characters: Array[StoryCharacter] = []
 
 @export_storage
 var _nodes: Dictionary[StringName, StoryNode] = { }
@@ -54,22 +56,17 @@ func mark_changed() -> void:
 ## Character methods
 ## ===
 func add_character(character: StoryCharacter) -> void:
-	if character == null:
+	if character == null or character_library == null:
 		return
 
-	if _characters.has(character):
-		return
-
-	_characters.append(character)
-	mark_changed()
+	character_library.add_character(character)
 
 
 func remove_character(character: StoryCharacter) -> void:
-	if character == null:
+	if character == null or character_library == null:
 		return
 
-	_characters.erase(character)
-	mark_changed()
+	character_library.remove_character(character)
 
 
 ## ===

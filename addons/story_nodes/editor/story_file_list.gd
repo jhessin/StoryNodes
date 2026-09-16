@@ -3,17 +3,23 @@ class_name StoryFileList
 extends Control
 
 signal story_selected(story: StoryData)
+signal story_created(story: StoryData)
 
 var filesystem: EditorFileSystem
 var selected_path: String = ''
 
 @onready var item_list: ItemList = %ItemList
+@onready var create_button: Button = %CreateButton
+@onready var save_dialog: FileDialog = %SaveDialog
 
 
 func _ready() -> void:
 	filesystem = EditorInterface.get_resource_filesystem()
 	filesystem.filesystem_changed.connect(_refresh)
+
 	item_list.item_selected.connect(_on_item_selected)
+	create_button.pressed.connect(_on_new_story_pressed)
+	save_dialog.file_selected.connect(_on_save_dialog_file_selected)
 
 	if not filesystem.is_scanning():
 		_refresh()
@@ -107,3 +113,31 @@ func _on_item_selected(index: int) -> void:
 
 	if resource is StoryData:
 		story_selected.emit(resource as StoryData)
+
+
+func _on_new_story_pressed() -> void:
+	save_dialog.popup_centered_ratio()
+
+
+func _on_save_dialog_file_selected(path: String) -> void:
+	if not path.ends_with('.tres'):
+		path += '.tres'
+
+	var story := StoryData.new()
+
+	var error := ResourceSaver.save(story, path)
+
+	if error != OK:
+		push_error("Failed to save story: %s" % error)
+		return
+
+	selected_path = path
+
+	story.resource_path = path
+
+	filesystem.scan()
+	select_path(path)
+
+	story_selected.emit(story)
+
+	EditorInterface.inspect_object(story)

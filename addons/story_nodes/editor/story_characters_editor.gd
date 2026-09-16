@@ -2,6 +2,8 @@
 class_name StoryCharactersEditor
 extends Control
 
+const ITEM_HEIGHT: float = 32.0
+
 var selected_character: StoryCharacter
 var _story_data: StoryData
 
@@ -26,6 +28,10 @@ func _ready() -> void:
 func set_story_data(data: StoryData) -> void:
 	_story_data = data
 	_refresh()
+
+
+func _update_item_list_size() -> void:
+	character_list.custom_minimum_size.y = character_list.item_count * ITEM_HEIGHT
 
 
 func _on_color_changed(new_color: Color) -> void:
@@ -114,3 +120,5 @@ func _refresh() -> void:
 
 	for character: StoryCharacter in _story_data.character_list:
 		character_list.add_item(character.name)
+
+	_update_item_list_size()

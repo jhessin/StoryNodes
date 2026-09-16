@@ -5,6 +5,8 @@ extends Control
 signal story_selected(story: StoryData)
 signal story_created(story: StoryData)
 
+const ITEM_HEIGHT: float = 32.0
+
 var filesystem: EditorFileSystem
 var selected_path: String = ''
 
@@ -58,6 +60,10 @@ func select_path(path: String) -> void:
 			return
 
 
+func _update_item_list_size() -> void:
+	item_list.custom_minimum_size.y = item_list.item_count * ITEM_HEIGHT
+
+
 func _refresh() -> void:
 	item_list.clear()
 
@@ -68,6 +74,7 @@ func _refresh() -> void:
 
 	_scan_directory(root)
 	_restore_selection()
+	_update_item_list_size()
 
 
 func _restore_selection() -> void:

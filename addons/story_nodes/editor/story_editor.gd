@@ -18,6 +18,7 @@ var _variable_library: StoryVariableLibrary
 @onready var file_list: StoryFileList = %StoryFileList
 @onready var graph_editor: StoryGraphEditor = %StoryGraphEditor
 @onready var characters_editor: StoryCharactersEditor = %StoryCharactersEditor
+@onready var cast_editor: StoryCastEditor = %StoryCastEditor
 @onready var variables_editor: StoryVariablesEditor = %StoryVariablesEditor
 
 
@@ -29,6 +30,7 @@ func _ready() -> void:
 	save_button.pressed.connect(_on_save_pressed)
 
 	characters_editor.set_character_library(_character_library)
+	cast_editor.set_story_data(null)
 	variables_editor.set_variable_library(_variable_library)
 
 
@@ -51,6 +53,7 @@ func set_story_data(data: StoryData) -> void:
 		call_deferred('_inspect_story')
 
 	graph_editor.set_story_data(data)
+	cast_editor.set_story_data(data)
 
 
 func save_story() -> Error:
@@ -73,19 +76,11 @@ func save_story() -> Error:
 	if _story_data == null:
 		return OK
 
-	print('Story path: ', _story_data.resource_path)
-	print('Character library: ', _character_library)
-	print(
-		'Character library path: ',
-		_character_library.resource_path if _character_library != null else 'NULL',
-	)
-
 	error = ResourceSaver.save(_story_data)
 
-	print('Story save error: ', error)
-	print('Story save error string: ', error_string(error))
-
 	if error != OK:
+		print('Story save error: ', error)
+		print('Story save error string: ', error_string(error))
 		return error
 
 	_story_data.is_dirty = false

@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://c6rur1qmrwmo8"]
+
+[ext_resource type="Script" uid="uid://q7uivk570ylu" path="res://addons/story_nodes/editor/story_cast_editor.gd" id="1_cast"]
+[ext_resource type="Script" uid="uid://cq3etxkk27vnc" path="res://addons/story_nodes/editor/story_character_list.gd" id="2_list"]
+
+[node name="StoryCastEditor" type="HSplitContainer" unique_id=184030552]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offsets = PackedInt32Array(400)
+split_offset = 400
+script = ExtResource("1_cast")
+
+[node name="LibraryPanel" type="VBoxContainer" parent="." unique_id=1068991010]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="LibraryPanel" unique_id=1584317559]
+layout_mode = 2
+text = "Character Library"
+
+[node name="CharacterLibraryList" type="ItemList" parent="LibraryPanel" unique_id=2030030865]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("2_list")
+
+[node name="CastPanel" type="VBoxContainer" parent="." unique_id=1731127977]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="CastPanel" unique_id=1343566634]
+layout_mode = 2
+text = "Story Cast"
+
+[node name="CastList" type="ItemList" parent="CastPanel" unique_id=1177388122]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("2_list")

@@ -39,6 +39,7 @@ script = ExtResource("1_lf8vb")
 title = "Test Story"
 description = "This is just a test story."
 character_library = ExtResource("4_n0lxn")
+_cast = Array[int]([0])
 _nodes = Dictionary[StringName, ExtResource("1_lfw1c")]({
 &"choice": SubResource("Resource_o2h1o"),
 &"ending": SubResource("Resource_pll83"),

@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://c02ncjcobe5v" path="res://addons/story_nodes/editor/story_graph_editor.tscn" id="1_fa3ns"]
 [ext_resource type="Script" uid="uid://yhunnwje28xm" path="res://addons/story_nodes/editor/story_editor.gd" id="1_pd6of"]
 [ext_resource type="PackedScene" uid="uid://24fprmw7pj6" path="res://addons/story_nodes/editor/story_file_list.tscn" id="2_cgqcg"]
+[ext_resource type="PackedScene" uid="uid://c6rur1qmrwmo8" path="res://addons/story_nodes/editor/story_cast_editor.tscn" id="4_ijnfv"]
 [ext_resource type="PackedScene" uid="uid://c4a4qa4i2eyvo" path="res://addons/story_nodes/editor/story_characters_editor.tscn" id="4_rv5jg"]
 [ext_resource type="PackedScene" uid="uid://cpn8ntriy1h1a" path="res://addons/story_nodes/editor/story_variables_editor.tscn" id="5_3bkl8"]
 
@@ -54,9 +55,10 @@ layout_mode = 2
 
 [node name="StoryTabs" type="TabContainer" parent="VBoxContainer/TabContainer/Stories" unique_id=1907923035]
 layout_mode = 2
-current_tab = 0
+current_tab = 1
 
 [node name="Graph" type="Control" parent="VBoxContainer/TabContainer/Stories/StoryTabs" unique_id=1689539484]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -66,9 +68,12 @@ layout_mode = 1
 size_flags_horizontal = 3
 
 [node name="Cast" type="Control" parent="VBoxContainer/TabContainer/Stories/StoryTabs" unique_id=1415295514]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
+
+[node name="StoryCastEditor" parent="VBoxContainer/TabContainer/Stories/StoryTabs/Cast" unique_id=1471171443 instance=ExtResource("4_ijnfv")]
+unique_name_in_owner = true
+layout_mode = 1
 
 [node name="Characters" type="Control" parent="VBoxContainer/TabContainer" unique_id=1913462449]
 visible = false

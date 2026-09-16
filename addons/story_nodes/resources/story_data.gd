@@ -33,8 +33,20 @@ var character_count: int:
 		if character_library == null:
 			return 0
 		return character_library.character_count
+var cast: Array[StoryCharacter]:
+	get:
+		var result: Array[StoryCharacter] = []
+		for i: int in _cast:
+			result.append(character_library.character_list[i])
+		return result
+
+var cast_count: int:
+	get:
+		return _cast.size()
 
 var is_dirty: bool = false
+@export_storage
+var _cast: Array[int] = []
 
 @export_storage
 var _nodes: Dictionary[StringName, StoryNode] = { }
@@ -43,6 +55,9 @@ var _nodes: Dictionary[StringName, StoryNode] = { }
 var _links: Dictionary[StoryLink, Object] = { }
 
 
+## ===
+## Lifecycle methods
+## ===
 func _init() -> void:
 	_ensure_start()
 
@@ -273,6 +288,13 @@ func clear() -> void:
 
 
 func is_valid() -> bool:
+	if character_library == null:
+		return false
+
+	for i: int in _cast:
+		if i > _cast.size():
+			return false
+
 	for node: StoryNode in node_list:
 		if node == null:
 			return false
@@ -300,6 +322,55 @@ func ensure_start_node() -> void:
 	_ensure_start()
 
 
+## ===
+## Cast methods
+## ===
+func add_to_cast(character: StoryCharacter) -> void:
+	if character == null:
+		return
+
+	var index: int = character_library.character_list.find(character)
+	if _cast.has(index):
+		return
+
+	if character_library == null:
+		return
+
+	if not character_library.has_character(character):
+		return
+
+	_cast.append(character_library.character_list.find(character))
+	mark_changed()
+
+
+func remove_from_cast(character: StoryCharacter) -> void:
+	if character == null:
+		return
+
+	var index: int = character_library.character_list.find(character)
+	if not _cast.has(index):
+		return
+
+	_cast.erase(index)
+	mark_changed()
+
+
+func is_in_cast(character: StoryCharacter) -> bool:
+	var index: int = character_library.character_list.find(character)
+	return _cast.has(index)
+
+
+func clear_cast() -> void:
+	if _cast.is_empty():
+		return
+
+	_cast.clear()
+	mark_changed()
+
+
+## ===
+## Private methods
+## ===
 func _ensure_start() -> void:
 	if _nodes.has(START_NODE_ID):
 		return

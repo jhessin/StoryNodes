@@ -28,6 +28,7 @@ script = ExtResource("1_tp17x")
 title = "Main Story"
 description = "The main story of the game."
 character_library = ExtResource("5_bnnpx")
+_cast = Array[int]([1, 2, 0])
 _nodes = Dictionary[StringName, ExtResource("1_2yo20")]({
 &"choice_node": ExtResource("3_fej13"),
 &"intro": ExtResource("2_mqq1i"),

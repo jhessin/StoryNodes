@@ -1,6 +1,6 @@
 @tool
 class_name StoryCharactersEditor
-extends Control
+extends HSplitContainer
 
 const ITEM_HEIGHT: float = 32.0
 

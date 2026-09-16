@@ -2,48 +2,41 @@
 
 [ext_resource type="Script" uid="uid://cysvoxmipomtu" path="res://addons/story_nodes/editor/story_characters_editor.gd" id="1_ib26s"]
 
-[node name="StoryCharactersEditor" type="Control" unique_id=2026666764]
-layout_mode = 3
+[node name="StoryCharactersEditor" type="HSplitContainer" unique_id=1838113417]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_ib26s")
-
-[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=1002494069]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+offset_right = 81.0
 grow_horizontal = 2
 grow_vertical = 2
 split_offsets = PackedInt32Array(859)
 split_offset = 859
+script = ExtResource("1_ib26s")
+metadata/_custom_type_script = "uid://cysvoxmipomtu"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer" unique_id=831229507]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=831229507]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="HSplitContainer/VBoxContainer" unique_id=2018054156]
+[node name="Header" type="Label" parent="VBoxContainer" unique_id=2018054156]
 layout_mode = 2
 size_flags_vertical = 0
 text = "Characters"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="HSplitContainer/VBoxContainer" unique_id=1245421525]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1245421525]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/VBoxContainer/ScrollContainer" unique_id=2081847365]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=2081847365]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="CharacterList" type="ItemList" parent="HSplitContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=961499584]
+[node name="CharacterList" type="ItemList" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=961499584]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="NewCharacterButton" type="Button" parent="HSplitContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=576208534]
+[node name="NewCharacterButton" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=576208534]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -51,37 +44,37 @@ size_flags_horizontal = 3
 text = "New Character"
 icon_alignment = 2
 
-[node name="CharacterEditor" type="VBoxContainer" parent="HSplitContainer" unique_id=1804978727]
+[node name="CharacterEditor" type="VBoxContainer" parent="." unique_id=1804978727]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="HSplitContainer/CharacterEditor" unique_id=1045068075]
+[node name="NameLabel" type="Label" parent="CharacterEditor" unique_id=1045068075]
 layout_mode = 2
 text = "Name"
 
-[node name="NameEdit" type="LineEdit" parent="HSplitContainer/CharacterEditor" unique_id=1545596490]
+[node name="NameEdit" type="LineEdit" parent="CharacterEditor" unique_id=1545596490]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ImageLabel" type="Label" parent="HSplitContainer/CharacterEditor" unique_id=304096620]
+[node name="ImageLabel" type="Label" parent="CharacterEditor" unique_id=304096620]
 layout_mode = 2
 text = "Image:"
 
-[node name="ImageEdit" type="EditorResourcePicker" parent="HSplitContainer/CharacterEditor" unique_id=809620737]
+[node name="ImageEdit" type="EditorResourcePicker" parent="CharacterEditor" unique_id=809620737]
 unique_name_in_owner = true
 layout_mode = 2
 base_type = "Texture2D"
 
-[node name="ColorLabel" type="Label" parent="HSplitContainer/CharacterEditor" unique_id=1286990982]
+[node name="ColorLabel" type="Label" parent="CharacterEditor" unique_id=1286990982]
 layout_mode = 2
 text = "Color"
 
-[node name="ColorEdit" type="ColorPickerButton" parent="HSplitContainer/CharacterEditor" unique_id=394184931]
+[node name="ColorEdit" type="ColorPickerButton" parent="CharacterEditor" unique_id=394184931]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DeleteButton" type="Button" parent="HSplitContainer/CharacterEditor" unique_id=569044033]
+[node name="DeleteButton" type="Button" parent="CharacterEditor" unique_id=569044033]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8

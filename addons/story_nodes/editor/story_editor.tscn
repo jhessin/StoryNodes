@@ -33,43 +33,63 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Save"
 
-[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer" unique_id=448193593]
+[node name="TabContainer" type="TabContainer" parent="VBoxContainer" unique_id=1655635819]
 layout_mode = 2
 size_flags_vertical = 3
-metadata/_edit_use_anchors_ = true
+current_tab = 0
 
-[node name="StoryFileList" parent="VBoxContainer/HSplitContainer" unique_id=1708337001 instance=ExtResource("2_cgqcg")]
+[node name="Stories" type="HSplitContainer" parent="VBoxContainer/TabContainer" unique_id=448193593]
+layout_mode = 2
+size_flags_vertical = 3
+split_offsets = PackedInt32Array(200)
+split_offset = 200
+metadata/_edit_use_anchors_ = true
+metadata/_tab_index = 0
+
+[node name="StoryFileList" parent="VBoxContainer/TabContainer/Stories" unique_id=1708337001 instance=ExtResource("2_cgqcg")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="TabContainer" type="TabContainer" parent="VBoxContainer/HSplitContainer" unique_id=1655635819]
+[node name="StoryTabs" type="TabContainer" parent="VBoxContainer/TabContainer/Stories" unique_id=1907923035]
 layout_mode = 2
 current_tab = 0
 
-[node name="Graph" type="Control" parent="VBoxContainer/HSplitContainer/TabContainer" unique_id=767870247]
+[node name="Graph" type="Control" parent="VBoxContainer/TabContainer/Stories/StoryTabs" unique_id=1689539484]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="StoryGraphEditor" parent="VBoxContainer/HSplitContainer/TabContainer/Graph" unique_id=370073386 instance=ExtResource("1_fa3ns")]
+[node name="StoryGraphEditor" parent="VBoxContainer/TabContainer/Stories/StoryTabs/Graph" unique_id=370073386 instance=ExtResource("1_fa3ns")]
 unique_name_in_owner = true
 layout_mode = 1
+size_flags_horizontal = 3
 
-[node name="Characters" type="Control" parent="VBoxContainer/HSplitContainer/TabContainer" unique_id=1913462449]
+[node name="Cast" type="Control" parent="VBoxContainer/TabContainer/Stories/StoryTabs" unique_id=1415295514]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="StoryCharactersEditor" parent="VBoxContainer/HSplitContainer/TabContainer/Characters" unique_id=2026666764 instance=ExtResource("4_rv5jg")]
+[node name="Characters" type="Control" parent="VBoxContainer/TabContainer" unique_id=1913462449]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="StoryCharactersEditor" parent="VBoxContainer/TabContainer/Characters" unique_id=2026666764 instance=ExtResource("4_rv5jg")]
 unique_name_in_owner = true
 layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.023
+anchor_bottom = 0.0
+offset_right = -26.495972
+grow_vertical = 1
+metadata/_edit_use_anchors_ = true
 
-[node name="Variables" type="Control" parent="VBoxContainer/HSplitContainer/TabContainer" unique_id=1251236376]
+[node name="Variables" type="Control" parent="VBoxContainer/TabContainer" unique_id=1251236376]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="Custom Nodes" type="Control" parent="VBoxContainer/HSplitContainer/TabContainer" unique_id=230303278]
+[node name="Custom Nodes" type="Control" parent="VBoxContainer/TabContainer" unique_id=230303278]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 3

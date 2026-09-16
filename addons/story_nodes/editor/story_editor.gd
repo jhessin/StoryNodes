@@ -44,10 +44,30 @@ func set_story_data(data: StoryData) -> void:
 
 
 func save_story() -> Error:
-	if _story_data == null:
-		return ERR_UNCONFIGURED
+	var error: Error
+	if _character_library != null:
+		error = ResourceSaver.save(_character_library, CHARACTER_LIBRARY_PATH)
 
-	var error := ResourceSaver.save(_story_data)
+		print('Library save error: ', error)
+		print('Library save error string: ', error_string(error))
+
+		if error != OK:
+			return error
+
+	if _story_data == null:
+		return OK
+
+	print('Story path: ', _story_data.resource_path)
+	print('Character library: ', _character_library)
+	print(
+		'Character library path: ',
+		_character_library.resource_path if _character_library != null else 'NULL',
+	)
+
+	error = ResourceSaver.save(_story_data)
+
+	print('Story save error: ', error)
+	print('Story save error string: ', error_string(error))
 
 	if error != OK:
 		return error
@@ -55,11 +75,6 @@ func save_story() -> Error:
 	_story_data.is_dirty = false
 	file_list.mark_dirty(_story_data)
 	file_list.select_path(_story_data.resource_path)
-
-	error = save_character_library()
-
-	if error != OK:
-		return error
 
 	return OK
 

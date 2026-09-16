@@ -34,13 +34,17 @@ size_flags_vertical = 3
 
 [node name="ItemList" type="ItemList" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=337922419]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
+item_count = 2
+item_0/text = "Main Story"
+item_1/text = "Test Story"
 
 [node name="CreateButton" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1460475908]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "+New Story"
+text = "+ New Story"
 
 [node name="SaveDialog" type="FileDialog" parent="." unique_id=464756201]
 unique_name_in_owner = true

@@ -15,3 +15,7 @@ func _init(_id: StringName = &'', name: String = '', _description: String = '') 
 	id = _id
 	display_name = name
 	description = _description
+
+
+func execute(_execution: StoryExecution) -> void:
+	pass

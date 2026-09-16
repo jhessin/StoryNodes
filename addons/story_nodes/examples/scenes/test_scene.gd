@@ -29,4 +29,4 @@ func _ready() -> void:
 	print("Nodes: ", loaded.node_count)
 	print("Links: ", loaded.link_count)
 	print("First: ", loaded.get_node(&"first").display_name)
-	print("Connected: ", loaded.has_link(&"first", &"second"))
+	print("Connected: ", loaded.has_link(&"first", &"second", 0, 0))

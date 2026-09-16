@@ -38,7 +38,7 @@ func remove_variable(variable: StoryVariable) -> void:
 	emit_changed()
 
 
-func get_variable(variable_name: String) -> StoryVariable:
+func get_variable(variable_name: StringName) -> StoryVariable:
 	for variable: StoryVariable in _variables:
 		if variable.name == variable_name:
 			return variable
@@ -46,7 +46,7 @@ func get_variable(variable_name: String) -> StoryVariable:
 	return null
 
 
-func has_variable(variable_name: String) -> bool:
+func has_variable(variable_name: StringName) -> bool:
 	return get_variable(variable_name) != null
 
 

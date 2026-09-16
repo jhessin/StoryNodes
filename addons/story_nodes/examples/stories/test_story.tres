@@ -1,11 +1,12 @@
 [gd_resource type="Resource" script_class="StoryData" format=3 uid="uid://bpw176a5nk1l8"]
 
-[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/story_node.gd" id="1_2yo20"]
+[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/nodes/story_node.gd" id="1_2yo20"]
 [ext_resource type="Script" uid="uid://dntj8bw5jkfdr" path="res://addons/story_nodes/resources/story_link.gd" id="1_fej13"]
 [ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="1_tp17x"]
 [ext_resource type="Resource" uid="uid://6r6hu3luchev" path="res://addons/story_nodes/examples/stories/test_story_node.tres" id="2_mqq1i"]
 [ext_resource type="Resource" uid="uid://p2f6hub4j8tb" path="res://addons/story_nodes/examples/nodes/test_choice_node.tres" id="3_fej13"]
 [ext_resource type="Resource" uid="uid://hadvra24oi1x" path="res://libraries/character_library.tres" id="5_bnnpx"]
+[ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://libraries/variable_library.tres" id="7_jpo5m"]
 
 [sub_resource type="Resource" id="Resource_jpo5m"]
 script = ExtResource("1_fej13")
@@ -21,13 +22,14 @@ to = &"choice_node"
 script = ExtResource("1_2yo20")
 id = &"start"
 display_name = "Start"
-position = Vector2(-500, 520)
+position = Vector2(-180, 520)
 
 [resource]
 script = ExtResource("1_tp17x")
 title = "Main Story"
 description = "The main story of the game."
 character_library = ExtResource("5_bnnpx")
+variable_library = ExtResource("7_jpo5m")
 _cast = Array[int]([1, 2, 0])
 _nodes = Dictionary[StringName, ExtResource("1_2yo20")]({
 &"choice_node": ExtResource("3_fej13"),

@@ -5,13 +5,13 @@
 
 [sub_resource type="Resource" id="Resource_e0v8j"]
 script = ExtResource("1_e0v8j")
-name = "gold"
+name = &"gold"
 type = 1
 default_value = 0
 
 [sub_resource type="Resource" id="Resource_e7d0r"]
 script = ExtResource("1_e0v8j")
-name = "knows_enoch"
+name = &"knows_enoch"
 type = 0
 default_value = false
 

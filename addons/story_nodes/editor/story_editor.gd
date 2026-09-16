@@ -45,6 +45,9 @@ func set_story_data(data: StoryData) -> void:
 		if _story_data.character_library == null:
 			_story_data.character_library = _character_library
 
+		if _story_data.variable_library == null:
+			_story_data.variable_library = _variable_library
+
 		_story_data.ensure_start_node()
 		_story_data.changed.connect(_on_story_changed)
 

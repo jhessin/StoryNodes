@@ -9,13 +9,13 @@ enum Type {
 	STRING,
 }
 
-@export var name: String = ''
+@export var name: StringName = &''
 @export var type: Type = Type.STRING
 @export var default_value: Variant = ''
 
 
 func _init(
-	variable_name: String = '',
+	variable_name: StringName = &'',
 	variable_type: Type = Type.STRING,
 	variable_default_value: Variant = '',
 ) -> void:

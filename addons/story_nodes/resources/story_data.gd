@@ -7,6 +7,7 @@ const START_NODE_ID: StringName = &'start'
 @export var title: String = ''
 @export var description: String = ''
 @export var character_library: StoryCharacterLibrary
+@export var variable_library: StoryVariableLibrary
 
 var node_list: Array[StoryNode]:
 	get:
@@ -190,11 +191,11 @@ func clear_nodes() -> void:
 ## ===
 ## Link methods
 ## ===
-func add_link(from: StringName, to: StringName) -> StoryLink:
+func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int = 0) -> StoryLink:
 	if not has_node(from) or not has_node(to):
 		return null
 
-	var existing := get_link(from, to)
+	var existing := get_link(from, to, from_port, to_port)
 	if existing != null:
 		return existing
 
@@ -206,9 +207,12 @@ func add_link(from: StringName, to: StringName) -> StoryLink:
 	return link
 
 
-func get_link(from: StringName, to: StringName) -> StoryLink:
+func get_link(from: StringName, to: StringName, from_port: int, to_port: int) -> StoryLink:
 	for link: StoryLink in _links:
-		if link.from == from and link.to == to:
+		if (
+			link.from == from and link.to == to
+			and link.from_port == from_port and link.to_port == to_port
+		):
 			return link
 
 	return null
@@ -218,8 +222,8 @@ func get_links() -> Array[StoryLink]:
 	return link_list
 
 
-func has_link(from: StringName, to: StringName) -> bool:
-	return get_link(from, to) != null
+func has_link(from: StringName, to: StringName, from_port: int, to_port: int) -> bool:
+	return get_link(from, to, from_port, to_port) != null
 
 
 func has_links() -> bool:
@@ -375,4 +379,8 @@ func _ensure_start() -> void:
 	if _nodes.has(START_NODE_ID):
 		return
 
-	_nodes[START_NODE_ID] = StoryNode.new(START_NODE_ID, 'Start')
+	_nodes[START_NODE_ID] = StoryNode.new(
+		START_NODE_ID,
+		'start',
+		'The starting point of every story.',
+	)

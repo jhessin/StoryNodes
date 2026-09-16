@@ -101,7 +101,7 @@ func _on_new_variable_pressed() -> void:
 	_on_variable_selected(index)
 
 
-func _get_unique_variable_name() -> String:
+func _get_unique_variable_name() -> StringName:
 	var base_name := 'new_variable'
 	var name := base_name
 	var index := 1
@@ -110,7 +110,7 @@ func _get_unique_variable_name() -> String:
 		name = '%s_%d' % [base_name, index]
 		index += 1
 
-	return name
+	return name as StringName
 
 
 func _rebuild_default_value_editor() -> void:
@@ -216,7 +216,7 @@ func _on_string_default_changed(value: String) -> void:
 	_variable_library.emit_changed()
 
 
-func _on_name_changed(new_name: String) -> void:
+func _on_name_changed(new_name: StringName) -> void:
 	if selected_variable == null:
 		return
 

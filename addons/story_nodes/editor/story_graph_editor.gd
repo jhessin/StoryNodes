@@ -2,7 +2,8 @@
 class_name StoryGraphEditor
 extends Control
 
-const STORY_GRAPH_NODE := preload('res://addons/story_nodes/editor/story_graph_node.tscn')
+const STORY_GRAPH_NODE := preload('res://addons/story_nodes/nodes/story_graph_node.tscn')
+const START_NODE := preload('res://addons/story_nodes/nodes/start_graph_node.tscn')
 
 var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
 var _story_data: StoryData
@@ -53,7 +54,12 @@ func _refresh() -> void:
 		return
 
 	for node: StoryNode in _story_data.node_list:
-		var graph_node := STORY_GRAPH_NODE.instantiate() as StoryGraphNode
+		var graph_node: StoryGraphNode
+
+		if node.id == _story_data.START_NODE_ID:
+			graph_node = START_NODE.instantiate() as StoryGraphNode
+		else:
+			graph_node = STORY_GRAPH_NODE.instantiate() as StoryGraphNode
 
 		graph_edit.add_child(graph_node)
 
@@ -77,7 +83,7 @@ func _refresh_links() -> void:
 		if from_node == null or to_node == null:
 			continue
 
-		graph_edit.connect_node(from_node.name, 0, to_node.name, 0)
+		graph_edit.connect_node(from_node.name, link.from_port, to_node.name, link.to_port)
 
 
 func _get_graph_node(id: StringName) -> StoryGraphNode:
@@ -98,7 +104,7 @@ func _on_connection_request(
 	if _story_data == null:
 		return
 
-	var link := _story_data.add_link(from_node, to_node)
+	var link := _story_data.add_link(from_node, to_node, from_port, to_port)
 
 	if link == null:
 		return
@@ -115,7 +121,7 @@ func _on_disconnection_request(
 	if _story_data == null:
 		return
 
-	var link := _story_data.get_link(from_node, to_node)
+	var link := _story_data.get_link(from_node, to_node, from_port, to_port)
 
 	if link == null:
 		return

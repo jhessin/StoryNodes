@@ -33,3 +33,7 @@ enabled=PackedStringArray("res://addons/story_nodes/plugin.cfg")
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+
+[story_nodes]
+
+character_library_path="res://libraries/character_library.tres"

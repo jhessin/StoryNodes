@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="1_tp17x"]
 [ext_resource type="Resource" uid="uid://6r6hu3luchev" path="res://addons/story_nodes/examples/stories/test_story_node.tres" id="2_mqq1i"]
 [ext_resource type="Resource" uid="uid://p2f6hub4j8tb" path="res://addons/story_nodes/examples/nodes/test_choice_node.tres" id="3_fej13"]
-[ext_resource type="Resource" uid="uid://hadvra24oi1x" path="res://character_library.tres" id="5_bnnpx"]
+[ext_resource type="Resource" uid="uid://hadvra24oi1x" path="res://libraries/character_library.tres" id="5_bnnpx"]
 
 [sub_resource type="Resource" id="Resource_jpo5m"]
 script = ExtResource("1_fej13")

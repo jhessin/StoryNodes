@@ -2,7 +2,9 @@
 class_name StoryEditor
 extends Control
 
-const CHARACTER_LIBRARY_PATH: String = 'res://character_library.tres'
+var _character_library_path: String:
+	get:
+		return StorySettings.get_character_library_path()
 
 var _story_data: StoryData
 var _character_library: StoryCharacterLibrary
@@ -46,7 +48,7 @@ func set_story_data(data: StoryData) -> void:
 func save_story() -> Error:
 	var error: Error
 	if _character_library != null:
-		error = ResourceSaver.save(_character_library, CHARACTER_LIBRARY_PATH)
+		error = ResourceSaver.save(_character_library, _character_library_path)
 
 		print('Library save error: ', error)
 		print('Library save error string: ', error_string(error))
@@ -87,12 +89,12 @@ func save_character_library() -> Error:
 
 
 func _load_character_library() -> void:
-	if ResourceLoader.exists(CHARACTER_LIBRARY_PATH):
-		_character_library = ResourceLoader.load(CHARACTER_LIBRARY_PATH) as StoryCharacterLibrary
+	if ResourceLoader.exists(_character_library_path):
+		_character_library = ResourceLoader.load(_character_library_path) as StoryCharacterLibrary
 		return
 
 	_character_library = StoryCharacterLibrary.new()
-	_character_library.resource_path = CHARACTER_LIBRARY_PATH
+	_character_library.resource_path = _character_library_path
 
 	var error := ResourceSaver.save(_character_library)
 

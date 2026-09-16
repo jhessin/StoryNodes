@@ -5,6 +5,8 @@ var story_editor: StoryEditor
 
 
 func _enter_tree() -> void:
+	StorySettings.register_project_settings()
+
 	story_editor = preload('res://addons/story_nodes/editor/story_editor.tscn').instantiate()
 
 	EditorInterface.get_editor_main_screen().add_child(story_editor)

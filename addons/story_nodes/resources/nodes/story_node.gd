@@ -17,5 +17,9 @@ func _init(_id: StringName = &'', name: String = '', _description: String = '') 
 	description = _description
 
 
+func get_node_type() -> StringName:
+	return &'none'
+
+
 func execute(_execution: StoryExecution) -> void:
 	pass

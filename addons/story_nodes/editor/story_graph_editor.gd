@@ -19,11 +19,11 @@ func _ready() -> void:
 	graph_edit.connection_request.connect(_on_connection_request)
 	graph_edit.disconnection_request.connect(_on_disconnection_request)
 	graph_edit.end_node_move.connect(_on_node_move)
+	graph_edit.gui_input.connect(_on_graph_edit_gui_input)
 
 	add_node_menu.id_pressed.connect(_on_add_node_menu_id_pressed)
 
 	_populate_add_node_menu()
-	add_node_menu.popup()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -36,8 +36,23 @@ func set_story_data(data: StoryData) -> void:
 	_refresh()
 
 
+func _on_graph_edit_gui_input(event: InputEvent) -> void:
+	if event is not InputEventMouseButton:
+		return
+
+	if not event.pressed:
+		return
+
+	if event.button_index != MOUSE_BUTTON_RIGHT:
+		return
+
+	add_node_menu.position = Vector2(event.global_position)
+	add_node_menu.popup()
+
+
 func _on_node_move() -> void:
 	if _story_data == null:
+		push_error('No Selected Story')
 		return
 
 	for id: StringName in graph_nodes:
@@ -58,6 +73,7 @@ func _refresh() -> void:
 			child.queue_free()
 
 	if _story_data == null:
+		push_error('No Selected Story')
 		return
 
 	for node: StoryNode in _story_data.node_list:
@@ -81,6 +97,7 @@ func _refresh() -> void:
 
 func _refresh_links() -> void:
 	if _story_data == null:
+		push_error('No Selected Story')
 		return
 
 	for link: StoryLink in _story_data.link_list:
@@ -109,11 +126,13 @@ func _on_connection_request(
 	to_port: int,
 ) -> void:
 	if _story_data == null:
+		push_error('No Selected Story')
 		return
 
 	var link := _story_data.add_link(from_node, to_node, from_port, to_port)
 
 	if link == null:
+		push_error('Could not create link')
 		return
 
 	graph_edit.connect_node(from_node, from_port, to_node, to_port)
@@ -126,11 +145,13 @@ func _on_disconnection_request(
 	to_port: int,
 ) -> void:
 	if _story_data == null:
+		push_error('No Selected Story')
 		return
 
 	var link := _story_data.get_link(from_node, to_node, from_port, to_port)
 
 	if link == null:
+		push_error('Link does not exist.')
 		return
 
 	_story_data.remove_link(link)
@@ -155,11 +176,16 @@ func _populate_add_node_menu() -> void:
 func _on_add_node_menu_id_pressed(id: int) -> void:
 	var definition: StoryNodeDefinition = add_node_menu.get_item_metadata(id)
 
+	if definition is not StoryNodeDefinition:
+		push_error('Invalid definition from add node menu.')
+		return
+
 	_add_node_from_definition(definition)
 
 
 func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 	if _story_data == null:
+		push_error('No Selected Story')
 		return
 
 	var story_node: StoryNode = definition.story_node_script.new()
@@ -168,7 +194,8 @@ func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 		push_error('Unable to create story node.')
 		return
 
-	# TODO: Add the node to _story_data
+	# Add the node to _story_data
 	_story_data.add_node(story_node)
 
+	# refresh the representation
 	_refresh()

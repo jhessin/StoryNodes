@@ -89,10 +89,13 @@ func remove_character(character: StoryCharacter) -> void:
 ## Node methods
 ## ===
 func add_node(node: StoryNode) -> void:
-	if node == null or node.id.is_empty() or has_node(node.id) or node.id == START_NODE_ID:
+	if (
+		node == null or node.instance_id.is_empty()
+		or has_node(node.instance_id) or node.instance_id == START_NODE_ID
+	):
 		return
 
-	_nodes[node.id] = node
+	_nodes[node.instance_id] = node
 
 	mark_changed()
 
@@ -134,7 +137,7 @@ func get_end_nodes() -> Array[StoryNode]:
 	var results: Array[StoryNode] = []
 
 	for node: StoryNode in node_list:
-		if not has_next_nodes(node.id):
+		if not has_next_nodes(node.instance_id):
 			results.append(node)
 
 	return results
@@ -303,10 +306,10 @@ func is_valid() -> bool:
 		if node == null:
 			return false
 
-		if node.id.is_empty():
+		if node.instance_id.is_empty():
 			return false
 
-		if get_node(node.id) != node:
+		if get_node(node.instance_id) != node:
 			return false
 
 	for link: StoryLink in link_list:

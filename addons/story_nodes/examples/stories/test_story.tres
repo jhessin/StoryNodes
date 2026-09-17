@@ -20,9 +20,8 @@ to = &"choice_node"
 
 [sub_resource type="Resource" id="Resource_bnnpx"]
 script = ExtResource("1_2yo20")
-id = &"start"
 display_name = "Start"
-position = Vector2(-180, 520)
+position = Vector2(-640, 540)
 
 [resource]
 script = ExtResource("1_tp17x")

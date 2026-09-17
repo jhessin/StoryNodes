@@ -13,7 +13,7 @@ func set_story_node(node: StoryNode) -> void:
 		push_error('Story node should be set when using a StoryGraphNode')
 		return
 
-	name = String(story_node.id)
+	name = String(story_node.instance_id)
 	title = story_node.display_name
 	position_offset = story_node.position
 

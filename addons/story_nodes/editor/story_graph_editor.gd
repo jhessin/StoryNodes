@@ -2,9 +2,6 @@
 class_name StoryGraphEditor
 extends Control
 
-const STORY_GRAPH_NODE := preload('res://addons/story_nodes/nodes/story_graph_node.tscn')
-const START_NODE := preload('res://addons/story_nodes/nodes/start_graph_node.tscn')
-
 var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
 var _standard_node_library: StandardNodeLibrary = StandardNodeLibrary.new()
 var _story_data: StoryData
@@ -77,18 +74,23 @@ func _refresh() -> void:
 		return
 
 	for node: StoryNode in _story_data.node_list:
-		var graph_node: StoryGraphNode
+		var definition: StoryNodeDefinition = _standard_node_library.get_node(node.definition_id)
 
-		if node.id == _story_data.START_NODE_ID:
-			graph_node = START_NODE.instantiate() as StoryGraphNode
-		else:
-			graph_node = STORY_GRAPH_NODE.instantiate() as StoryGraphNode
+		if definition == null:
+			push_error('No node definition found for "%s"' % node.definition_id)
+			continue
+
+		var graph_node: StoryGraphNode = definition.graph_scene.instantiate() as StoryGraphNode
+
+		if graph_node == null:
+			push_error('Graph scene for "%s" is not a StoryGraphNode.' % definition.display_name)
+			continue
 
 		graph_edit.add_child(graph_node)
 
 		graph_node.set_story_node(node)
 
-		graph_nodes[node.id] = graph_node
+		graph_nodes[node.instance_id] = graph_node
 
 	await get_tree().process_frame
 
@@ -113,7 +115,7 @@ func _refresh_links() -> void:
 func _get_graph_node(id: StringName) -> StoryGraphNode:
 	for child: Node in graph_edit.get_children():
 		if child is StoryGraphNode:
-			if child.story_node != null and child.story_node.id == id:
+			if child.story_node != null and child.story_node.instance_id == id:
 				return child
 
 	return null
@@ -174,7 +176,7 @@ func _populate_add_node_menu() -> void:
 
 
 func _on_add_node_menu_id_pressed(id: int) -> void:
-	var definition: StoryNodeDefinition = add_node_menu.get_item_metadata(id)
+	var definition: Variant = add_node_menu.get_item_metadata(id)
 
 	if definition is not StoryNodeDefinition:
 		push_error('Invalid definition from add node menu.')
@@ -189,6 +191,7 @@ func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 		return
 
 	var story_node: StoryNode = definition.story_node_script.new()
+	story_node.definition_id = definition.id
 
 	if story_node == null:
 		push_error('Unable to create story node.')
@@ -199,3 +202,7 @@ func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 
 	# refresh the representation
 	_refresh()
+
+
+func _get_node_definition(node: StoryNode) -> StoryNodeDefinition:
+	return _standard_node_library.get_node(node.definition_id)

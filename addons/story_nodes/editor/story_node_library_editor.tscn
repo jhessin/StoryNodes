@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b1b11yl1xf7oo"]
+
+[ext_resource type="Script" uid="uid://b8oplroxs65bh" path="res://addons/story_nodes/editor/story_node_library_editor.gd" id="1_ld05v"]
+
+[node name="StoryNodeLibraryEditor" type="VBoxContainer" unique_id=2134694784]
+propagate_maximum_size = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_ld05v")
+metadata/_custom_type_script = "uid://b8oplroxs65bh"
+metadata/_edit_use_anchors_ = true

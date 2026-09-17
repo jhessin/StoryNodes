@@ -13,6 +13,7 @@ var _variable_library_path: String:
 var _story_data: StoryData
 var _character_library: StoryCharacterLibrary
 var _variable_library: StoryVariableLibrary
+var _standard_node_library: StandardNodeLibrary
 
 @onready var save_button: Button = %SaveButton
 @onready var file_list: StoryFileList = %StoryFileList
@@ -20,9 +21,12 @@ var _variable_library: StoryVariableLibrary
 @onready var characters_editor: StoryCharactersEditor = %StoryCharactersEditor
 @onready var cast_editor: StoryCastEditor = %StoryCastEditor
 @onready var variables_editor: StoryVariablesEditor = %StoryVariablesEditor
+@onready var node_library_editor: StoryNodeLibraryEditor = %StoryNodeLibraryEditor
 
 
 func _ready() -> void:
+	_standard_node_library = StandardNodeLibrary.new()
+
 	_load_character_library()
 	_load_variable_library()
 
@@ -32,6 +36,8 @@ func _ready() -> void:
 	characters_editor.set_character_library(_character_library)
 	cast_editor.set_story_data(null)
 	variables_editor.set_variable_library(_variable_library)
+
+	node_library_editor.set_library(_standard_node_library)
 
 
 func set_story_data(data: StoryData) -> void:

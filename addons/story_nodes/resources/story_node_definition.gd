@@ -10,4 +10,6 @@ extends Resource
 
 @export var category: String = ''
 
+@export var instantiable: bool = true
+
 @export_multiline var description: String = ''

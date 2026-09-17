@@ -10,6 +10,17 @@ func _init() -> void:
 func _register_standard_nodes() -> void:
 	add_node(
 		_create_definition(
+			&'start',
+			'Start',
+			'The starting point of every story.',
+			'Flow',
+			preload('res://addons/story_nodes/nodes/start_graph_node.tscn'),
+			preload('res://addons/story_nodes/resources/nodes/story_node.gd'),
+			false,
+		)
+	)
+	add_node(
+		_create_definition(
 			&'dialogue',
 			'Dialogue',
 			'Displays dialogue from a character.',
@@ -27,6 +38,7 @@ func _create_definition(
 	category: String,
 	graph_scene: PackedScene,
 	story_node_script: Script,
+	instantiable: bool = true,
 ) -> StoryNodeDefinition:
 	var definition := StoryNodeDefinition.new()
 
@@ -36,5 +48,6 @@ func _create_definition(
 	definition.category = category
 	definition.graph_scene = graph_scene
 	definition.story_node_script = story_node_script
+	definition.instantiable = instantiable
 
 	return definition

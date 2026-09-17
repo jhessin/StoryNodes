@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://mmo7hvehf4yh"]
 
-[ext_resource type="Script" uid="uid://dbllgwvc5sfn5" path="res://addons/story_nodes/nodes/story_graph_node.gd" id="1_pxkmu"]
+[ext_resource type="Script" uid="uid://cllqdhp7mffgw" path="res://addons/story_nodes/nodes/dialogue_graph_node.gd" id="1_wh42l"]
 [ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="2_wh42l"]
 
 [sub_resource type="Resource" id="Resource_bu0c2"]
@@ -9,7 +9,7 @@ id = &"dialogue"
 display_name = "Dialogue Node"
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
-[node name="DialogueGraphNode" type="GraphNode" unique_id=525450789]
+[node name="DialogueGraphNode" type="GraphNode" unique_id=1626178154]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -25,9 +25,8 @@ slot/0/right_type = 0
 slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
-script = ExtResource("1_pxkmu")
+script = ExtResource("1_wh42l")
 story_node = SubResource("Resource_bu0c2")
-metadata/_custom_type_script = "uid://dbllgwvc5sfn5"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1793617298]
 layout_mode = 2
@@ -39,11 +38,11 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1347781418]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=1990709070]
+[node name="CharacterLabel" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=1990709070]
 layout_mode = 2
 text = "Character"
 
-[node name="CharacterList" type="OptionButton" parent="VBoxContainer/HBoxContainer" unique_id=2036080727]
+[node name="CharacterPicker" type="OptionButton" parent="VBoxContainer/HBoxContainer" unique_id=2036080727]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -51,8 +50,9 @@ item_count = 1
 popup/item_0/text = "Bob"
 popup/item_0/id = 0
 
-[node name="Label" type="Label" parent="VBoxContainer" unique_id=1775548060]
+[node name="DialogueLabel" type="Label" parent="VBoxContainer" unique_id=1775548060]
 layout_mode = 2
+text = "Dialogue:"
 
 [node name="Dialogue" type="TextEdit" parent="VBoxContainer" unique_id=1427343329]
 unique_name_in_owner = true

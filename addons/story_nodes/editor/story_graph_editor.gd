@@ -191,7 +191,6 @@ func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 		return
 
 	var story_node: StoryNode = definition.create_node(_new_instance_id())
-	story_node.definition_id = definition.id
 
 	if story_node == null:
 		push_error('Unable to create story node.')

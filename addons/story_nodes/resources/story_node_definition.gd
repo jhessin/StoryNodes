@@ -28,6 +28,7 @@ func create_node(instance_id: StringName) -> StoryNode:
 	if not node is StoryNode:
 		return null
 
+	node.instance_id = instance_id
 	node.definition_id = id
 	return node as StoryNode
 

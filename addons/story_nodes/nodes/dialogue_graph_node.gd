@@ -2,6 +2,10 @@
 class_name DialogueGraphNode
 extends StoryGraphNode
 
+var dialogue_node: DialogueNode:
+	get:
+		return story_node as DialogueNode
+
 @onready var character_picker: OptionButton = %CharacterPicker
 
 
@@ -15,10 +19,15 @@ func set_story_data(data: StoryData) -> void:
 
 
 func set_story_node(node: StoryNode) -> void:
+	if not node is DialogueNode:
+		push_error('DialogueGraphNode requires a DialogueNode.')
+		return
+
 	super.set_story_node(node)
 
-	if node is DialogueNode:
-		_refresh_character_picker()
+	title = 'Dialogue'
+
+	_refresh_character_picker()
 
 
 func _on_character_selected(index: int) -> void:

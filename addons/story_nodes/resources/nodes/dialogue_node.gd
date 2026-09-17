@@ -1,6 +1,6 @@
 @tool
 class_name DialogueNode
-extends StandardStoryNode
+extends StoryNode
 
 @export var character: StoryCharacter
 

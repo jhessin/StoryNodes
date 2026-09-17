@@ -1,6 +1,6 @@
 @tool
 class_name ModifyVariableNode
-extends StandardStoryNode
+extends StoryNode
 
 enum Operation {
 	ADD,

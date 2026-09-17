@@ -1,5 +1,5 @@
 @tool
 class_name BranchNode
-extends StandardStoryNode
+extends StoryNode
 
 @export var choices: Array[String] = []

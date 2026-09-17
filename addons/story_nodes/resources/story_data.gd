@@ -2,7 +2,7 @@
 class_name StoryData
 extends Resource
 
-const START_NODE_ID: StringName = &'start'
+const START_NODE_ID: StringName = &'__start__'
 
 @export var title: String = ''
 @export var description: String = ''
@@ -382,8 +382,9 @@ func _ensure_start() -> void:
 	if _nodes.has(START_NODE_ID):
 		return
 
-	_nodes[START_NODE_ID] = StoryNode.new(
-		START_NODE_ID,
-		'start',
-		'The starting point of every story.',
-	)
+	var standard_library := StorySettings.get_standard_library()
+
+	var start_node_definition := standard_library.get_start_node()
+	var start_node := start_node_definition.create_node(START_NODE_ID)
+
+	_nodes[START_NODE_ID] = start_node

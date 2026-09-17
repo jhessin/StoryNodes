@@ -40,3 +40,7 @@ static func get_character_library_path() -> String:
 
 static func get_variable_library_path() -> String:
 	return ProjectSettings.get_setting(VARIABLE_LIBRARY_SETTING, DEFAULT_VARIABLE_LIBRARY_PATH)
+
+
+static func get_standard_library() -> StandardNodeLibrary:
+	return StandardNodeLibrary.new()

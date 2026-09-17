@@ -1,6 +1,6 @@
 @tool
 class_name SetVariableNode
-extends StandardStoryNode
+extends StoryNode
 
 @export var variable: StoryVariable
 @export var value: Variant

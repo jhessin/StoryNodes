@@ -190,7 +190,7 @@ func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 		push_error('No Selected Story')
 		return
 
-	var story_node: StoryNode = definition.story_node_script.new()
+	var story_node: StoryNode = definition.create_node(_new_instance_id())
 	story_node.definition_id = definition.id
 
 	if story_node == null:
@@ -206,3 +206,17 @@ func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 
 func _get_node_definition(node: StoryNode) -> StoryNodeDefinition:
 	return _standard_node_library.get_node(node.definition_id)
+
+
+func _new_instance_id() -> StringName:
+	var base_name := 'node'
+	var result: StringName
+
+	result = base_name
+	var index := 0
+
+	while _story_data.has_node(result):
+		result = base_name + str(index)
+		index += 1
+
+	return result as StringName

@@ -71,15 +71,15 @@ func save_story() -> Error:
 		error = ResourceSaver.save(_character_library)
 
 		if error != OK:
-			print('Character Library save error: ', error)
-			print('Character Library save error string: ', error_string(error))
+			push_error('Character Library save error: ', error)
+			push_error('Character Library save error string: ', error_string(error))
 			return error
 	if _variable_library != null:
 		error = ResourceSaver.save(_variable_library)
 
 		if error != OK:
-			print('Variable Library save error: ', error)
-			print('Variable Library save error string: ', error_string(error))
+			push_error('Variable Library save error: ', error)
+			push_error('Variable Library save error string: ', error_string(error))
 			return error
 
 	if _story_data == null:
@@ -88,8 +88,8 @@ func save_story() -> Error:
 	error = ResourceSaver.save(_story_data)
 
 	if error != OK:
-		print('Story save error: ', error)
-		print('Story save error string: ', error_string(error))
+		push_error('Story save error: ', error)
+		push_error('Story save error string: ', error_string(error))
 		return error
 
 	_story_data.is_dirty = false
@@ -149,8 +149,6 @@ func _on_save_pressed() -> void:
 
 	if error != OK:
 		push_error('Failed to save story: %s' % error)
-	else:
-		prints('file saved')
 
 
 func _on_story_changed() -> void:

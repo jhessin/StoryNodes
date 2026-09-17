@@ -1,3 +1,3 @@
 @tool
 class_name RestartStoryNode
-extends StandardStoryNode
+extends StoryNode

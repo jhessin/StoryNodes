@@ -13,6 +13,7 @@ size_flags_vertical = 3
 script = ExtResource("1_fjghg")
 
 [node name="GraphEdit" type="GraphEdit" parent="." unique_id=1768141069]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,3 +21,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 right_disconnects = true
+
+[node name="AddNodeMenu" type="PopupMenu" parent="." unique_id=339714119]
+unique_name_in_owner = true
+oversampling_override = 1.0
+size = Vector2i(108, 2)
+visible = true
+min_size = Vector2i(108, 2)
+item_count = 1
+item_0/text = "Dialogue"
+item_0/id = 0

@@ -39,10 +39,9 @@ text = "Save"
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer" unique_id=1655635819]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 3
+current_tab = 0
 
 [node name="Stories" type="HSplitContainer" parent="VBoxContainer/TabContainer" unique_id=448193593]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 split_offsets = PackedInt32Array(200)
@@ -57,10 +56,9 @@ layout_mode = 2
 
 [node name="StoryTabs" type="TabContainer" parent="VBoxContainer/TabContainer/Stories" unique_id=1907923035]
 layout_mode = 2
-current_tab = 1
+current_tab = 0
 
 [node name="Graph" type="Control" parent="VBoxContainer/TabContainer/Stories/StoryTabs" unique_id=1689539484]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -70,6 +68,7 @@ layout_mode = 1
 size_flags_horizontal = 3
 
 [node name="Cast" type="Control" parent="VBoxContainer/TabContainer/Stories/StoryTabs" unique_id=1415295514]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -97,6 +96,7 @@ unique_name_in_owner = true
 layout_mode = 1
 
 [node name="Custom Nodes" type="Control" parent="VBoxContainer/TabContainer" unique_id=230303278]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 

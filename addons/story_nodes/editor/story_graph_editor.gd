@@ -6,9 +6,11 @@ const STORY_GRAPH_NODE := preload('res://addons/story_nodes/nodes/story_graph_no
 const START_NODE := preload('res://addons/story_nodes/nodes/start_graph_node.tscn')
 
 var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
+var _standard_node_library: StandardNodeLibrary = StandardNodeLibrary.new()
 var _story_data: StoryData
 
-@onready var graph_edit: GraphEdit = $GraphEdit
+@onready var graph_edit: GraphEdit = %GraphEdit
+@onready var add_node_menu: PopupMenu = %AddNodeMenu
 
 
 # Called when the node enters the scene tree for the first time.
@@ -17,6 +19,11 @@ func _ready() -> void:
 	graph_edit.connection_request.connect(_on_connection_request)
 	graph_edit.disconnection_request.connect(_on_disconnection_request)
 	graph_edit.end_node_move.connect(_on_node_move)
+
+	add_node_menu.id_pressed.connect(_on_add_node_menu_id_pressed)
+
+	_populate_add_node_menu()
+	add_node_menu.popup()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -129,3 +136,39 @@ func _on_disconnection_request(
 	_story_data.remove_link(link)
 
 	graph_edit.disconnect_node(from_node, from_port, to_node, to_port)
+
+
+func _populate_add_node_menu() -> void:
+	add_node_menu.clear()
+
+	var menu_id: int = 0
+
+	for definition: StoryNodeDefinition in _standard_node_library.node_list:
+		if not definition.instantiable:
+			continue
+
+		add_node_menu.add_item(definition.display_name, menu_id)
+		add_node_menu.set_item_metadata(menu_id, definition)
+		menu_id += 1
+
+
+func _on_add_node_menu_id_pressed(id: int) -> void:
+	var definition: StoryNodeDefinition = add_node_menu.get_item_metadata(id)
+
+	_add_node_from_definition(definition)
+
+
+func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
+	if _story_data == null:
+		return
+
+	var story_node: StoryNode = definition.story_node_script.new()
+
+	if story_node == null:
+		push_error('Unable to create story node.')
+		return
+
+	# TODO: Add the node to _story_data
+	_story_data.add_node(story_node)
+
+	_refresh()

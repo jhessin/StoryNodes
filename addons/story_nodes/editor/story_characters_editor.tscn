@@ -49,28 +49,62 @@ icon_alignment = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NameLabel" type="Label" parent="CharacterEditor" unique_id=1045068075]
+[node name="VBoxContainer" type="VBoxContainer" parent="CharacterEditor" unique_id=1189618958]
+layout_mode = 2
+
+[node name="AutoFillId" type="CheckButton" parent="CharacterEditor/VBoxContainer" unique_id=1701175045]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Use name to generate id?"
+alignment = 2
+
+[node name="IdContainer" type="HBoxContainer" parent="CharacterEditor/VBoxContainer" unique_id=1045455890]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="IdLabel" type="Label" parent="CharacterEditor/VBoxContainer/IdContainer" unique_id=1079819137]
+layout_mode = 2
+text = "Id:"
+
+[node name="IdEdit" type="LineEdit" parent="CharacterEditor/VBoxContainer/IdContainer" unique_id=1165827781]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameContainer" type="HBoxContainer" parent="CharacterEditor" unique_id=1335728695]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="CharacterEditor/NameContainer" unique_id=1045068075]
 layout_mode = 2
 text = "Name"
 
-[node name="NameEdit" type="LineEdit" parent="CharacterEditor" unique_id=1545596490]
+[node name="NameEdit" type="LineEdit" parent="CharacterEditor/NameContainer" unique_id=1545596490]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="ImageLabel" type="Label" parent="CharacterEditor" unique_id=304096620]
+[node name="ImageContainer" type="HBoxContainer" parent="CharacterEditor" unique_id=1167329467]
+layout_mode = 2
+
+[node name="ImageLabel" type="Label" parent="CharacterEditor/ImageContainer" unique_id=304096620]
 layout_mode = 2
 text = "Image:"
 
-[node name="ImageEdit" type="EditorResourcePicker" parent="CharacterEditor" unique_id=809620737]
+[node name="ImageEdit" type="EditorResourcePicker" parent="CharacterEditor/ImageContainer" unique_id=809620737]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 base_type = "Texture2D"
 
-[node name="ColorLabel" type="Label" parent="CharacterEditor" unique_id=1286990982]
+[node name="ColorContainer" type="HBoxContainer" parent="CharacterEditor" unique_id=14496045]
+layout_mode = 2
+
+[node name="ColorLabel" type="Label" parent="CharacterEditor/ColorContainer" unique_id=1286990982]
 layout_mode = 2
 text = "Color"
 
-[node name="ColorEdit" type="ColorPickerButton" parent="CharacterEditor" unique_id=394184931]
+[node name="ColorEdit" type="ColorPickerButton" parent="CharacterEditor/ColorContainer" unique_id=394184931]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2

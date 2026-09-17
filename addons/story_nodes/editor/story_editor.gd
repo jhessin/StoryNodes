@@ -117,7 +117,7 @@ func _load_character_library() -> void:
 	var error := ResourceSaver.save(_character_library)
 
 	if error != OK:
-		push_error('Failed to create character library: %s' % error)
+		push_error('Failed to create character library: %s' % error_string(error))
 
 
 func _load_variable_library() -> void:
@@ -131,7 +131,7 @@ func _load_variable_library() -> void:
 	var error := ResourceSaver.save(_variable_library)
 
 	if error != OK:
-		push_error('Failed to create variable library: %s' % error)
+		push_error('Failed to create variable library: %s' % error_string(error))
 
 
 func _inspect_story() -> void:
@@ -148,7 +148,7 @@ func _on_save_pressed() -> void:
 	var error := save_story()
 
 	if error != OK:
-		push_error('Failed to save story: %s' % error)
+		push_error('Failed to save story: %s' % error_string(error))
 
 
 func _on_story_changed() -> void:

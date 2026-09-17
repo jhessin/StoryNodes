@@ -135,7 +135,7 @@ func _on_save_dialog_file_selected(path: String) -> void:
 	var error := ResourceSaver.save(story, path)
 
 	if error != OK:
-		push_error("Failed to save story: %s" % error)
+		push_error("Failed to save story: %s" % error_string(error))
 		return
 
 	selected_path = path

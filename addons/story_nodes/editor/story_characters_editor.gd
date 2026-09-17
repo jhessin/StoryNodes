@@ -7,17 +7,29 @@ const ITEM_HEIGHT: float = 32.0
 var selected_character: StoryCharacter
 var _character_library: StoryCharacterLibrary
 
+@onready var character_list: ItemList = %CharacterList
+
+# Toggles
+@onready var auto_id_toggle: CheckButton = %AutoFillId
+
+# Fields
+@onready var id_edit: LineEdit = %IdEdit
+@onready var name_edit: LineEdit = %NameEdit
 @onready var image_edit: EditorResourcePicker = %ImageEdit
 @onready var color_edit: ColorPickerButton = %ColorEdit
 
-@onready var character_list: ItemList = %CharacterList
+# Buttons
+@onready var delete_button: Button = %DeleteButton
+@onready var new_character_button: Button = %NewCharacterButton
 
 
 func _ready() -> void:
-	%NewCharacterButton.pressed.connect(_on_new_character_pressed)
+	new_character_button.pressed.connect(_on_new_character_pressed)
 	character_list.item_selected.connect(_on_character_selected)
-	%NameEdit.text_changed.connect(_on_name_changed)
-	%DeleteButton.pressed.connect(_on_delete_character_pressed)
+	name_edit.text_changed.connect(_on_name_changed)
+	auto_id_toggle.toggled.connect(_on_autoid_toggled)
+	id_edit.text_changed.connect(_on_id_changed)
+	delete_button.pressed.connect(_on_delete_character_pressed)
 
 	image_edit.base_type = 'Texture2D'
 	image_edit.resource_changed.connect(_on_image_changed)
@@ -57,15 +69,28 @@ func _on_delete_character_pressed() -> void:
 	if _character_library == null:
 		return
 
-	_character_library.remove_character(selected_character)
+	_character_library.remove_character(selected_character.id)
 
 	selected_character = null
 
-	%NameEdit.clear()
+	name_edit.clear()
 	color_edit.color = Color.WHITE
 	image_edit.edited_resource = null
 
 	_refresh()
+
+
+func _on_autoid_toggled(toggled_on: bool) -> void:
+	id_edit.editable = not toggled_on
+
+
+func _on_id_changed(new_id: String) -> void:
+	if new_id.is_empty() or selected_character == null:
+		return
+
+	id_edit.text = _character_library.update_id(selected_character.id, new_id)
+
+	_character_library.emit_changed()
 
 
 func _on_name_changed(new_name: String) -> void:
@@ -73,9 +98,10 @@ func _on_name_changed(new_name: String) -> void:
 		return
 
 	selected_character.name = new_name
+	if auto_id_toggle.button_pressed:
+		_on_id_changed(new_name)
 
 	var selected_items := character_list.get_selected_items()
-
 	if selected_items.is_empty():
 		return
 
@@ -88,7 +114,8 @@ func _on_character_selected(index: int) -> void:
 
 	selected_character = character
 
-	%NameEdit.text = character.name
+	name_edit.text = character.name
+	id_edit.text = character.id
 	image_edit.edited_resource = character.image
 	color_edit.color = character.color
 
@@ -97,7 +124,10 @@ func _on_new_character_pressed() -> void:
 	if _character_library == null:
 		return
 
-	var character := StoryCharacter.new('New Character')
+	# TODO: Use a library tool to generate a unique id for this character
+	var character := StoryCharacter.new()
+	character.id = &'bob'
+	character.name = 'Bob'
 
 	_character_library.add_character(character)
 

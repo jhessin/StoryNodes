@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="ChoiceNode" format=3 uid="uid://p2f6hub4j8tb"]
-
-[ext_resource type="Script" uid="uid://di1clrtje6o4r" path="res://addons/story_nodes/resources/nodes/choice_node.gd" id="1_p02j3"]
-
-[resource]
-script = ExtResource("1_p02j3")
-choices = Array[String](["Continue down the road", "Enter the village", "Return home"])
-id = &"choice_node"
-position = Vector2(620, 520)

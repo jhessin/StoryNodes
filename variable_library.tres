@@ -5,16 +5,8 @@
 
 [sub_resource type="Resource" id="Resource_e0v8j"]
 script = ExtResource("1_e0v8j")
-name = &"gold"
-type = 1
-default_value = 0
-
-[sub_resource type="Resource" id="Resource_e7d0r"]
-script = ExtResource("1_e0v8j")
-name = &"knows_enoch"
-type = 0
-default_value = false
+name = &"new_variable"
 
 [resource]
 script = ExtResource("2_e7d0r")
-_variables = Array[ExtResource("1_e0v8j")]([SubResource("Resource_e0v8j"), SubResource("Resource_e7d0r")])
+_variables = Array[ExtResource("1_e0v8j")]([SubResource("Resource_e0v8j")])

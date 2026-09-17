@@ -82,7 +82,7 @@ func remove_character(character: StoryCharacter) -> void:
 	if character == null or character_library == null:
 		return
 
-	character_library.remove_character(character)
+	character_library.remove_character(character.id)
 
 
 ## ===
@@ -343,7 +343,7 @@ func add_to_cast(character: StoryCharacter) -> void:
 	if character_library == null:
 		return
 
-	if not character_library.has_character(character):
+	if not character_library.has_character(character.id):
 		return
 
 	_cast.append(character_library.character_list.find(character))

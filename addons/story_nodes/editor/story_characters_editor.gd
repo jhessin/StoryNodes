@@ -28,7 +28,7 @@ func _ready() -> void:
 	character_list.item_selected.connect(_on_character_selected)
 	name_edit.text_changed.connect(_on_name_changed)
 	auto_id_toggle.toggled.connect(_on_autoid_toggled)
-	id_edit.text_changed.connect(_on_id_changed)
+	id_edit.text_submitted.connect(_on_id_changed)
 	delete_button.pressed.connect(_on_delete_character_pressed)
 
 	image_edit.base_type = 'Texture2D'
@@ -90,6 +90,7 @@ func _on_id_changed(new_id: String) -> void:
 
 	id_edit.text = _character_library.update_id(selected_character.id, new_id)
 
+	_refresh()
 	_character_library.emit_changed()
 
 
@@ -98,14 +99,15 @@ func _on_name_changed(new_name: String) -> void:
 		return
 
 	selected_character.name = new_name
-	if auto_id_toggle.button_pressed:
-		_on_id_changed(new_name)
 
 	var selected_items := character_list.get_selected_items()
 	if selected_items.is_empty():
 		return
 
-	character_list.set_item_text(selected_items[0], new_name)
+	if auto_id_toggle.button_pressed:
+		id_edit.text_submitted.emit(new_name)
+	else:
+		character_list.set_item_text(selected_items[0], new_name)
 	_character_library.emit_changed()
 
 
@@ -124,9 +126,8 @@ func _on_new_character_pressed() -> void:
 	if _character_library == null:
 		return
 
-	# TODO: Use a library tool to generate a unique id for this character
 	var character := StoryCharacter.new()
-	character.id = &'bob'
+	character.id = _character_library.get_unique_id('bob')
 	character.name = 'Bob'
 
 	_character_library.add_character(character)

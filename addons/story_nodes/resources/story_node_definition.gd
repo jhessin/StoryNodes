@@ -49,5 +49,6 @@ func is_valid() -> bool:
 
 
 func _get_node_script() -> GDScript:
-	# TODO: Resolve the node class_name into a script.
-	return null
+	var registry: StoryNodeRegistry = StoryNodeRegistry.get_instance()
+
+	return registry.get_node_script(story_node_class)

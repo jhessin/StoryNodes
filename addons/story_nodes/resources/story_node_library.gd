@@ -53,33 +53,3 @@ func get_node(id: StringName) -> StoryNodeDefinition:
 
 func clear() -> void:
 	_nodes.clear()
-
-
-func _create_definition(
-	id: StringName,
-	display_name: String,
-	description: String,
-	category: String,
-	graph_scene: PackedScene,
-	story_node_class: StringName,
-	instantiable: bool = true,
-) -> StoryNodeDefinition:
-	var definition := StoryNodeDefinition.new()
-
-	if id.is_empty():
-		push_error('Definition requires a an ID')
-		return null
-
-	if node_ids.has(id):
-		push_error('Definition ID "%s" is already defined' % id)
-		return null
-
-	definition.id = id
-	definition.display_name = display_name
-	definition.description = description
-	definition.category = category
-	definition.graph_scene = graph_scene
-	definition.story_node_class = story_node_class
-	definition.instantiable = instantiable
-
-	return definition

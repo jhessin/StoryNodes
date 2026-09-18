@@ -17,6 +17,8 @@ static func get_instance() -> StoryNodeRegistry:
 	return _instance
 
 
+# static func is_initialized() -> bool:
+# 	return _instance != null
 func rebuild() -> void:
 	_scripts.clear()
 

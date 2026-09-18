@@ -56,12 +56,14 @@ static func get_variable_library_path() -> String:
 	return ProjectSettings.get_setting(VARIABLE_LIBRARY_SETTING, DEFAULT_VARIABLE_LIBRARY_PATH)
 
 
+# The standard_node_library is located within the addon and should not be a user setting. It is placed here for convenience.
 static func get_standard_library() -> StoryNodeLibrary:
 	return preload('res://addons/story_nodes/resources/libraries/standard_node_library.tres')
 
 
-static func get_custom_node_library_path() -> String:
-	return ProjectSettings.get_setting(
+static func get_custom_node_library() -> StoryNodeLibrary:
+	var path := ProjectSettings.get_setting(
 		CUSTOM_NODE_LIBRARY_SETTING,
 		DEFAULT_CUSTOM_NODE_LIBRARY_PATH,
 	)
+	return load(path)

@@ -25,23 +25,6 @@ func _exit_tree() -> void:
 func _on_filesystem_changed() -> void:
 	story_node_registry.rebuild()
 
-	for node_class_name: StringName in story_node_registry.classes:
-		print("StoryNodes: Found '%s'." % node_class_name)
-
-	var test_script: Script = story_node_registry.get_node_script(&"DialogueNode")
-
-	if test_script == null:
-		push_error("StoryNodes: Failed to resolve DialogueNode.")
-	else:
-		print("StoryNodes: DialogueNode script = ", test_script.resource_path)
-
-	var test_node: StoryNode = story_node_registry.create_node(&"DialogueNode")
-
-	if test_node == null:
-		push_error("StoryNodes: Failed to create DialogueNode.")
-	else:
-		print("StoryNodes: Created ", test_node.get_script().get_global_name())
-
 
 func _has_main_screen() -> bool:
 	return true

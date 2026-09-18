@@ -7,6 +7,12 @@ static var _instance: StoryNodeRegistry
 var classes: Array[StringName]:
 	get:
 		return _scripts.keys()
+var paths: Dictionary[StringName, String]:
+	get:
+		var result: Dictionary[StringName, String] = { }
+		for id: StringName in _scripts:
+			result[id] = _scripts[id].resource_path
+		return result
 var _scripts: Dictionary[StringName, Script] = { }
 
 
@@ -27,8 +33,6 @@ func rebuild() -> void:
 
 	_scan_directory(root)
 
-	print("StoryNodeRegistry: Found %d StoryNode scripts." % _scripts.size())
-
 
 func get_node_script(cls: StringName) -> Script:
 	if not _scripts.has(cls):
@@ -36,6 +40,13 @@ func get_node_script(cls: StringName) -> Script:
 		return null
 
 	return _scripts[cls]
+
+
+func get_script_path(cls: StringName) -> String:
+	if not _scripts.has(cls):
+		push_error('StoryNodeRegistry: Unknown StoryNode class "%s".' % cls)
+		return ''
+	return _scripts[cls].resource_path
 
 
 func has_class(cls: StringName) -> bool:

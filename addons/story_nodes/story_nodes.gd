@@ -10,7 +10,9 @@ func _enter_tree() -> void:
 
 	story_editor = preload('res://addons/story_nodes/editor/story_editor.tscn').instantiate()
 	story_node_registry = StoryNodeRegistry.get_instance()
-	EditorInterface.get_resource_filesystem().filesystem_changed.connect(_on_filesystem_changed)
+	EditorInterface.get_resource_filesystem().filesystem_changed.connect(
+		story_node_registry.rebuild
+	)
 
 	EditorInterface.get_editor_main_screen().add_child(story_editor)
 
@@ -20,10 +22,6 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	if story_editor != null:
 		story_editor.queue_free()
-
-
-func _on_filesystem_changed() -> void:
-	story_node_registry.rebuild()
 
 
 func _has_main_screen() -> bool:

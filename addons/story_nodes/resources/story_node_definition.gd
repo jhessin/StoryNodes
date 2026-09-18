@@ -13,6 +13,8 @@ extends Resource
 
 @export var story_node_class: StringName = &''
 
+@export_storage var script_path: String = ''
+
 @export_multiline var description: String = ''
 
 

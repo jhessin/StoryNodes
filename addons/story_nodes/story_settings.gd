@@ -42,5 +42,5 @@ static func get_variable_library_path() -> String:
 	return ProjectSettings.get_setting(VARIABLE_LIBRARY_SETTING, DEFAULT_VARIABLE_LIBRARY_PATH)
 
 
-static func get_standard_library() -> StandardNodeLibrary:
-	return StandardNodeLibrary.new()
+static func get_standard_library() -> StoryNodeLibrary:
+	return preload('res://addons/story_nodes/resources/libraries/standard_node_library.tres')

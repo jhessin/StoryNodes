@@ -18,12 +18,16 @@ var _characters: Dictionary[StringName, StoryCharacter] = { }
 
 
 func add_character(character: StoryCharacter) -> void:
-	if character == null or character.id.is_empty():
-		push_error('Invalid character being added to the library')
+	if character == null:
+		push_error('Cannot add a null character.')
+		return
+
+	if character.id.is_empty():
+		push_error('Cannot add a character with an empty ID.')
 		return
 
 	if _characters.has(character.id):
-		push_error('Character: "%s" already exists.' % character.id)
+		push_error('Character "%s" already exists.' % character.id)
 		return
 
 	_characters[character.id] = character

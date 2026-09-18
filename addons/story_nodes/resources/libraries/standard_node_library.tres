@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="StoryNodeLibrary" format=3 uid="uid://c1oje4xbf4tv0"]
+
+[ext_resource type="Script" uid="uid://l5odp1oog305" path="res://addons/story_nodes/resources/story_node_definition.gd" id="1_urkge"]
+[ext_resource type="PackedScene" uid="uid://3tvxrjqi7yvv" path="res://addons/story_nodes/nodes/start_graph_node.tscn" id="2_evc37"]
+[ext_resource type="Script" uid="uid://1nv0k0n8sr8y" path="res://addons/story_nodes/resources/story_node_library.gd" id="2_wm86p"]
+[ext_resource type="PackedScene" uid="uid://mmo7hvehf4yh" path="res://addons/story_nodes/nodes/dialogue_graph_node.tscn" id="3_evc37"]
+
+[sub_resource type="Resource" id="Resource_i6bl2"]
+script = ExtResource("1_urkge")
+id = &"dialogue"
+display_name = "Dialogue"
+graph_scene = ExtResource("3_evc37")
+category = "Conversation"
+story_node_class = &"DialogueNode"
+description = "Displays dialogue from a character."
+metadata/_custom_type_script = "uid://l5odp1oog305"
+
+[sub_resource type="Resource" id="Resource_ib26s"]
+script = ExtResource("1_urkge")
+id = &"start"
+display_name = "Start"
+graph_scene = ExtResource("2_evc37")
+category = "Flow"
+instantiable = false
+story_node_class = &"StoryNode"
+description = "The starting point of every story."
+metadata/_custom_type_script = "uid://l5odp1oog305"
+
+[resource]
+script = ExtResource("2_wm86p")
+_nodes = Dictionary[StringName, ExtResource("1_urkge")]({
+&"dialogue": SubResource("Resource_i6bl2"),
+&"start": SubResource("Resource_ib26s")
+})
+metadata/_custom_type_script = "uid://1nv0k0n8sr8y"

@@ -13,7 +13,7 @@ var _variable_library_path: String:
 var _story_data: StoryData
 var _character_library: StoryCharacterLibrary
 var _variable_library: StoryVariableLibrary
-var _standard_node_library: StandardNodeLibrary
+var _standard_node_library: StoryNodeLibrary
 
 @onready var save_button: Button = %SaveButton
 @onready var file_list: StoryFileList = %StoryFileList
@@ -25,7 +25,7 @@ var _standard_node_library: StandardNodeLibrary
 
 
 func _ready() -> void:
-	_standard_node_library = StandardNodeLibrary.new()
+	_standard_node_library = StorySettings.get_standard_library()
 
 	_load_character_library()
 	_load_variable_library()

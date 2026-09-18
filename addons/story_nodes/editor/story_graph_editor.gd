@@ -3,7 +3,9 @@ class_name StoryGraphEditor
 extends Control
 
 var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
-var _standard_node_library: StandardNodeLibrary = StandardNodeLibrary.new()
+var _standard_node_library: StoryNodeLibrary = preload(
+	'res://addons/story_nodes/resources/libraries/standard_node_library.tres'
+)
 var _story_data: StoryData
 
 @onready var graph_edit: GraphEdit = %GraphEdit

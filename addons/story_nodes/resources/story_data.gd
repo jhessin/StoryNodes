@@ -37,17 +37,21 @@ var character_count: int:
 var cast: Array[StoryCharacter]:
 	get:
 		var result: Array[StoryCharacter] = []
-		for i: int in _cast:
-			result.append(character_library.character_list[i])
+		for id: StringName in _cast.keys():
+			result.append(character_library.get_character(id))
 		return result
+var cast_ids: Array[StringName]:
+	get:
+		return _cast.keys()
 
 var cast_count: int:
 	get:
 		return _cast.size()
 
 var is_dirty: bool = false
+
 @export_storage
-var _cast: Array[int] = []
+var _cast: Dictionary[StringName, StoryCharacter] = { }
 
 @export_storage
 var _nodes: Dictionary[StringName, StoryNode] = { }
@@ -202,7 +206,11 @@ func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int
 	if existing != null:
 		return existing
 
-	var link := StoryLink.new(from, to)
+	var link := StoryLink.new()
+	link.from = from
+	link.to = to
+	link.from_port = from_port
+	link.to_port = to_port
 
 	_links[link] = null
 	mark_changed()
@@ -298,8 +306,8 @@ func is_valid() -> bool:
 	if character_library == null:
 		return false
 
-	for i: int in _cast:
-		if i > _cast.size():
+	for id: StringName in _cast.keys():
+		if not character_library.has_character(id):
 			return false
 
 	for node: StoryNode in node_list:
@@ -334,37 +342,46 @@ func ensure_start_node() -> void:
 ## ===
 func add_to_cast(character: StoryCharacter) -> void:
 	if character == null:
-		return
-
-	var index: int = character_library.character_list.find(character)
-	if _cast.has(index):
+		push_error('Cannot add a null character to the cast.')
 		return
 
 	if character_library == null:
+		push_error('Cannot add character to cast: character library is null.')
 		return
 
 	if not character_library.has_character(character.id):
+		push_error(
+			'Cannot add character "%s" to cast: character is not in the library.' % character.id
+		)
 		return
 
-	_cast.append(character_library.character_list.find(character))
+	if _cast.has(character.id):
+		push_error('Character "%s" is already in the cast.' % character.id)
+		return
+
+	_cast[character.id] = character
 	mark_changed()
 
 
 func remove_from_cast(character: StoryCharacter) -> void:
 	if character == null:
+		push_error('Cannot remove a null character from the cast.')
 		return
 
-	var index: int = character_library.character_list.find(character)
-	if not _cast.has(index):
+	if not _cast.has(character.id):
+		push_error('Character "%s" is not in the cast.' % character.id)
 		return
 
-	_cast.erase(index)
+	_cast.erase(character.id)
 	mark_changed()
 
 
 func is_in_cast(character: StoryCharacter) -> bool:
-	var index: int = character_library.character_list.find(character)
-	return _cast.has(index)
+	if character == null:
+		return false
+	if not character_library.has_character(character.id):
+		return false
+	return _cast.has(character.id)
 
 
 func clear_cast() -> void:
@@ -384,7 +401,7 @@ func _ensure_start() -> void:
 
 	var standard_library := StorySettings.get_standard_library()
 
-	var start_node_definition := standard_library.get_start_node()
+	var start_node_definition := standard_library.get_node('start')
 	var start_node := start_node_definition.create_node(START_NODE_ID)
 
 	_nodes[START_NODE_ID] = start_node

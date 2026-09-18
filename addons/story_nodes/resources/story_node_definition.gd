@@ -11,7 +11,7 @@ extends Resource
 
 @export var instantiable: bool = true
 
-var story_node_class: Variant
+@export var story_node_class: StringName = &''
 
 @export_multiline var description: String = ''
 
@@ -23,7 +23,7 @@ func create_node(instance_id: StringName) -> StoryNode:
 	if story_node_class == null:
 		return null
 
-	var node: Variant = story_node_class.new()
+	var node: Variant = _get_node_script().new()
 
 	if not node is StoryNode:
 		return null
@@ -40,9 +40,14 @@ func is_valid() -> bool:
 	if story_node_class == null:
 		return false
 
-	if not story_node_class is GDScript:
+	if not _get_node_script() is GDScript:
 		return false
 
-	var node: Variant = story_node_class.new()
+	var node: Variant = _get_node_script().new()
 
 	return node is StoryNode
+
+
+func _get_node_script() -> GDScript:
+	# TODO: Resolve the node class_name into a script.
+	return null

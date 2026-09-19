@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="StoryData" format=3 uid="uid://bqq7b7av7xglr"]
+
+[ext_resource type="Script" uid="uid://c0hnlj3b8r0ny" path="res://addons/story_nodes/resources/story_character.gd" id="1_4mg0d"]
+[ext_resource type="Script" uid="uid://dntj8bw5jkfdr" path="res://addons/story_nodes/resources/story_link.gd" id="2_gbd8m"]
+[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/nodes/story_node.gd" id="3_y21bs"]
+[ext_resource type="PackedScene" uid="uid://3tvxrjqi7yvv" path="res://addons/story_nodes/nodes/start_graph_node.tscn" id="4_wjiom"]
+[ext_resource type="PackedScene" uid="uid://ckunlsn4wdx0" path="res://addons/story_nodes/nodes/start_runtime_node.tscn" id="5_05ey8"]
+[ext_resource type="PackedScene" uid="uid://mmo7hvehf4yh" path="res://addons/story_nodes/nodes/dialogue_graph_node.tscn" id="6_05ey8"]
+[ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="6_a7wtu"]
+[ext_resource type="Resource" uid="uid://hadvra24oi1x" path="res://character_library.tres" id="6_y21bs"]
+[ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="7_a7wtu"]
+[ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="8_wjiom"]
+
+[sub_resource type="Resource" id="Resource_8r5x3"]
+script = ExtResource("1_4mg0d")
+id = &"jesus"
+name = "Jesus of Nazareth"
+
+[sub_resource type="Resource" id="Resource_6i7d2"]
+script = ExtResource("1_4mg0d")
+id = &"mary_of_magdellene"
+name = "Mary of Magdellene"
+
+[sub_resource type="Resource" id="Resource_7hogc"]
+script = ExtResource("1_4mg0d")
+id = &"the_other_bo"
+name = "The Other Bob"
+
+[sub_resource type="Resource" id="Resource_05ey8"]
+script = ExtResource("2_gbd8m")
+from = &"__start__"
+to = &"node"
+
+[sub_resource type="Resource" id="Resource_lwo30"]
+script = ExtResource("3_y21bs")
+node_id = &"start_node"
+instance_id = &"__start__"
+graph_scene = ExtResource("4_wjiom")
+runtime_scene = ExtResource("5_05ey8")
+display_name = "Start"
+description = "The beginning of every story."
+metadata/_custom_type_script = "uid://dohcg0p31tu1d"
+
+[sub_resource type="Resource" id="Resource_kg8mt"]
+script = ExtResource("7_a7wtu")
+character = &"jesus"
+dialogue = "I am the way the truth and the life."
+node_id = &"dialogue"
+instance_id = &"node"
+graph_scene = ExtResource("6_05ey8")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(240, -120)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[resource]
+script = ExtResource("6_a7wtu")
+character_library = ExtResource("6_y21bs")
+variable_library = ExtResource("8_wjiom")
+_cast = Dictionary[StringName, ExtResource("1_4mg0d")]({
+&"jesus": SubResource("Resource_8r5x3"),
+&"mary_of_magdellene": SubResource("Resource_6i7d2"),
+&"the_other_bo": SubResource("Resource_7hogc")
+})
+_nodes = Dictionary[StringName, ExtResource("3_y21bs")]({
+&"__start__": SubResource("Resource_lwo30"),
+&"node": SubResource("Resource_kg8mt")
+})
+_links = Dictionary[ExtResource("2_gbd8m"), Object]({
+SubResource("Resource_05ey8"): null
+})

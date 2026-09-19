@@ -381,6 +381,8 @@ func remove_from_cast(character: StoryCharacter) -> void:
 func is_in_cast(character: StoryCharacter) -> bool:
 	if character == null:
 		return false
+	if character_library == null:
+		return false
 	if not character_library.has_character(character.id):
 		return false
 	return _cast.has(character.id)

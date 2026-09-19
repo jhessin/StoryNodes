@@ -3,11 +3,6 @@
 [ext_resource type="Script" uid="uid://c0hnlj3b8r0ny" path="res://addons/story_nodes/resources/story_character.gd" id="1_8r5x3"]
 [ext_resource type="Script" uid="uid://cr5rg4cyxqvt" path="res://addons/story_nodes/resources/story_character_library.gd" id="2_6i7d2"]
 
-[sub_resource type="Resource" id="Resource_sew7r"]
-script = ExtResource("1_8r5x3")
-id = &"bob_the_second"
-name = "Bob the first"
-
 [sub_resource type="Resource" id="Resource_8r5x3"]
 script = ExtResource("1_8r5x3")
 id = &"jesus"
@@ -18,22 +13,9 @@ script = ExtResource("1_8r5x3")
 id = &"mary_of_magdellene"
 name = "Mary of Magdellene"
 
-[sub_resource type="Resource" id="Resource_g1mjv"]
-script = ExtResource("1_8r5x3")
-id = &"the_final_bob"
-name = "The final bob"
-
-[sub_resource type="Resource" id="Resource_7hogc"]
-script = ExtResource("1_8r5x3")
-id = &"the_other_bo"
-name = "The Other Bob"
-
 [resource]
 script = ExtResource("2_6i7d2")
 _characters = Dictionary[StringName, ExtResource("1_8r5x3")]({
-&"bob_the_second": SubResource("Resource_sew7r"),
 &"jesus": SubResource("Resource_8r5x3"),
-&"mary_of_magdellene": SubResource("Resource_6i7d2"),
-&"the_final_bob": SubResource("Resource_g1mjv"),
-&"the_other_bo": SubResource("Resource_7hogc")
+&"mary_of_magdellene": SubResource("Resource_6i7d2")
 })

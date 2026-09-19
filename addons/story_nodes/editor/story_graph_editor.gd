@@ -76,20 +76,26 @@ func _refresh() -> void:
 		return
 
 	for node: StoryNode in _story_data.node_list:
-		var prototype: StoryNode = _standard_node_library.get_node(node.node_id)
+		var graph_scene: PackedScene = node.graph_scene
 
-		if prototype == null:
-			push_error('No node prototype found for "%s"' % node.node_id)
-			continue
+		if graph_scene == null:
+			var prototype: StoryNode = _standard_node_library.get_node(node.node_id)
 
-		var graph_node: StoryGraphNode = prototype.graph_scene.instantiate() as StoryGraphNode
+			if prototype == null:
+				push_error('No node prototype found for "%s"' % node.node_id)
+				continue
+
+			graph_scene = prototype.graph_scene
+
+		var graph_node: StoryGraphNode = graph_scene.instantiate() as StoryGraphNode
 
 		if graph_node == null:
-			push_error('Graph scene for "%s" is not a StoryGraphNode.' % prototype.display_name)
+			push_error('Graph scene for "%s" is not a StoryGraphNode.' % node.display_name)
 			continue
 
 		graph_edit.add_child(graph_node)
 
+		graph_node.set_story_data(_story_data)
 		graph_node.set_story_node(node)
 
 		graph_nodes[node.instance_id] = graph_node

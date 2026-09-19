@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="StoryNodes"
+run/main_scene="uid://c4a4qa4i2eyvo"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -32,3 +33,9 @@ enabled=PackedStringArray("res://addons/story_nodes/plugin.cfg")
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+
+[story_nodes]
+
+character_library_path="res://character_library.tres"
+variable_library_path="res://variable_library.tres"
+custom_node_library_path="res://node_library.tres"

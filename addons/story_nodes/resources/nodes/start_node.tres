@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StoryNode" format=3 uid="uid://d00s23g7alb05"]
+
+[ext_resource type="PackedScene" uid="uid://3tvxrjqi7yvv" path="res://addons/story_nodes/nodes/start_graph_node.tscn" id="1_pv5ob"]
+[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/nodes/story_node.gd" id="1_wo13x"]
+[ext_resource type="PackedScene" uid="uid://ckunlsn4wdx0" path="res://addons/story_nodes/nodes/start_runtime_node.tscn" id="2_pv5ob"]
+
+[resource]
+script = ExtResource("1_wo13x")
+node_id = &"start_node"
+graph_scene = ExtResource("1_pv5ob")
+runtime_scene = ExtResource("2_pv5ob")
+display_name = "Start"
+description = "The beginning of every story."
+metadata/_custom_type_script = "uid://dohcg0p31tu1d"

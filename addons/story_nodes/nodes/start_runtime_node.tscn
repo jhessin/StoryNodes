@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://ckunlsn4wdx0"]
+
+[ext_resource type="Script" uid="uid://c40i30p4sxxbi" path="res://addons/story_nodes/runtime/story_runtime_node.gd" id="1_qnrcx"]
+
+[node name="StartRuntimeNode" type="Node" unique_id=313820882]
+script = ExtResource("1_qnrcx")
+metadata/_custom_type_script = "uid://c40i30p4sxxbi"

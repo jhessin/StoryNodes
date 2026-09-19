@@ -1,16 +1,11 @@
 [gd_scene format=3 uid="uid://3tvxrjqi7yvv"]
 
 [ext_resource type="Script" uid="uid://dbllgwvc5sfn5" path="res://addons/story_nodes/nodes/story_graph_node.gd" id="1_w8lc2"]
-[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/nodes/story_node.gd" id="2_5xxn5"]
 
-[sub_resource type="Resource" id="Resource_1ugmb"]
-script = ExtResource("2_5xxn5")
-instance_id = &"__start__"
-display_name = "Start"
-description = "The basic starting point of the story."
-
-[node name="StartNode" type="GraphNode" unique_id=540090057]
+[node name="StartNode" type="GraphNode" unique_id=1057070916]
 self_modulate = Color(0, 1, 0, 1)
+offset_right = 122.0
+offset_bottom = 78.0
 draggable = false
 title = "Start"
 slot/0/left_enabled = false
@@ -23,7 +18,6 @@ slot/0/right_color = Color(0, 1, 0, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("1_w8lc2")
-story_node = SubResource("Resource_1ugmb")
 metadata/_custom_type_script = "uid://dbllgwvc5sfn5"
 
 [node name="Label" type="Label" parent="." unique_id=552663662]

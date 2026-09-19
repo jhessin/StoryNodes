@@ -76,7 +76,7 @@ func _refresh() -> void:
 		return
 
 	for node: StoryNode in _story_data.node_list:
-		var definition: StoryNodeDefinition = _standard_node_library.get_node(node.node_id)
+		var definition: StoryNode = _standard_node_library.get_node(node.node_id)
 
 		if definition == null:
 			push_error('No node definition found for "%s"' % node.node_id)
@@ -168,12 +168,12 @@ func _populate_add_node_menu() -> void:
 
 	var menu_id: int = 0
 
-	for definition: StoryNodeDefinition in _standard_node_library.node_list:
-		if not definition.instantiable:
+	for node: StoryNode in _standard_node_library.node_list:
+		if not node.instantiable:
 			continue
 
-		add_node_menu.add_item(definition.display_name, menu_id)
-		add_node_menu.set_item_metadata(menu_id, definition)
+		add_node_menu.add_item(node.display_name, menu_id)
+		add_node_menu.set_item_metadata(menu_id, node)
 		menu_id += 1
 
 
@@ -205,7 +205,7 @@ func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 	_refresh()
 
 
-func _get_node_definition(node: StoryNode) -> StoryNodeDefinition:
+func _get_node_definition(node: StoryNode) -> StoryNode:
 	return _standard_node_library.get_node(node.node_id)
 
 

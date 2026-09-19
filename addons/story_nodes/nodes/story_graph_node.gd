@@ -2,8 +2,8 @@
 class_name StoryGraphNode
 extends GraphNode
 
-@export var story_node: StoryNode
-@export var story_data: StoryData
+var story_node: StoryNode
+var story_data: StoryData
 
 
 func set_story_node(node: StoryNode) -> void:

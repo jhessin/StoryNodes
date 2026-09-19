@@ -399,9 +399,14 @@ func _ensure_start() -> void:
 	if _nodes.has(START_NODE_ID):
 		return
 
-	var standard_library := StorySettings.get_standard_library()
+	var start_node_resource: StoryNode = load(
+		"res://addons/story_nodes/resources/nodes/start_node.tres"
+	).duplicate(true) as StoryNode
 
-	var start_node_definition := standard_library.get_node('start')
-	var start_node := start_node_definition.create_node(START_NODE_ID)
+	if start_node_resource == null:
+		push_error('Unable to load the start node.')
+		return
 
-	_nodes[START_NODE_ID] = start_node
+	start_node_resource.instance_id = START_NODE_ID
+
+	_nodes[START_NODE_ID] = start_node_resource

@@ -1,11 +1,6 @@
 [gd_scene format=3 uid="uid://cfevl011und8o"]
 
 [ext_resource type="Script" uid="uid://dbllgwvc5sfn5" path="res://addons/story_nodes/nodes/story_graph_node.gd" id="1_yk263"]
-[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/nodes/story_node.gd" id="2_ay5of"]
-
-[sub_resource type="Resource" id="Resource_u8d57"]
-script = ExtResource("2_ay5of")
-metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
 [node name="StoryGraphNode" type="GraphNode" unique_id=781947193]
 offset_right = 489.0
@@ -20,7 +15,6 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("1_yk263")
-story_node = SubResource("Resource_u8d57")
 metadata/_custom_type_script = "uid://dbllgwvc5sfn5"
 
 [node name="Label" type="Label" parent="." unique_id=1983239263]

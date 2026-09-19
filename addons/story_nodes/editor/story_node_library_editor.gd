@@ -20,7 +20,7 @@ func _refresh() -> void:
 	var categories: Dictionary[String, VBoxContainer] = { }
 
 	for node: StoryNode in library.node_list:
-		var category: String = ''
+		var category: String = 'Default'
 
 		if not categories.has(category):
 			var category_container := VBoxContainer.new()
@@ -34,18 +34,15 @@ func _refresh() -> void:
 
 			categories[category] = category_container
 
-		var button := _create_definition_button(node)
+		var button := _create_node_button(node)
 		categories[category].add_child(button)
 
 
-func _create_definition_button(node: StoryNode) -> Button:
+func _create_node_button(node: StoryNode) -> Button:
 	var button := Button.new()
 
 	button.text = node.display_name
 	button.tooltip_text = node.description
-	# button.disabled = not node.instantiable
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 
-	# if not node.instantiable:
-	# 	button.tooltip_text += '\n\nThis node is created automatically.'
 	return button

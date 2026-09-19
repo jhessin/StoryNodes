@@ -76,16 +76,16 @@ func _refresh() -> void:
 		return
 
 	for node: StoryNode in _story_data.node_list:
-		var definition: StoryNode = _standard_node_library.get_node(node.node_id)
+		var prototype: StoryNode = _standard_node_library.get_node(node.node_id)
 
-		if definition == null:
-			push_error('No node definition found for "%s"' % node.node_id)
+		if prototype == null:
+			push_error('No node prototype found for "%s"' % node.node_id)
 			continue
 
-		var graph_node: StoryGraphNode = definition.graph_scene.instantiate() as StoryGraphNode
+		var graph_node: StoryGraphNode = prototype.graph_scene.instantiate() as StoryGraphNode
 
 		if graph_node == null:
-			push_error('Graph scene for "%s" is not a StoryGraphNode.' % definition.display_name)
+			push_error('Graph scene for "%s" is not a StoryGraphNode.' % prototype.display_name)
 			continue
 
 		graph_edit.add_child(graph_node)
@@ -169,44 +169,32 @@ func _populate_add_node_menu() -> void:
 	var menu_id: int = 0
 
 	for node: StoryNode in _standard_node_library.node_list:
-		if not node.instantiable:
-			continue
-
 		add_node_menu.add_item(node.display_name, menu_id)
 		add_node_menu.set_item_metadata(menu_id, node)
 		menu_id += 1
 
 
 func _on_add_node_menu_id_pressed(id: int) -> void:
-	var definition: Variant = add_node_menu.get_item_metadata(id)
+	var node: Variant = add_node_menu.get_item_metadata(id)
 
-	if definition is not StoryNodeDefinition:
-		push_error('Invalid definition from add node menu.')
+	if node is not StoryNode:
+		push_error('Invalid node from add node menu.')
 		return
 
-	_add_node_from_definition(definition)
+	_add_node_from_node(node)
 
 
-func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
+func _add_node_from_node(node: StoryNode) -> void:
 	if _story_data == null:
 		push_error('No Selected Story')
 		return
 
-	var story_node: StoryNode = definition.create_node(_new_instance_id())
+	var story_node: StoryNode = node.duplicate(true)
+	story_node.instance_id = _new_instance_id()
 
-	if story_node == null:
-		push_error('Unable to create story node.')
-		return
-
-	# Add the node to _story_data
 	_story_data.add_node(story_node)
 
-	# refresh the representation
 	_refresh()
-
-
-func _get_node_definition(node: StoryNode) -> StoryNode:
-	return _standard_node_library.get_node(node.node_id)
 
 
 func _new_instance_id() -> StringName:

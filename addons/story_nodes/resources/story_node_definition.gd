@@ -37,7 +37,7 @@ func create_node(instance_id: StringName) -> StoryNode:
 		return null
 
 	node.instance_id = instance_id
-	node.definition_id = id
+	node.node_id = id
 
 	return node
 

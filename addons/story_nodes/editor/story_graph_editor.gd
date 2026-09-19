@@ -76,10 +76,10 @@ func _refresh() -> void:
 		return
 
 	for node: StoryNode in _story_data.node_list:
-		var definition: StoryNodeDefinition = _standard_node_library.get_node(node.definition_id)
+		var definition: StoryNodeDefinition = _standard_node_library.get_node(node.node_id)
 
 		if definition == null:
-			push_error('No node definition found for "%s"' % node.definition_id)
+			push_error('No node definition found for "%s"' % node.node_id)
 			continue
 
 		var graph_node: StoryGraphNode = definition.graph_scene.instantiate() as StoryGraphNode
@@ -206,7 +206,7 @@ func _add_node_from_definition(definition: StoryNodeDefinition) -> void:
 
 
 func _get_node_definition(node: StoryNode) -> StoryNodeDefinition:
-	return _standard_node_library.get_node(node.definition_id)
+	return _standard_node_library.get_node(node.node_id)
 
 
 func _new_instance_id() -> StringName:

@@ -13,9 +13,15 @@ script = ExtResource("1_8r5x3")
 id = &"mary_of_magdellene"
 name = "Mary of Magdellene"
 
+[sub_resource type="Resource" id="Resource_7hogc"]
+script = ExtResource("1_8r5x3")
+id = &"peter"
+name = "Peter"
+
 [resource]
 script = ExtResource("2_6i7d2")
 _characters = Dictionary[StringName, ExtResource("1_8r5x3")]({
 &"jesus": SubResource("Resource_8r5x3"),
-&"mary_of_magdellene": SubResource("Resource_6i7d2")
+&"mary_of_magdellene": SubResource("Resource_6i7d2"),
+&"peter": SubResource("Resource_7hogc")
 })

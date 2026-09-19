@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="StoryData" format=3 uid="uid://ca135pjr31jj2"]
+
+[ext_resource type="Script" uid="uid://dntj8bw5jkfdr" path="res://addons/story_nodes/resources/story_link.gd" id="1_gk2xj"]
+[ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/nodes/story_node.gd" id="2_0ivhh"]
+[ext_resource type="PackedScene" uid="uid://3tvxrjqi7yvv" path="res://addons/story_nodes/nodes/start_graph_node.tscn" id="3_1p5mc"]
+[ext_resource type="PackedScene" uid="uid://ckunlsn4wdx0" path="res://addons/story_nodes/nodes/start_runtime_node.tscn" id="4_otx63"]
+[ext_resource type="Resource" uid="uid://hadvra24oi1x" path="res://character_library.tres" id="5_1p5mc"]
+[ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="5_26l3o"]
+[ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="7_otx63"]
+
+[sub_resource type="Resource" id="Resource_qi2dp"]
+script = ExtResource("2_0ivhh")
+node_id = &"start_node"
+instance_id = &"__start__"
+graph_scene = ExtResource("3_1p5mc")
+runtime_scene = ExtResource("4_otx63")
+display_name = "Start"
+description = "The beginning of every story."
+metadata/_custom_type_script = "uid://dohcg0p31tu1d"
+
+[resource]
+script = ExtResource("5_26l3o")
+title = "Scrap Story"
+description = "A story that I am using for scrap."
+character_library = ExtResource("5_1p5mc")
+variable_library = ExtResource("7_otx63")
+_nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
+&"__start__": SubResource("Resource_qi2dp")
+})

@@ -46,6 +46,7 @@ func mark_dirty(data: StoryData) -> void:
 			title += '(*)'
 
 		item_list.set_item_text(i, title)
+		item_list.set_item_tooltip(i, data.description)
 		return
 
 
@@ -103,7 +104,11 @@ func _scan_directory(directory: EditorFileSystemDirectory) -> void:
 				item_list.add_item(path)
 			else:
 				item_list.add_item(resource.title)
-			item_list.set_item_metadata(item_list.item_count - 1, path)
+
+			var index: int = item_list.item_count - 1
+			item_list.set_item_metadata(index, path)
+			var description: String = resource.description
+			item_list.set_item_tooltip(index, description)
 			mark_dirty(resource as StoryData)
 
 	for i: int in directory.get_subdir_count():

@@ -23,12 +23,19 @@ func _ready() -> void:
 
 
 func set_story_data(data: StoryData) -> void:
+	if _character_library != null and _character_library.changed.is_connected(_refresh):
+		_character_library.changed.disconnect(_refresh)
+
 	_story_data = data
 
 	if _story_data == null:
 		_character_library = null
 	else:
 		_character_library = _story_data.character_library
+
+	if _character_library != null:
+		if not _character_library.changed.is_connected(_refresh):
+			_character_library.changed.connect(_refresh)
 
 	_refresh()
 

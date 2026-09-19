@@ -34,16 +34,19 @@ instance_id = &"node"
 graph_scene = ExtResource("6_05ey8")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(240, -120)
+position = Vector2(280, -60)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]
 script = ExtResource("6_a7wtu")
+title = "Example"
+description = "A simple story to show how the addon works."
 character_library = ExtResource("6_y21bs")
 variable_library = ExtResource("8_wjiom")
 _cast = Dictionary[StringName, bool]({
 &"jesus": true,
-&"mary_of_magdellene": true
+&"mary_of_magdellene": true,
+&"peter": true
 })
 _nodes = Dictionary[StringName, ExtResource("3_y21bs")]({
 &"__start__": SubResource("Resource_lwo30"),

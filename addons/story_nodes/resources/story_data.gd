@@ -4,8 +4,20 @@ extends Resource
 
 const START_NODE_ID: StringName = &'__start__'
 
-@export var title: String = ''
-@export var description: String = ''
+@export var title: String = '':
+	set(value):
+		if title == value:
+			return
+		title = value
+		if not resource_path.is_empty():
+			mark_changed()
+@export var description: String = '':
+	set(value):
+		if description == value:
+			return
+		description = value
+		if not resource_path.is_empty():
+			mark_changed()
 @export var character_library: StoryCharacterLibrary
 @export var variable_library: StoryVariableLibrary
 

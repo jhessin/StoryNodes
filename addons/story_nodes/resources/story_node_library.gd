@@ -53,3 +53,4 @@ func get_node(id: StringName) -> StoryNode:
 
 func clear() -> void:
 	_nodes.clear()
+	emit_changed()

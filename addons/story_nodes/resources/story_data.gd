@@ -306,7 +306,7 @@ func is_valid() -> bool:
 	if character_library == null:
 		return false
 
-	for id: StringName in _cast.keys():
+	for id: StringName in cast_ids:
 		if not character_library.has_character(id):
 			return false
 

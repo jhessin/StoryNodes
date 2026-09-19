@@ -38,7 +38,9 @@ var cast: Array[StoryCharacter]:
 	get:
 		var result: Array[StoryCharacter] = []
 		for id: StringName in _cast.keys():
-			result.append(character_library.get_character(id))
+			var character: StoryCharacter = character_library.get_character(id)
+			if character != null:
+				result.append(character)
 		return result
 var cast_ids: Array[StringName]:
 	get:
@@ -51,7 +53,7 @@ var cast_count: int:
 var is_dirty: bool = false
 
 @export_storage
-var _cast: Dictionary[StringName, StoryCharacter] = { }
+var _cast: Dictionary[StringName, bool] = { }
 
 @export_storage
 var _nodes: Dictionary[StringName, StoryNode] = { }
@@ -359,7 +361,7 @@ func add_to_cast(character: StoryCharacter) -> void:
 		push_error('Character "%s" is already in the cast.' % character.id)
 		return
 
-	_cast[character.id] = character
+	_cast[character.id] = true
 	mark_changed()
 
 

@@ -31,7 +31,6 @@ func set_story_node(node: StoryNode) -> void:
 
 	title = 'Dialogue'
 	dialogue_edit.text = dialogue_node.dialogue
-	print('Dialogue character ID: ', dialogue_node.character)
 	_refresh_character_picker()
 
 

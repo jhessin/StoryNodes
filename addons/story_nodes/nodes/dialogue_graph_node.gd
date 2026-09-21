@@ -29,7 +29,6 @@ func set_story_node(node: StoryNode) -> void:
 
 	super.set_story_node(node)
 
-	title = 'Dialogue'
 	dialogue_edit.text = dialogue_node.dialogue
 	_refresh_character_picker()
 

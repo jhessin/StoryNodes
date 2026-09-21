@@ -69,7 +69,7 @@ func _refresh() -> void:
 
 	for child: Node in graph_edit.get_children():
 		if child is GraphNode:
-			child.queue_free()
+			child.free()
 
 	if _story_data == null:
 		push_error('No Selected Story')
@@ -139,6 +139,18 @@ func _on_connection_request(
 		push_error('No Selected Story')
 		return
 
+	print(
+		'Story Title: ',
+		_story_data.title,
+		'Connection request: from=',
+		from_node,
+		' to=',
+		to_node,
+		' from_exists=',
+		_story_data.has_node(from_node),
+		' to_exists=',
+		_story_data.has_node(to_node),
+	)
 	var link := _story_data.add_link(from_node, to_node, from_port, to_port)
 
 	if link == null:
@@ -197,6 +209,7 @@ func _add_node_from_node(node: StoryNode) -> void:
 
 	var story_node: StoryNode = node.duplicate(true)
 	story_node.instance_id = _new_instance_id(story_node.node_id)
+	story_node.position = add_node_menu.position
 
 	if not _story_data.add_node(story_node):
 		return

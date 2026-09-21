@@ -15,7 +15,7 @@ func set_story_node(node: StoryNode) -> void:
 
 	if not story_node.instance_id.is_empty():
 		name = String(story_node.instance_id)
-	title = story_node.display_name
+	title = story_node.display_name + '(' + story_node.instance_id + ')'
 	position_offset = story_node.position
 
 

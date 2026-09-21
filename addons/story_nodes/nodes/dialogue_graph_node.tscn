@@ -1,12 +1,6 @@
 [gd_scene format=3 uid="uid://mmo7hvehf4yh"]
 
 [ext_resource type="Script" uid="uid://cllqdhp7mffgw" path="res://addons/story_nodes/nodes/dialogue_graph_node.gd" id="1_1yvau"]
-[ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="2_wwwhy"]
-
-[sub_resource type="Resource" id="Resource_bu0c2"]
-script = ExtResource("2_wwwhy")
-display_name = "Dialogue Node"
-metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [node name="DialogueGraphNode" type="GraphNode" unique_id=1626178154]
 anchors_preset = -1
@@ -26,7 +20,6 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("1_1yvau")
-story_node = SubResource("Resource_bu0c2")
 metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1793617298]

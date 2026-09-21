@@ -9,10 +9,8 @@ var _character_library: StoryCharacterLibrary
 
 @onready var character_list: ItemList = %CharacterList
 
-# Toggles
-@onready var auto_id_toggle: CheckButton = %AutoFillId
-
 # Fields
+@onready var new_character_name: LineEdit = %NewCharacterName
 @onready var id_edit: LineEdit = %IdEdit
 @onready var name_edit: LineEdit = %NameEdit
 @onready var image_edit: EditorResourcePicker = %ImageEdit
@@ -24,132 +22,123 @@ var _character_library: StoryCharacterLibrary
 
 
 func _ready() -> void:
-  new_character_button.pressed.connect(_on_new_character_pressed)
-  character_list.item_selected.connect(_on_character_selected)
-  name_edit.text_changed.connect(_on_name_changed)
-  auto_id_toggle.toggled.connect(_on_autoid_toggled)
-  id_edit.text_submitted.connect(_on_id_changed)
-  delete_button.pressed.connect(_on_delete_character_pressed)
+	new_character_button.pressed.connect(_on_new_character_pressed)
+	new_character_name.text_submitted.connect(_on_new_character_submitted)
+	character_list.item_selected.connect(_on_character_selected)
+	name_edit.text_changed.connect(_on_name_changed)
+	delete_button.pressed.connect(_on_delete_character_pressed)
 
-  image_edit.base_type = 'Texture2D'
-  image_edit.resource_changed.connect(_on_image_changed)
+	image_edit.base_type = 'Texture2D'
+	image_edit.resource_changed.connect(_on_image_changed)
 
-  color_edit.color_changed.connect(_on_color_changed)
+	color_edit.color_changed.connect(_on_color_changed)
 
 
 func set_character_library(data: StoryCharacterLibrary) -> void:
-  _character_library = data
-  _refresh()
+	_character_library = data
+	_refresh()
 
 
 func _update_item_list_size() -> void:
-  character_list.custom_minimum_size.y = character_list.item_count * ITEM_HEIGHT
+	character_list.custom_minimum_size.y = character_list.item_count * ITEM_HEIGHT
 
 
 func _on_color_changed(new_color: Color) -> void:
-  if selected_character == null:
-    return
+	if selected_character == null:
+		return
 
-  selected_character.color = new_color
-  _character_library.emit_changed()
+	selected_character.color = new_color
+	_character_library.emit_changed()
 
 
 func _on_image_changed(resource: Resource) -> void:
-  if selected_character == null:
-    return
+	if selected_character == null:
+		return
 
-  selected_character.image = resource as Texture2D
-  _character_library.emit_changed()
+	selected_character.image = resource as Texture2D
+	_character_library.emit_changed()
 
 
 func _on_delete_character_pressed() -> void:
-  if selected_character == null:
-    return
+	if selected_character == null:
+		return
 
-  if _character_library == null:
-    return
+	if _character_library == null:
+		return
 
-  _character_library.remove_character(selected_character.id)
+	_character_library.remove_character(selected_character.id)
 
-  selected_character = null
+	selected_character = null
 
-  name_edit.clear()
-  color_edit.color = Color.WHITE
-  image_edit.edited_resource = null
+	name_edit.clear()
+	color_edit.color = Color.WHITE
+	image_edit.edited_resource = null
 
-  _refresh()
-
-
-func _on_autoid_toggled(toggled_on: bool) -> void:
-  id_edit.editable = not toggled_on
-
-
-func _on_id_changed(new_id: String) -> void:
-  if new_id.is_empty() or selected_character == null:
-    return
-
-  id_edit.text = _character_library.update_id(selected_character.id, new_id)
-
-  _refresh()
-  _character_library.emit_changed()
+	_refresh()
 
 
 func _on_name_changed(new_name: String) -> void:
-  if selected_character == null:
-    return
+	if selected_character == null:
+		return
 
-  selected_character.name = new_name
+	selected_character.name = new_name
 
-  var selected_items := character_list.get_selected_items()
-  if selected_items.is_empty():
-    return
+	var selected_items := character_list.get_selected_items()
+	if selected_items.is_empty():
+		return
 
-  if auto_id_toggle.button_pressed:
-    id_edit.text_submitted.emit(new_name)
-  else:
-    character_list.set_item_text(selected_items[0], new_name)
-  _character_library.emit_changed()
+	_character_library.emit_changed()
 
 
 func _on_character_selected(index: int) -> void:
-  var character := _character_library.character_list[index]
+	var character := _character_library.character_list[index]
 
-  selected_character = character
+	selected_character = character
 
-  name_edit.text = character.name
-  id_edit.text = character.id
-  image_edit.edited_resource = character.image
-  color_edit.color = character.color
+	name_edit.text = character.name
+	id_edit.text = character.id
+	image_edit.edited_resource = character.image
+	color_edit.color = character.color
+
+
+func _on_new_character_submitted(text: String) -> void:
+	if _character_library == null:
+		return
+
+	if new_character_name.text.is_empty():
+		push_warning('New characters need a name')
+		return
+
+	var character := StoryCharacter.new()
+	character.id = _character_library.get_unique_id(new_character_name.text)
+	character.name = new_character_name.text
+
+	_character_library.add_character(character)
+
+	new_character_name.text = ''
+
+	_refresh()
+
+	var index := _character_library.character_list.find(character)
+
+	if index == -1:
+		return
+
+	character_list.select(index)
+	_on_character_selected(index)
 
 
 func _on_new_character_pressed() -> void:
-  if _character_library == null:
-    return
-
-  var character := StoryCharacter.new()
-  character.id = _character_library.get_unique_id('bob')
-  character.name = 'Bob'
-
-  _character_library.add_character(character)
-
-  _refresh()
-
-  var index := _character_library.character_list.find(character)
-
-  if index == -1:
-    return
-
-  character_list.select(index)
-  _on_character_selected(index)
+	_on_new_character_submitted(new_character_name.text)
 
 
 func _refresh() -> void:
-  character_list.clear()
+	character_list.clear()
 
-  if _character_library == null:
-    return
+	if _character_library == null:
+		return
 
-  for character: StoryCharacter in _character_library.character_list:
-    character_list.add_item(character.name)
+	for character: StoryCharacter in _character_library.character_list:
+		character_list.add_item(character.name)
 
-  _update_item_list_size()
+	_update_item_list_size()

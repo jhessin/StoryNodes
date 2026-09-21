@@ -37,12 +37,22 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="NewCharacterButton" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=576208534]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=82945997]
+layout_mode = 2
+
+[node name="NewCharacterName" type="LineEdit" parent="VBoxContainer/ScrollContainer/VBoxContainer/HBoxContainer" unique_id=1177426505]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "+ New Character"
+placeholder_text = "New Character Name"
+
+[node name="NewCharacterButton" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer/HBoxContainer" unique_id=576208534]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+custom_maximum_size = Vector2(32, -1)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "+"
 icon_alignment = 2
 
 [node name="CharacterEditor" type="VBoxContainer" parent="." unique_id=1804978727]
@@ -51,13 +61,6 @@ size_flags_horizontal = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CharacterEditor" unique_id=1189618958]
 layout_mode = 2
-
-[node name="AutoFillId" type="CheckButton" parent="CharacterEditor/VBoxContainer" unique_id=1701175045]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Use name to generate id?"
-alignment = 2
 
 [node name="IdContainer" type="HBoxContainer" parent="CharacterEditor/VBoxContainer" unique_id=1045455890]
 layout_mode = 2
@@ -71,6 +74,7 @@ text = "Id:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+editable = false
 
 [node name="NameContainer" type="HBoxContainer" parent="CharacterEditor" unique_id=1335728695]
 layout_mode = 2

@@ -20,18 +20,29 @@ var _connection_to_port: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	graph_edit.right_disconnects = true
+	# Standard add node menu
 	graph_edit.gui_input.connect(_on_graph_edit_gui_input)
+	add_node_menu.id_pressed.connect(_on_add_node_menu_id_pressed)
+
+	# Adding nodes when dragging from other nodes.
 	graph_edit.connection_drag_started.connect(_on_connection_drag_started)
 	graph_edit.connection_to_empty.connect(_on_connection_drag_ended)
 	graph_edit.connection_from_empty.connect(_on_connection_drag_ended)
-	graph_edit.delete_nodes_request.connect(_on_delete_nodes_request)
+
+	# Adding links.
 	graph_edit.connection_request.connect(_on_connection_request)
+
+	# Deleting nodes.
+	graph_edit.delete_nodes_request.connect(_on_delete_nodes_request)
+
+	# Deleting links
+	graph_edit.right_disconnects = true
 	graph_edit.disconnection_request.connect(_on_disconnection_request)
+
+	# Moving nodes.
 	graph_edit.end_node_move.connect(_on_node_move)
 
-	add_node_menu.id_pressed.connect(_on_add_node_menu_id_pressed)
-
+	# Build the node library
 	_populate_add_node_menu()
 
 
@@ -76,15 +87,6 @@ func _on_graph_edit_gui_input(event: InputEvent) -> void:
 
 
 func _on_connection_drag_started(from_node: StringName, from_port: int, is_output: bool) -> void:
-	print(
-		'Dragging from connection\n',
-		'node: ',
-		from_node,
-		' port: ',
-		from_port,
-		' is_output: ',
-		is_output,
-	)
 	if not is_output:
 		_connection_to_node = from_node
 		_connection_to_port = from_port

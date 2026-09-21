@@ -11,6 +11,8 @@ var _story_data: StoryData
 var _new_node_position: Vector2 = Vector2.ZERO
 var _connection_from_node: StringName = &''
 var _connection_from_port: int = 0
+var _connection_to_node: StringName = &''
+var _connection_to_port: int = 0
 
 @onready var graph_edit: GraphEdit = %GraphEdit
 @onready var add_node_menu: PopupMenu = %AddNodeMenu
@@ -64,16 +66,36 @@ func _on_graph_edit_gui_input(event: InputEvent) -> void:
 	if event.button_index != MOUSE_BUTTON_RIGHT:
 		return
 
+	_connection_from_node = &''
+	_connection_from_port = 0
+	_connection_to_node = &''
+	_connection_to_port = 0
+
 	_new_node_position = (graph_edit.get_local_mouse_position() + graph_edit.scroll_offset) / graph_edit.zoom
 	_show_menu(graph_edit.get_local_mouse_position())
 
 
 func _on_connection_drag_started(from_node: StringName, from_port: int, is_output: bool) -> void:
+	print(
+		'Dragging from connection\n',
+		'node: ',
+		from_node,
+		' port: ',
+		from_port,
+		' is_output: ',
+		is_output,
+	)
 	if not is_output:
+		_connection_to_node = from_node
+		_connection_to_port = from_port
+		_connection_from_node = &''
+		_connection_from_port = 0
 		return
 
 	_connection_from_node = from_node
 	_connection_from_port = from_port
+	_connection_to_node = &''
+	_connection_to_port = 0
 
 
 func _on_connection_drag_ended(
@@ -252,6 +274,11 @@ func _add_node_from_node(node: StoryNode) -> void:
 		)
 		_connection_from_node = &''
 		_connection_from_port = 0
+
+	if not _connection_to_node.is_empty():
+		_on_connection_request(story_node.instance_id, 0, _connection_to_node, _connection_to_port)
+		_connection_to_node = &''
+		_connection_to_port = 0
 	_refresh()
 
 

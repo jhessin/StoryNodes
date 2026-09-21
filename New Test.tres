@@ -6,7 +6,14 @@
 [ext_resource type="PackedScene" uid="uid://ckunlsn4wdx0" path="res://addons/story_nodes/nodes/start_runtime_node.tscn" id="4_otx63"]
 [ext_resource type="Resource" uid="uid://brs44m3fdq7jh" path="res://character_library.tres" id="5_1p5mc"]
 [ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="5_26l3o"]
+[ext_resource type="PackedScene" uid="uid://li0lypjgly64" path="res://addons/story_nodes/nodes/choice_graph_node.tscn" id="5_qi2dp"]
+[ext_resource type="Script" uid="uid://di1clrtje6o4r" path="res://addons/story_nodes/resources/nodes/choice_node.gd" id="6_fv2by"]
 [ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="7_otx63"]
+
+[sub_resource type="Resource" id="Resource_5m41q"]
+script = ExtResource("1_gk2xj")
+from = &"__start__"
+to = &"choice1"
 
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
@@ -18,6 +25,17 @@ display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
+[sub_resource type="Resource" id="Resource_btqi5"]
+script = ExtResource("6_fv2by")
+choices = Array[String](["My way!", "Your way", "The highway", "test", "what", "now what"])
+node_id = &"choice"
+instance_id = &"choice1"
+graph_scene = ExtResource("5_qi2dp")
+display_name = "Choice"
+description = "A simple choice."
+position = Vector2(420, 60)
+metadata/_custom_type_script = "uid://di1clrtje6o4r"
+
 [resource]
 script = ExtResource("5_26l3o")
 title = "Scrap Story"
@@ -28,5 +46,9 @@ _cast = Dictionary[StringName, bool]({
 &"peter": true
 })
 _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
-&"__start__": SubResource("Resource_qi2dp")
+&"__start__": SubResource("Resource_qi2dp"),
+&"choice1": SubResource("Resource_btqi5")
+})
+_links = Dictionary[ExtResource("1_gk2xj"), Object]({
+SubResource("Resource_5m41q"): null
 })

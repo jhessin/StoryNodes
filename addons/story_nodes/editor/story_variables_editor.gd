@@ -25,7 +25,13 @@ func _ready() -> void:
 
 
 func set_variable_library(data: StoryVariableLibrary) -> void:
+	if _variable_library != null:
+		if _variable_library.changed.is_connected(_save):
+			_variable_library.changed.disconnect(_save)
 	_variable_library = data
+
+	if not _variable_library.changed.is_connected(_save):
+		_variable_library.changed.connect(_save)
 	_refresh()
 
 
@@ -273,3 +279,13 @@ func _get_default_value(type: StoryVariable.Type) -> Variant:
 			return ''
 
 	return ''
+
+
+func _save() -> void:
+	if _variable_library == null:
+		return
+
+	var error = ResourceSaver.save(_variable_library)
+
+	if error != OK:
+		push_error('Error saving Variable library: ', error_string(error))

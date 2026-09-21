@@ -1,19 +1,7 @@
-[gd_resource type="Resource" script_class="StoryCharacterLibrary" format=3 uid="uid://hadvra24oi1x"]
+[gd_resource type="Resource" script_class="StoryCharacterLibrary" format=3 uid="uid://brs44m3fdq7jh"]
 
 [ext_resource type="Script" uid="uid://c0hnlj3b8r0ny" path="res://addons/story_nodes/resources/story_character.gd" id="1_8r5x3"]
 [ext_resource type="Script" uid="uid://cr5rg4cyxqvt" path="res://addons/story_nodes/resources/story_character_library.gd" id="2_6i7d2"]
 
-[sub_resource type="Resource" id="Resource_8r5x3"]
-script = ExtResource("1_8r5x3")
-name = "Jesus"
-
-[sub_resource type="Resource" id="Resource_6i7d2"]
-script = ExtResource("1_8r5x3")
-name = "Mary"
-
 [resource]
 script = ExtResource("2_6i7d2")
-_characters = Dictionary[StringName, ExtResource("1_8r5x3")]({
-&"jesus": SubResource("Resource_8r5x3"),
-&"mary": SubResource("Resource_6i7d2")
-})

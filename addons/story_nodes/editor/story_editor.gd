@@ -66,20 +66,6 @@ func set_story_data(data: StoryData) -> void:
 
 func save_story() -> Error:
 	var error: Error
-	if _character_library != null:
-		error = ResourceSaver.save(_character_library)
-
-		if error != OK:
-			push_error('Character Library save error: ', error)
-			push_error('Character Library save error string: ', error_string(error))
-			return error
-	if _variable_library != null:
-		error = ResourceSaver.save(_variable_library)
-
-		if error != OK:
-			push_error('Variable Library save error: ', error)
-			push_error('Variable Library save error string: ', error_string(error))
-			return error
 
 	if _story_data == null:
 		return OK

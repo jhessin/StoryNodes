@@ -35,7 +35,14 @@ func _ready() -> void:
 
 
 func set_character_library(data: StoryCharacterLibrary) -> void:
+	if _character_library != null:
+		if _character_library.changed.is_connected(_save):
+			_character_library.changed.disconnect(_save)
+
 	_character_library = data
+
+	if not _character_library.changed.is_connected(_save):
+		_character_library.changed.connect(_save)
 	_refresh()
 
 
@@ -143,3 +150,13 @@ func _refresh() -> void:
 		character_list.add_item(character.name)
 
 	_update_item_list_size()
+
+
+func _save() -> void:
+	if _character_library == null:
+		return
+
+	var error = ResourceSaver.save(_character_library)
+
+	if error != OK:
+		push_error('Error saving character library: ', error_string(error))

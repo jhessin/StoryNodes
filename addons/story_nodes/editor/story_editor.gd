@@ -60,8 +60,8 @@ func set_story_data(data: StoryData) -> void:
 		file_list.select_path(_story_data.resource_path)
 		call_deferred('_inspect_story')
 
-	graph_editor.set_story_data(data)
-	cast_editor.set_story_data(data)
+	graph_editor.set_story_data(_story_data)
+	cast_editor.set_story_data(_story_data)
 
 
 func save_story() -> Error:

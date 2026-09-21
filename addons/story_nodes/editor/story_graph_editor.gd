@@ -198,7 +198,8 @@ func _add_node_from_node(node: StoryNode) -> void:
 	var story_node: StoryNode = node.duplicate(true)
 	story_node.instance_id = _new_instance_id()
 
-	_story_data.add_node(story_node)
+	if not _story_data.add_node(story_node):
+		return
 
 	_refresh()
 

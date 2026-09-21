@@ -106,16 +106,17 @@ func remove_character(character: StoryCharacter) -> void:
 ## ===
 ## Node methods
 ## ===
-func add_node(node: StoryNode) -> void:
+func add_node(node: StoryNode) -> bool:
 	if (
 		node == null or node.instance_id.is_empty()
 		or has_node(node.instance_id) or node.instance_id == START_NODE_ID
 	):
-		return
+		return false
 
 	_nodes[node.instance_id] = node
 
 	mark_changed()
+	return true
 
 
 func get_node(id: StringName) -> StoryNode:
@@ -213,7 +214,11 @@ func clear_nodes() -> void:
 ## Link methods
 ## ===
 func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int = 0) -> StoryLink:
-	if not has_node(from) or not has_node(to):
+	if not has_node(from):
+		push_error('Node: %s - is not in the story.' % from)
+		return null
+	if not has_node(to):
+		push_error('Node: %s - is not in the story.' % to)
 		return null
 
 	var existing := get_link(from, to, from_port, to_port)

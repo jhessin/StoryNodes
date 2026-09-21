@@ -48,6 +48,8 @@ var character_count: int:
 		return character_library.character_count
 var cast: Array[StoryCharacter]:
 	get:
+		if character_library == null:
+			return []
 		var result: Array[StoryCharacter] = []
 		for id: StringName in _cast.keys():
 			var character: StoryCharacter = character_library.get_character(id)
@@ -84,23 +86,6 @@ func _init() -> void:
 func mark_changed() -> void:
 	is_dirty = true
 	emit_changed()
-
-
-## ===
-## Character methods
-## ===
-func add_character(character: StoryCharacter) -> void:
-	if character == null or character_library == null:
-		return
-
-	character_library.add_character(character)
-
-
-func remove_character(character: StoryCharacter) -> void:
-	if character == null or character_library == null:
-		return
-
-	character_library.remove_character(character.id)
 
 
 ## ===
@@ -266,23 +251,13 @@ func remove_link(link: StoryLink) -> void:
 
 
 func remove_links_from(id: StringName) -> void:
-	var has_changed := false
 	for link: StoryLink in get_links_from(id):
 		remove_link(link)
-		has_changed = true
-
-	if has_changed:
-		mark_changed()
 
 
 func remove_links_to(id: StringName) -> void:
-	var has_changed := false
 	for link: StoryLink in get_links_to(id):
 		remove_link(link)
-		has_changed = true
-
-	if has_changed:
-		mark_changed()
 
 
 func remove_links(id: StringName) -> void:
@@ -318,6 +293,7 @@ func clear_links() -> void:
 func clear() -> void:
 	_links.clear()
 	_nodes.clear()
+	_ensure_start()
 	mark_changed()
 
 

@@ -46,11 +46,6 @@ func _ready() -> void:
 	_populate_add_node_menu()
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-
 func set_story_data(data: StoryData) -> void:
 	_story_data = data
 	_refresh()
@@ -183,15 +178,6 @@ func _refresh_links() -> void:
 			continue
 
 		graph_edit.connect_node(from_node.name, link.from_port, to_node.name, link.to_port)
-
-
-func _get_graph_node(id: StringName) -> StoryGraphNode:
-	for child: Node in graph_edit.get_children():
-		if child is StoryGraphNode:
-			if child.story_node != null and child.story_node.instance_id == id:
-				return child
-
-	return null
 
 
 func _on_connection_request(

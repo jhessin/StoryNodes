@@ -98,13 +98,6 @@ func save_story() -> Error:
 	return OK
 
 
-func save_character_library() -> Error:
-	if _character_library == null:
-		return ERR_UNCONFIGURED
-
-	return ResourceSaver.save(_character_library)
-
-
 func _load_character_library() -> void:
 	if ResourceLoader.exists(_character_library_path):
 		_character_library = ResourceLoader.load(_character_library_path) as StoryCharacterLibrary

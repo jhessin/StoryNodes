@@ -12,7 +12,7 @@ func set_library(value: StoryNodeLibrary) -> void:
 
 func _refresh() -> void:
 	for child: Node in get_children():
-		child.queue_free()
+		child.free()
 
 	if library == null:
 		return

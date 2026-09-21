@@ -50,7 +50,7 @@ func rename_variable(old_name: StringName, new_name: StringName) -> StringName:
 		return &''
 
 	if _variables.has(new_name):
-		push_error('Cannot use "%s": variable name is already used.')
+		push_error('Cannot use "%s": variable name is already used.' % new_name)
 		return &''
 
 	var variable := get_variable(old_name)

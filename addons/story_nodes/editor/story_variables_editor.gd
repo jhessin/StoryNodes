@@ -232,7 +232,11 @@ func _on_name_changed(new_name: StringName) -> void:
 	if new_name == selected_variable.name:
 		return
 
-	_variable_library.rename_variable(selected_variable.name, new_name)
+	var resolved_name = _variable_library.rename_variable(selected_variable.name, new_name)
+
+	if resolved_name.is_empty():
+		push_error('Could not update the name of %s' % new_name)
+		return
 
 	_refresh()
 

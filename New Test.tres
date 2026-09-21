@@ -27,7 +27,7 @@ metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
 [sub_resource type="Resource" id="Resource_btqi5"]
 script = ExtResource("6_fv2by")
-choices = Array[String](["My way!", "Your way", "The highway", "test", "what", "now what"])
+choices = Array[String](["My way!", "The highway"])
 node_id = &"choice"
 instance_id = &"choice1"
 graph_scene = ExtResource("5_qi2dp")

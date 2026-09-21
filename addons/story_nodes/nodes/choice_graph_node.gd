@@ -60,7 +60,7 @@ func _on_choice_changed(value: String, index: int) -> void:
 		return
 
 	if value.is_empty():
-		# TODO: delete the choice here.
+		_delete_choice(index)
 		return
 
 	choice_node.choices[index] = value
@@ -83,3 +83,20 @@ func _on_add_choice(new_text: String) -> void:
 	new_choice_field.text = ''
 
 	_refresh_choices()
+
+
+func _delete_choice(index: int) -> void:
+	if choice_node == null:
+		return
+
+	if index < 0 or index >= choice_node.choices.size():
+		return
+
+	choice_node.choices.remove_at(index)
+	choice_node.emit_changed()
+
+	if story_data != null:
+		story_data.mark_changed()
+
+	call_deferred('_refresh_choices')
+	new_choice_field.grab_focus()

@@ -58,6 +58,7 @@ func rename_variable(old_name: StringName, new_name: StringName) -> StringName:
 
 	remove_variable(old_name)
 	add_variable(variable)
+	emit_changed()
 	return variable.name
 
 

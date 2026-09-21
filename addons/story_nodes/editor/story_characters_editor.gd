@@ -126,6 +126,8 @@ func _on_new_character_submitted(text: String) -> void:
 
 	character_list.select(index)
 	_on_character_selected(index)
+	new_character_name.grab_focus()
+	new_character_name.select_all()
 
 
 func _on_new_character_pressed() -> void:

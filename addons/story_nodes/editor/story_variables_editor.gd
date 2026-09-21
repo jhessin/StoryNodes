@@ -18,7 +18,7 @@ func _ready() -> void:
 	variable_list.item_selected.connect(_on_variable_selected)
 	%DeleteButton.pressed.connect(_on_delete_button_pressed)
 
-	name_edit.text_changed.connect(_on_name_changed)
+	name_edit.text_submitted.connect(_on_name_changed)
 	type_option.item_selected.connect(_on_type_selected)
 
 	_build_type_options()
@@ -30,7 +30,11 @@ func set_variable_library(data: StoryVariableLibrary) -> void:
 
 
 func _on_delete_button_pressed() -> void:
-	pass
+	if _variable_library == null or selected_variable == null:
+		return
+
+	_variable_library.remove_variable(selected_variable.name)
+	_refresh()
 
 
 func _build_type_options() -> void:
@@ -100,9 +104,11 @@ func _on_new_variable_pressed() -> void:
 	variable_list.select(index)
 	_on_variable_selected(index)
 
+	name_edit.grab_focus()
+	name_edit.select_all()
 
-func _get_unique_variable_name() -> StringName:
-	var base_name := 'new_variable'
+
+func _get_unique_variable_name(base_name: StringName = &'new_variable') -> StringName:
 	var name := base_name
 	var index := 1
 
@@ -223,21 +229,12 @@ func _on_name_changed(new_name: StringName) -> void:
 	if new_name.is_empty():
 		return
 
-	var existing := _variable_library.get_variable(new_name)
-
-	if existing != null and existing != selected_variable:
+	if new_name == selected_variable.name:
 		return
 
-	selected_variable.name = new_name
+	_variable_library.rename_variable(selected_variable.name, new_name)
 
-	var selected_items := variable_list.get_selected_items()
-
-	if selected_items.is_empty():
-		return
-
-	variable_list.set_item_text(selected_items[0], new_name)
-
-	_variable_library.emit_changed()
+	_refresh()
 
 
 func _on_type_selected(index: int) -> void:

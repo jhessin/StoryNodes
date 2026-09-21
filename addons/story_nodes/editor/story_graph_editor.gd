@@ -196,7 +196,7 @@ func _add_node_from_node(node: StoryNode) -> void:
 		return
 
 	var story_node: StoryNode = node.duplicate(true)
-	story_node.instance_id = _new_instance_id()
+	story_node.instance_id = _new_instance_id(story_node.node_id)
 
 	if not _story_data.add_node(story_node):
 		return
@@ -204,15 +204,11 @@ func _add_node_from_node(node: StoryNode) -> void:
 	_refresh()
 
 
-func _new_instance_id() -> StringName:
-	var base_name := 'node'
+func _new_instance_id(base_name: String = 'node') -> StringName:
 	var result: StringName
+	var index := 1
 
-	result = base_name
-	var index := 0
-
-	while _story_data.has_node(result):
-		result = base_name + str(index)
+	while _story_data.has_node(base_name + str(index)):
 		index += 1
 
-	return result as StringName
+	return (base_name + str(index)) as StringName

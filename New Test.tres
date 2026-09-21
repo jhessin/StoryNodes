@@ -10,6 +10,11 @@
 [ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="6_fv2by"]
 [ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="7_otx63"]
 
+[sub_resource type="Resource" id="Resource_26l3o"]
+script = ExtResource("1_gk2xj")
+from = &"__start__"
+to = &"node"
+
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
 node_id = &"start_node"
@@ -28,7 +33,17 @@ instance_id = &"node"
 graph_scene = ExtResource("5_qi2dp")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(300, -40)
+position = Vector2(280, -80)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_fv2by"]
+script = ExtResource("6_fv2by")
+node_id = &"dialogue"
+instance_id = &"dialogue1"
+graph_scene = ExtResource("5_qi2dp")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(820, -60)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]
@@ -42,5 +57,9 @@ _cast = Dictionary[StringName, bool]({
 })
 _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"__start__": SubResource("Resource_qi2dp"),
+&"dialogue1": SubResource("Resource_fv2by"),
 &"node": SubResource("Resource_5m41q")
+})
+_links = Dictionary[ExtResource("1_gk2xj"), Object]({
+SubResource("Resource_26l3o"): null
 })

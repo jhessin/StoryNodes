@@ -49,6 +49,10 @@ func rename_variable(old_name: StringName, new_name: StringName) -> StringName:
 		push_error('Cannot rename "%s": variable does not exist.' % old_name)
 		return &''
 
+	if new_name.is_empty():
+		push_error('Cannot rename a variable with an empty name!')
+		return &''
+
 	if _variables.has(new_name):
 		push_error('Cannot use "%s": variable name is already used.' % new_name)
 		return &''

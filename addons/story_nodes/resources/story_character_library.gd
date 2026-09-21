@@ -56,18 +56,6 @@ func clear() -> void:
 	emit_changed()
 
 
-func update_id(old_id: StringName, new_id: StringName) -> StringName:
-	if not has_character(old_id):
-		push_error('character is not in database: %s' % old_id)
-		return &''
-
-	var character := get_character(old_id)
-	character.id = get_unique_id(new_id)
-	remove_character(old_id)
-	add_character(character)
-	return character.id
-
-
 func get_unique_id(base_name: String = 'bob') -> StringName:
 	var index := 0
 	base_name = base_name.to_lower().replace(' ', '_')

@@ -121,7 +121,7 @@ func _get_unique_variable_name(base_name: StringName = &'new_variable') -> Strin
 
 func _rebuild_default_value_editor() -> void:
 	for child: Node in default_value_container.get_children():
-		child.queue_free()
+		child.free()
 
 	if selected_variable == null:
 		return

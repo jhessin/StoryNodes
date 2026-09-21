@@ -243,6 +243,15 @@ func _add_node_from_node(node: StoryNode) -> void:
 	if not _story_data.add_node(story_node):
 		return
 
+	if not _connection_from_node.is_empty():
+		_on_connection_request(
+			_connection_from_node,
+			_connection_from_port,
+			story_node.instance_id,
+			0,
+		)
+		_connection_from_node = &''
+		_connection_from_port = 0
 	_refresh()
 
 

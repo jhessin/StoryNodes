@@ -17,6 +17,8 @@ var _story_data: StoryData
 func _ready() -> void:
 	graph_edit.right_disconnects = true
 	graph_edit.gui_input.connect(_on_graph_edit_gui_input)
+	graph_edit.connection_to_empty.connect(_on_connection_drag_ended)
+	graph_edit.connection_from_empty.connect(_on_connection_drag_ended)
 	graph_edit.delete_nodes_request.connect(_on_delete_nodes_request)
 	graph_edit.connection_request.connect(_on_connection_request)
 	graph_edit.disconnection_request.connect(_on_disconnection_request)
@@ -59,7 +61,19 @@ func _on_graph_edit_gui_input(event: InputEvent) -> void:
 		return
 
 	_new_node_position = (graph_edit.get_local_mouse_position() + graph_edit.scroll_offset) / graph_edit.zoom
-	add_node_menu.position = Vector2(event.global_position)
+	_show_menu(graph_edit.get_local_mouse_position())
+
+
+func _on_connection_drag_ended(
+	from_node: StringName,
+	from_port: int,
+	release_position: Vector2,
+) -> void:
+	_show_menu(release_position)
+
+
+func _show_menu(position: Vector2) -> void:
+	add_node_menu.position = graph_edit.get_global_transform().origin + position
 	add_node_menu.popup()
 
 

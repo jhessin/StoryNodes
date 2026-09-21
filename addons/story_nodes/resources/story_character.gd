@@ -2,10 +2,14 @@
 class_name StoryCharacter
 extends Resource
 
-@export var id: StringName = &''
 @export var name: String = ''
 @export var image: Texture2D
 @export var color: Color = Color.WHITE
+
+var id: StringName:
+	get:
+		return _id
+@export_storage var _id: StringName = &''
 
 
 func _init(
@@ -14,7 +18,7 @@ func _init(
 	_image: Texture2D = null,
 	_color: Color = Color.WHITE,
 ) -> void:
-	id = character_id
+	_id = character_id
 	name = character_name
 	image = _image
 	color = _color

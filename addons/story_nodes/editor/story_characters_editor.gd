@@ -109,8 +109,7 @@ func _on_new_character_submitted(text: String) -> void:
 		push_warning('New characters need a name')
 		return
 
-	var character := StoryCharacter.new()
-	character.id = _character_library.get_unique_id(new_character_name.text)
+	var character := StoryCharacter.new(_character_library.get_unique_id(new_character_name.text))
 	character.name = new_character_name.text
 
 	_character_library.add_character(character)

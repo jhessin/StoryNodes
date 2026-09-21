@@ -35,6 +35,26 @@ description = "An NPC conversation."
 position = Vector2(820, -60)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
+[sub_resource type="Resource" id="Resource_btqi5"]
+script = ExtResource("6_fv2by")
+node_id = &"dialogue"
+instance_id = &"dialogue2"
+graph_scene = ExtResource("5_qi2dp")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(1380, -60)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_cuebt"]
+script = ExtResource("6_fv2by")
+node_id = &"dialogue"
+instance_id = &"dialogue3"
+graph_scene = ExtResource("5_qi2dp")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(737.1914, 422.7266)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
 [sub_resource type="Resource" id="Resource_5m41q"]
 script = ExtResource("6_fv2by")
 dialogue = "I do not know the man!"
@@ -46,14 +66,24 @@ description = "An NPC conversation."
 position = Vector2(280, -80)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
-[sub_resource type="Resource" id="Resource_btqi5"]
+[sub_resource type="Resource" id="Resource_ivuwg"]
 script = ExtResource("6_fv2by")
 node_id = &"dialogue"
-instance_id = &"dialogue2"
+instance_id = &"dialogue4"
 graph_scene = ExtResource("5_qi2dp")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1380, -60)
+position = Vector2(231, -140)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_an2p4"]
+script = ExtResource("6_fv2by")
+node_id = &"dialogue"
+instance_id = &"dialogue5"
+graph_scene = ExtResource("5_qi2dp")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(300, 80)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]
@@ -69,6 +99,9 @@ _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"__start__": SubResource("Resource_qi2dp"),
 &"dialogue1": SubResource("Resource_fv2by"),
 &"dialogue2": SubResource("Resource_btqi5"),
+&"dialogue3": SubResource("Resource_cuebt"),
+&"dialogue4": SubResource("Resource_ivuwg"),
+&"dialogue5": SubResource("Resource_an2p4"),
 &"node": SubResource("Resource_5m41q")
 })
 _links = Dictionary[ExtResource("1_gk2xj"), Object]({

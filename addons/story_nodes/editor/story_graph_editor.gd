@@ -6,6 +6,7 @@ var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
 var _standard_node_library: StoryNodeLibrary = preload(
 	'res://addons/story_nodes/resources/libraries/standard_node_library.tres'
 )
+var _new_node_position: Vector2 = Vector2.ZERO
 var _story_data: StoryData
 
 @onready var graph_edit: GraphEdit = %GraphEdit
@@ -45,6 +46,7 @@ func _on_graph_edit_gui_input(event: InputEvent) -> void:
 	if event.button_index != MOUSE_BUTTON_RIGHT:
 		return
 
+	_new_node_position = (graph_edit.get_local_mouse_position() + graph_edit.scroll_offset) / graph_edit.zoom
 	add_node_menu.position = Vector2(event.global_position)
 	add_node_menu.popup()
 
@@ -209,7 +211,7 @@ func _add_node_from_node(node: StoryNode) -> void:
 
 	var story_node: StoryNode = node.duplicate(true)
 	story_node.instance_id = _new_instance_id(story_node.node_id)
-	story_node.position = add_node_menu.position
+	story_node.position = _new_node_position
 
 	if not _story_data.add_node(story_node):
 		return

@@ -16,10 +16,11 @@ var _story_data: StoryData
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	graph_edit.right_disconnects = true
+	graph_edit.gui_input.connect(_on_graph_edit_gui_input)
+	graph_edit.delete_nodes_request.connect(_on_delete_nodes_request)
 	graph_edit.connection_request.connect(_on_connection_request)
 	graph_edit.disconnection_request.connect(_on_disconnection_request)
 	graph_edit.end_node_move.connect(_on_node_move)
-	graph_edit.gui_input.connect(_on_graph_edit_gui_input)
 
 	add_node_menu.id_pressed.connect(_on_add_node_menu_id_pressed)
 
@@ -33,6 +34,17 @@ func _process(delta: float) -> void:
 
 func set_story_data(data: StoryData) -> void:
 	_story_data = data
+	_refresh()
+
+
+func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
+	if _story_data == null:
+		push_error('No Selected Story')
+		return
+
+	for id: StringName in nodes:
+		_story_data.remove_node(id)
+
 	_refresh()
 
 
@@ -141,18 +153,6 @@ func _on_connection_request(
 		push_error('No Selected Story')
 		return
 
-	print(
-		'Story Title: ',
-		_story_data.title,
-		'Connection request: from=',
-		from_node,
-		' to=',
-		to_node,
-		' from_exists=',
-		_story_data.has_node(from_node),
-		' to_exists=',
-		_story_data.has_node(to_node),
-	)
 	var link := _story_data.add_link(from_node, to_node, from_port, to_port)
 
 	if link == null:

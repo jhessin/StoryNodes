@@ -6,8 +6,11 @@ var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
 var _standard_node_library: StoryNodeLibrary = preload(
 	'res://addons/story_nodes/resources/libraries/standard_node_library.tres'
 )
-var _new_node_position: Vector2 = Vector2.ZERO
 var _story_data: StoryData
+
+var _new_node_position: Vector2 = Vector2.ZERO
+var _connection_from_node: StringName = &''
+var _connection_from_port: int = 0
 
 @onready var graph_edit: GraphEdit = %GraphEdit
 @onready var add_node_menu: PopupMenu = %AddNodeMenu
@@ -17,6 +20,7 @@ var _story_data: StoryData
 func _ready() -> void:
 	graph_edit.right_disconnects = true
 	graph_edit.gui_input.connect(_on_graph_edit_gui_input)
+	graph_edit.connection_drag_started.connect(_on_connection_drag_started)
 	graph_edit.connection_to_empty.connect(_on_connection_drag_ended)
 	graph_edit.connection_from_empty.connect(_on_connection_drag_ended)
 	graph_edit.delete_nodes_request.connect(_on_delete_nodes_request)
@@ -64,6 +68,14 @@ func _on_graph_edit_gui_input(event: InputEvent) -> void:
 	_show_menu(graph_edit.get_local_mouse_position())
 
 
+func _on_connection_drag_started(from_node: StringName, from_port: int, is_output: bool) -> void:
+	if not is_output:
+		return
+
+	_connection_from_node = from_node
+	_connection_from_port = from_port
+
+
 func _on_connection_drag_ended(
 	from_node: StringName,
 	from_port: int,
@@ -73,6 +85,7 @@ func _on_connection_drag_ended(
 
 
 func _show_menu(position: Vector2) -> void:
+	_new_node_position = (graph_edit.get_local_mouse_position() + graph_edit.scroll_offset) / graph_edit.zoom
 	add_node_menu.position = graph_edit.get_global_transform().origin + position
 	add_node_menu.popup()
 

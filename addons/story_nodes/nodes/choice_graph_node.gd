@@ -16,6 +16,19 @@ func _ready() -> void:
 	_refresh_choices()
 
 
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+	return data is int
+
+
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	if not data is int:
+		return
+
+	var source_index: int = data
+
+	print('Dragged choice: ', source_index)
+
+
 func set_story_node(node: StoryNode) -> void:
 	if not node is ChoiceNode:
 		push_error('ChoiceGraphNode requires a ChoiceNode')
@@ -23,6 +36,16 @@ func set_story_node(node: StoryNode) -> void:
 
 	super.set_story_node(node)
 	_refresh_choices()
+
+
+func _drop_from(target_position: Vector2, data: Variant, source_control: Control) -> void:
+	if not data is int:
+		return
+
+	var source_index: int = data
+	var target_index: int = source_control.get_meta('choice_index')
+
+	print('Dragged choice: ', source_index, ' to choice: ', target_index)
 
 
 func _refresh_choices() -> void:
@@ -39,17 +62,30 @@ func _refresh_choices() -> void:
 	for index: int in range(choice_node.choices.size()):
 		var choice: String = choice_node.choices[index]
 
+		# Create a draggable handle
+		var handle := StoryDragHandle.new()
+		handle.drag_data = index
+
 		var editor := LineEdit.new()
 		editor.text = choice
 		editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
 		editor.text_changed.connect(_on_choice_changed.bind(index))
 
-		var new_choice_index: int = get_children().find(new_choice_field)
-		add_child(editor)
-		move_child(editor, new_choice_index)
+		var row := HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.set_meta('choice_index', index)
 
-		var slot_index: int = get_children().find(editor)
+		row.add_child(handle)
+		row.add_child(editor)
+
+		handle.set_drag_forwarding(Callable(), _can_drop_data, _drop_from.bind(row))
+		editor.set_drag_forwarding(Callable(), _can_drop_data, _drop_from.bind(row))
+
+		var new_choice_index: int = get_children().find(new_choice_field)
+		add_child(row)
+		move_child(row, new_choice_index)
+
+		var slot_index: int = get_children().find(row)
 		set_slot_enabled_right(slot_index, true)
 		set_slot_type_right(slot_index, 0)
 

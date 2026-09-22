@@ -8,12 +8,19 @@
 [ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="5_26l3o"]
 [ext_resource type="PackedScene" uid="uid://li0lypjgly64" path="res://addons/story_nodes/nodes/choice_graph_node.tscn" id="5_qi2dp"]
 [ext_resource type="Script" uid="uid://di1clrtje6o4r" path="res://addons/story_nodes/resources/nodes/choice_node.gd" id="6_fv2by"]
+[ext_resource type="PackedScene" uid="uid://mmo7hvehf4yh" path="res://addons/story_nodes/nodes/dialogue_graph_node.tscn" id="7_fv2by"]
 [ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="7_otx63"]
+[ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="8_5m41q"]
 
-[sub_resource type="Resource" id="Resource_5m41q"]
+[sub_resource type="Resource" id="Resource_cuebt"]
+script = ExtResource("1_gk2xj")
+from = &"dialogue1"
+to = &"choice1"
+
+[sub_resource type="Resource" id="Resource_ivuwg"]
 script = ExtResource("1_gk2xj")
 from = &"__start__"
-to = &"choice1"
+to = &"dialogue1"
 
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
@@ -33,8 +40,19 @@ instance_id = &"choice1"
 graph_scene = ExtResource("5_qi2dp")
 display_name = "Choice"
 description = "A simple choice."
-position = Vector2(420, 60)
+position = Vector2(640, 20)
 metadata/_custom_type_script = "uid://di1clrtje6o4r"
+
+[sub_resource type="Resource" id="Resource_an2p4"]
+script = ExtResource("8_5m41q")
+dialogue = "So what's it going to be?"
+node_id = &"dialogue"
+instance_id = &"dialogue1"
+graph_scene = ExtResource("7_fv2by")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(180, -100)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]
 script = ExtResource("5_26l3o")
@@ -43,12 +61,15 @@ description = "A story that I am using for scrap."
 character_library = ExtResource("5_1p5mc")
 variable_library = ExtResource("7_otx63")
 _cast = Dictionary[StringName, bool]({
-&"peter": true
+&"peter": true,
+&"robert": true
 })
 _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"__start__": SubResource("Resource_qi2dp"),
-&"choice1": SubResource("Resource_btqi5")
+&"choice1": SubResource("Resource_btqi5"),
+&"dialogue1": SubResource("Resource_an2p4")
 })
 _links = Dictionary[ExtResource("1_gk2xj"), Object]({
-SubResource("Resource_5m41q"): null
+SubResource("Resource_cuebt"): null,
+SubResource("Resource_ivuwg"): null
 })

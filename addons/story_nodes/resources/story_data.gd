@@ -265,6 +265,17 @@ func remove_links(id: StringName) -> void:
 	remove_links_to(id)
 
 
+func remove_link_from_port(from: StringName, from_port: int) -> void:
+	var links_to_remove: Array[StoryLink] = []
+
+	for link: StoryLink in _links:
+		if link.from == from and link.from_port == from_port:
+			links_to_remove.append(link)
+
+	for link: StoryLink in links_to_remove:
+		remove_link(link)
+
+
 func get_links_from(from: StringName) -> Array[StoryLink]:
 	var results: Array[StoryLink] = []
 

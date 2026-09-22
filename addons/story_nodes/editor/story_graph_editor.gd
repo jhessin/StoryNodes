@@ -105,7 +105,11 @@ func _on_connection_drag_ended(
 
 func _show_menu(position: Vector2) -> void:
 	_new_node_position = (graph_edit.get_local_mouse_position() + graph_edit.scroll_offset) / graph_edit.zoom
-	add_node_menu.position = graph_edit.get_global_transform().origin + position
+
+	var global_position: Vector2 = graph_edit.get_global_transform() * position
+	var window_position: Vector2 = graph_edit.get_viewport().get_window().position
+
+	add_node_menu.position = global_position + window_position
 	add_node_menu.popup()
 
 

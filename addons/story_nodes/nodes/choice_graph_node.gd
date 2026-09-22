@@ -6,6 +6,8 @@ var choice_node: ChoiceNode:
 	get:
 		return story_node as ChoiceNode
 
+var _deleted_index: int = 0
+
 @onready var new_choice_field: LineEdit = %NewChoiceField
 
 
@@ -61,6 +63,8 @@ func _on_choice_changed(value: String, index: int) -> void:
 
 	if value.is_empty():
 		_delete_choice(index)
+		_deleted_index = index - 1 if index > 0 else 0
+		call_deferred('_focus_index')
 		return
 
 	choice_node.choices[index] = value
@@ -68,6 +72,12 @@ func _on_choice_changed(value: String, index: int) -> void:
 
 	if story_data != null:
 		story_data.mark_changed()
+
+
+func _focus_index() -> void:
+	var editor: LineEdit = get_children()[_deleted_index] as LineEdit
+	editor.grab_focus()
+	editor.caret_column = editor.text.length()
 
 
 func _on_add_choice(new_text: String) -> void:
@@ -99,4 +109,3 @@ func _delete_choice(index: int) -> void:
 		story_data.mark_changed()
 
 	call_deferred('_refresh_choices')
-	new_choice_field.grab_focus()

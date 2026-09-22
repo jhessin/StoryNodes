@@ -53,6 +53,11 @@ func _refresh_choices() -> void:
 		set_slot_enabled_right(slot_index, true)
 		set_slot_type_right(slot_index, 0)
 
+	var new_choice_index: int = get_children().find(new_choice_field)
+
+	if new_choice_index >= 0:
+		set_slot_enabled_right(new_choice_index, false)
+
 
 func _on_choice_changed(value: String, index: int) -> void:
 	if choice_node == null:
@@ -102,10 +107,19 @@ func _delete_choice(index: int) -> void:
 	if index < 0 or index >= choice_node.choices.size():
 		return
 
+	if story_data != null:
+		story_data.remove_link_from_port(choice_node.instance_id, index)
+		story_data.shift_link_ports(choice_node.instance_id, index)
+
 	choice_node.choices.remove_at(index)
 	choice_node.emit_changed()
 
 	if story_data != null:
 		story_data.mark_changed()
 
-	call_deferred('_refresh_choices')
+	call_deferred('_refresh_choices_and_notify')
+
+
+func _refresh_choices_and_notify() -> void:
+	_refresh_choices()
+	ports_changed.emit()

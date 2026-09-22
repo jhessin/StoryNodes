@@ -161,11 +161,17 @@ func _refresh() -> void:
 
 		graph_node.set_story_data(_story_data)
 		graph_node.set_story_node(node)
+		graph_node.ports_changed.connect(_on_ports_changed)
 
 		graph_nodes[node.instance_id] = graph_node
 
 	await get_tree().process_frame
 
+	_refresh_links()
+
+
+func _on_ports_changed() -> void:
+	graph_edit.clear_connections()
 	_refresh_links()
 
 

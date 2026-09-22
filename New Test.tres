@@ -22,6 +22,29 @@ script = ExtResource("1_gk2xj")
 from = &"__start__"
 to = &"dialogue1"
 
+[sub_resource type="Resource" id="Resource_fv2by"]
+script = ExtResource("1_gk2xj")
+from = &"choice1"
+to = &"dialogue2"
+
+[sub_resource type="Resource" id="Resource_5m41q"]
+script = ExtResource("1_gk2xj")
+from = &"choice1"
+to = &"dialogue3"
+from_port = 1
+
+[sub_resource type="Resource" id="Resource_0otey"]
+script = ExtResource("1_gk2xj")
+from = &"choice1"
+to = &"dialogue4"
+from_port = 2
+
+[sub_resource type="Resource" id="Resource_x33uo"]
+script = ExtResource("1_gk2xj")
+from = &"choice1"
+to = &"dialogue5"
+from_port = 3
+
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
 node_id = &"start_node"
@@ -34,13 +57,13 @@ metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
 [sub_resource type="Resource" id="Resource_btqi5"]
 script = ExtResource("6_fv2by")
-choices = Array[String](["My way", "The highway!"])
+choices = Array[String](["Path 1", "Path 2", "Path 3", "Path 4"])
 node_id = &"choice"
 instance_id = &"choice1"
 graph_scene = ExtResource("5_qi2dp")
 display_name = "Choice"
 description = "A simple choice."
-position = Vector2(640, 20)
+position = Vector2(820, 0)
 metadata/_custom_type_script = "uid://di1clrtje6o4r"
 
 [sub_resource type="Resource" id="Resource_an2p4"]
@@ -51,7 +74,52 @@ instance_id = &"dialogue1"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(180, -100)
+position = Vector2(220, -140)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_bpkqa"]
+script = ExtResource("8_5m41q")
+dialogue = "Path 1"
+node_id = &"dialogue"
+instance_id = &"dialogue2"
+graph_scene = ExtResource("7_fv2by")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(1380, -600)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_5ug4y"]
+script = ExtResource("8_5m41q")
+dialogue = "Path 2
+"
+node_id = &"dialogue"
+instance_id = &"dialogue3"
+graph_scene = ExtResource("7_fv2by")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(1380, -180)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_l266m"]
+script = ExtResource("8_5m41q")
+dialogue = "Path 3"
+node_id = &"dialogue"
+instance_id = &"dialogue4"
+graph_scene = ExtResource("7_fv2by")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(1380, 180)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_avsc1"]
+script = ExtResource("8_5m41q")
+dialogue = "Path 4"
+node_id = &"dialogue"
+instance_id = &"dialogue5"
+graph_scene = ExtResource("7_fv2by")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(1380, 540)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]
@@ -67,9 +135,17 @@ _cast = Dictionary[StringName, bool]({
 _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"__start__": SubResource("Resource_qi2dp"),
 &"choice1": SubResource("Resource_btqi5"),
-&"dialogue1": SubResource("Resource_an2p4")
+&"dialogue1": SubResource("Resource_an2p4"),
+&"dialogue2": SubResource("Resource_bpkqa"),
+&"dialogue3": SubResource("Resource_5ug4y"),
+&"dialogue4": SubResource("Resource_l266m"),
+&"dialogue5": SubResource("Resource_avsc1")
 })
 _links = Dictionary[ExtResource("1_gk2xj"), Object]({
 SubResource("Resource_cuebt"): null,
-SubResource("Resource_ivuwg"): null
+SubResource("Resource_ivuwg"): null,
+SubResource("Resource_fv2by"): null,
+SubResource("Resource_5m41q"): null,
+SubResource("Resource_0otey"): null,
+SubResource("Resource_x33uo"): null
 })

@@ -2,6 +2,8 @@
 class_name StoryGraphNode
 extends GraphNode
 
+signal ports_changed
+
 var story_node: StoryNode
 var story_data: StoryData
 

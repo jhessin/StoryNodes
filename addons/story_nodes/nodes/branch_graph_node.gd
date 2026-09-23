@@ -36,7 +36,16 @@ func set_story_data(data: StoryData) -> void:
 
 
 func _on_variable_selected(index: int) -> void:
-	pass
+	if branch_node == null:
+		return
+
+	if story_data == null or story_data.variable_library == null:
+		return
+
+	var variable: StoryVariable = story_data.variable_library.variable_list[index]
+
+	branch_node.variable = variable
+	branch_node.emit_changed()
 
 
 func _refresh_variable_picker() -> void:

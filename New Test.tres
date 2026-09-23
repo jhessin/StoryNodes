@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://mmo7hvehf4yh" path="res://addons/story_nodes/nodes/dialogue_graph_node.tscn" id="7_fv2by"]
 [ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="7_otx63"]
 [ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="8_5m41q"]
+[ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="8_ivuwg"]
 [ext_resource type="Script" uid="uid://b6165fr82m4my" path="res://addons/story_nodes/resources/branch_condition.gd" id="9_cuebt"]
 [ext_resource type="PackedScene" uid="uid://dwyu0hkdrgten" path="res://addons/story_nodes/nodes/branch_graph_node.tscn" id="10_ivuwg"]
 [ext_resource type="Script" uid="uid://dflbb5l7krrii" path="res://addons/story_nodes/resources/nodes/branch_node.gd" id="11_an2p4"]
@@ -57,6 +58,21 @@ runtime_scene = ExtResource("4_otx63")
 display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
+
+[sub_resource type="Resource" id="Resource_e7d0r"]
+script = ExtResource("8_ivuwg")
+name = &"test2"
+
+[sub_resource type="Resource" id="Resource_pptdr"]
+script = ExtResource("11_an2p4")
+variable = SubResource("Resource_e7d0r")
+node_id = &"branch"
+instance_id = &"branch1"
+graph_scene = ExtResource("10_ivuwg")
+display_name = "Branch"
+description = "Branches the story depending on the value of a given variable."
+position = Vector2(440, 320)
+metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
 [sub_resource type="Resource" id="Resource_btqi5"]
 script = ExtResource("6_fv2by")
@@ -124,16 +140,6 @@ display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(1420, 480)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
-
-[sub_resource type="Resource" id="Resource_pptdr"]
-script = ExtResource("11_an2p4")
-node_id = &"branch"
-instance_id = &"branch1"
-graph_scene = ExtResource("10_ivuwg")
-display_name = "Branch"
-description = "Branches the story depending on the value of a given variable."
-position = Vector2(332, 397)
-metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
 [resource]
 script = ExtResource("5_26l3o")

@@ -22,6 +22,19 @@ func set_story_node(node: StoryNode) -> void:
 	_refresh_variable_picker()
 
 
+func set_story_data(data: StoryData) -> void:
+	super.set_story_data(data)
+
+	if story_data == null:
+		return
+
+	if story_data.variable_library == null:
+		return
+
+	story_data.variable_library.changed.connect(_refresh_variable_picker)
+	_refresh_variable_picker()
+
+
 func _on_variable_selected(index: int) -> void:
 	pass
 

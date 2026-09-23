@@ -36,7 +36,34 @@ func set_variable(value: StoryVariable) -> void:
 func _populate_operator_picker() -> void:
 	operator_picker.clear()
 
-	for operator: BranchCondition.Operator in BranchCondition.Operator.values():
+	if variable == null:
+		return
+
+	var operators: Array[BranchCondition.Operator] = []
+
+	match variable.type:
+		StoryVariable.Type.STRING:
+			operators = [
+				BranchCondition.Operator.IS_EMPTY,
+				BranchCondition.Operator.IS_NOT_EMPTY,
+				BranchCondition.Operator.EQUAL,
+				BranchCondition.Operator.NOT_EQUAL,
+			]
+
+		StoryVariable.Type.INT, StoryVariable.Type.FLOAT:
+			operators = [
+				BranchCondition.Operator.EQUAL,
+				BranchCondition.Operator.NOT_EQUAL,
+				BranchCondition.Operator.LESS,
+				BranchCondition.Operator.LESS_EQUAL,
+				BranchCondition.Operator.GREATER,
+				BranchCondition.Operator.GREATER_EQUAL,
+			]
+
+		StoryVariable.Type.BOOL:
+			operators = [BranchCondition.Operator.EQUAL, BranchCondition.Operator.NOT_EQUAL]
+
+	for operator: BranchCondition.Operator in operators:
 		operator_picker.add_item(_get_operator_text(operator))
 		operator_picker.set_item_id(operator_picker.item_count - 1, operator)
 

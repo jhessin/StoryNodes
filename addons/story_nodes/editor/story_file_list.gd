@@ -120,12 +120,7 @@ func _restore_selection() -> void:
 	if selected_path.is_empty():
 		return
 
-	for i: int in item_list.item_count:
-		var path := item_list.get_item_metadata(i) as String
-
-		if path == selected_path:
-			item_list.select(i)
-			return
+	select_path(selected_path)
 
 
 func _scan_directory(directory: EditorFileSystemDirectory) -> void:

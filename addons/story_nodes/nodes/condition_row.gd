@@ -3,9 +3,14 @@ class_name ConditionRow
 extends HBoxContainer
 
 var condition: BranchCondition
+var variable: StoryVariable
 
 @onready var operator_picker: OptionButton = %OperatorPicker
 @onready var value_field: LineEdit = %ValueField
+
+
+func _ready() -> void:
+	_populate_operator_picker()
 
 
 func set_condition(value: BranchCondition) -> void:
@@ -16,3 +21,43 @@ func set_condition(value: BranchCondition) -> void:
 		return
 
 	operator_picker.select(condition.operator)
+
+
+func set_variable(value: StoryVariable) -> void:
+	variable = value
+
+	if variable == null:
+		push_error('ConditionRow requires a StoryVariable')
+		return
+
+	_populate_operator_picker()
+
+
+func _populate_operator_picker() -> void:
+	operator_picker.clear()
+
+	for operator: BranchCondition.Operator in BranchCondition.Operator.values():
+		operator_picker.add_item(_get_operator_text(operator))
+		operator_picker.set_item_id(operator_picker.item_count - 1, operator)
+
+
+func _get_operator_text(operator: BranchCondition.Operator) -> String:
+	match operator:
+		BranchCondition.Operator.IS_EMPTY:
+			return 'Is Empty'
+		BranchCondition.Operator.IS_NOT_EMPTY:
+			return 'Is Not Empty'
+		BranchCondition.Operator.EQUAL:
+			return 'Equals'
+		BranchCondition.Operator.NOT_EQUAL:
+			return 'Does Not Equal'
+		BranchCondition.Operator.LESS:
+			return '<'
+		BranchCondition.Operator.LESS_EQUAL:
+			return '<='
+		BranchCondition.Operator.GREATER:
+			return '>'
+		BranchCondition.Operator.GREATER_EQUAL:
+			return '>='
+
+	return ''

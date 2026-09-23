@@ -13,6 +13,7 @@ func _ready() -> void:
 	operator_picker.item_selected.connect(_on_operator_selected)
 	_populate_operator_picker()
 	_refresh_value_field()
+	_refresh_value()
 
 
 func set_condition(value: BranchCondition) -> void:
@@ -24,6 +25,7 @@ func set_condition(value: BranchCondition) -> void:
 
 	operator_picker.select(condition.operator)
 	_refresh_value_field()
+	_refresh_value()
 
 
 func set_variable(value: StoryVariable) -> void:
@@ -58,6 +60,7 @@ func _on_operator_selected(index: int) -> void:
 	condition.operator = operator_picker.get_item_id(index) as BranchCondition.Operator
 	condition.emit_changed()
 	_refresh_value_field()
+	_refresh_value()
 
 
 func _populate_operator_picker() -> void:
@@ -126,3 +129,11 @@ func _refresh_value_field() -> void:
 		condition.operator != BranchCondition.Operator.IS_EMPTY
 		and condition.operator != BranchCondition.Operator.IS_NOT_EMPTY
 	)
+
+
+func _refresh_value() -> void:
+	if condition == null:
+		value_field.text = ''
+		return
+
+	value_field.text = str(condition.value)

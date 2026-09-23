@@ -132,7 +132,7 @@ instance_id = &"branch1"
 graph_scene = ExtResource("10_ivuwg")
 display_name = "Branch"
 description = "Branches the story depending on the value of a given variable."
-position = Vector2(380, 300)
+position = Vector2(332, 397)
 metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
 [resource]

@@ -7,8 +7,13 @@
 script = ExtResource("1_e0v8j")
 name = &"test"
 
+[sub_resource type="Resource" id="Resource_e7d0r"]
+script = ExtResource("1_e0v8j")
+name = &"test2"
+
 [resource]
 script = ExtResource("2_e7d0r")
 _variables = Dictionary[StringName, ExtResource("1_e0v8j")]({
-&"test": SubResource("Resource_e0v8j")
+&"test": SubResource("Resource_e0v8j"),
+&"test2": SubResource("Resource_e7d0r")
 })

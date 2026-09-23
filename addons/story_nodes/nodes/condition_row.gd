@@ -10,6 +10,7 @@ var variable: StoryVariable
 
 
 func _ready() -> void:
+	operator_picker.item_selected.connect(_on_operator_selected)
 	_populate_operator_picker()
 
 
@@ -46,6 +47,14 @@ func set_variable(value: StoryVariable) -> void:
 			condition.value = false
 
 	operator_picker.select(condition.operator)
+
+
+func _on_operator_selected(index: int) -> void:
+	if condition == null:
+		return
+
+	condition.operator = operator_picker.get_item_id(index) as BranchCondition.Operator
+	condition.emit_changed()
 
 
 func _populate_operator_picker() -> void:

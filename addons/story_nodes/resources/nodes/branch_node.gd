@@ -4,4 +4,4 @@ extends StoryNode
 
 @export var vabiable: StoryVariable
 
-@export var choices: Array[BranchCondition] = []
+@export var conditions: Array[BranchCondition] = []

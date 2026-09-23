@@ -83,9 +83,9 @@ func _save(index: int) -> void:
 	if path.is_empty():
 		return
 
-	var story_data := load(path)
+	var story_data: StoryData = load(path) as StoryData
 
-	if story_data is not StoryData:
+	if story_data == null:
 		return
 
 	var error := ResourceSaver.save(story_data)

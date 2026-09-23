@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dwyu0hkdrgten"]
+
+[ext_resource type="Script" uid="uid://dxnclnqikel3o" path="res://addons/story_nodes/nodes/branch_graph_node.gd" id="1_b0c3f"]
+
+[node name="BranchGraphNode" type="GraphNode" unique_id=566814158]
+custom_minimum_size = Vector2(250, 100)
+script = ExtResource("1_b0c3f")

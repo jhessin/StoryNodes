@@ -2,4 +2,6 @@
 class_name BranchNode
 extends StoryNode
 
-@export var choices: Array[String] = []
+@export var vabiable: StoryVariable
+
+@export var choices: Array[BranchCondition] = []

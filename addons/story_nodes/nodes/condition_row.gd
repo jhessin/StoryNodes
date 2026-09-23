@@ -11,6 +11,7 @@ var variable: StoryVariable
 
 func _ready() -> void:
 	operator_picker.item_selected.connect(_on_operator_selected)
+	value_field.text_changed.connect(_on_value_changed)
 	_populate_operator_picker()
 	_refresh_value_field()
 	_refresh_value()
@@ -137,3 +138,20 @@ func _refresh_value() -> void:
 		return
 
 	value_field.text = str(condition.value)
+
+
+func _on_value_changed(value: String) -> void:
+	if condition == null or variable == null:
+		return
+
+	match variable.type:
+		StoryVariable.Type.STRING:
+			condition.value = value
+		StoryVariable.Type.INT:
+			condition.value = value.to_int()
+
+		StoryVariable.Type.FLOAT:
+			condition.value = value.to_float()
+
+		StoryVariable.Type.BOOL:
+			condition.value = value.to_lower() == 'true'

@@ -21,5 +21,5 @@ func set_story_node(node: StoryNode) -> void:
 	super.set_story_node(node)
 
 
-func _on_variable_selected() -> void:
+func _on_variable_selected(index: int) -> void:
 	pass

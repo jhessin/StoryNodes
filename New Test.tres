@@ -11,6 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://mmo7hvehf4yh" path="res://addons/story_nodes/nodes/dialogue_graph_node.tscn" id="7_fv2by"]
 [ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="7_otx63"]
 [ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="8_5m41q"]
+[ext_resource type="Script" uid="uid://b6165fr82m4my" path="res://addons/story_nodes/resources/branch_condition.gd" id="9_cuebt"]
+[ext_resource type="PackedScene" uid="uid://dwyu0hkdrgten" path="res://addons/story_nodes/nodes/branch_graph_node.tscn" id="10_ivuwg"]
+[ext_resource type="Script" uid="uid://dflbb5l7krrii" path="res://addons/story_nodes/resources/nodes/branch_node.gd" id="11_an2p4"]
 
 [sub_resource type="Resource" id="Resource_cuebt"]
 script = ExtResource("1_gk2xj")
@@ -122,6 +125,16 @@ description = "An NPC conversation."
 position = Vector2(1420, 480)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
+[sub_resource type="Resource" id="Resource_pptdr"]
+script = ExtResource("11_an2p4")
+node_id = &"branch"
+instance_id = &"branch1"
+graph_scene = ExtResource("10_ivuwg")
+display_name = "Branch"
+description = "Branches the story depending on the value of a given variable."
+position = Vector2(380, 300)
+metadata/_custom_type_script = "uid://dflbb5l7krrii"
+
 [resource]
 script = ExtResource("5_26l3o")
 title = "Scrap Story"
@@ -134,6 +147,7 @@ _cast = Dictionary[StringName, bool]({
 })
 _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"__start__": SubResource("Resource_qi2dp"),
+&"branch1": SubResource("Resource_pptdr"),
 &"choice1": SubResource("Resource_btqi5"),
 &"dialogue1": SubResource("Resource_an2p4"),
 &"dialogue2": SubResource("Resource_bpkqa"),

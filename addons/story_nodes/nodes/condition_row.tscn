@@ -1,11 +1,14 @@
 [gd_scene format=3 uid="uid://cm3briejad1qt"]
 
+[ext_resource type="Script" uid="uid://tj5ng3wcinbk" path="res://addons/story_nodes/nodes/condition_row.gd" id="1_bx7ks"]
+
 [node name="ConditionRow" type="HBoxContainer" unique_id=834450670]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_bx7ks")
 
 [node name="OperatorPicker" type="OptionButton" parent="." unique_id=1466122880]
 unique_name_in_owner = true

@@ -9,7 +9,7 @@ const ITEM_HEIGHT: float = 32.0
 
 var filesystem: EditorFileSystem
 var selected_path: String = ''
-var selected_index: int = -1
+var context_index: int = -1
 
 @onready var item_list: ItemList = %ItemList
 @onready var create_button: Button = %CreateButton
@@ -62,17 +62,16 @@ func select_path(path: String) -> void:
 
 		if item_path == path:
 			item_list.select(i)
-			selected_index = i
 			return
 
 
 func _on_save_menu_selected(id: int) -> void:
 	match save_menu.get_item_text(id):
 		'Save':
-			if selected_index < 0:
+			if context_index < 0:
 				return
 
-			_save(selected_index)
+			_save(context_index)
 		'Save All':
 			for i: int in item_list.item_count:
 				_save(i)
@@ -204,9 +203,14 @@ func _on_gui_input(event: InputEvent) -> void:
 	if event.button_index != MOUSE_BUTTON_RIGHT:
 		return
 
-	_show_menu(event.global_position)
+	context_index = item_list.get_item_at_position(event.position, true)
+
+	if context_index < 0:
+		return
+
+	_show_menu()
 
 
-func _show_menu(position: Vector2) -> void:
-	save_menu.position = position
-	save_menu.popup()
+func _show_menu() -> void:
+	var screen_position: Vector2 = DisplayServer.mouse_get_position()
+	save_menu.popup(Rect2(screen_position, Vector2.ZERO))

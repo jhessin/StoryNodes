@@ -78,7 +78,7 @@ func _on_graph_edit_gui_input(event: InputEvent) -> void:
 	_connection_to_port = 0
 
 	_new_node_position = (graph_edit.get_local_mouse_position() + graph_edit.scroll_offset) / graph_edit.zoom
-	_show_menu(graph_edit.get_local_mouse_position())
+	_show_menu()
 
 
 func _on_connection_drag_started(from_node: StringName, from_port: int, is_output: bool) -> void:
@@ -100,17 +100,14 @@ func _on_connection_drag_ended(
 	from_port: int,
 	release_position: Vector2,
 ) -> void:
-	_show_menu(release_position)
+	_show_menu()
 
 
-func _show_menu(position: Vector2) -> void:
+func _show_menu() -> void:
 	_new_node_position = (graph_edit.get_local_mouse_position() + graph_edit.scroll_offset) / graph_edit.zoom
 
-	var global_position: Vector2 = graph_edit.get_global_transform() * position
-	var window_position: Vector2 = graph_edit.get_viewport().get_window().position
-
-	add_node_menu.position = global_position + window_position
-	add_node_menu.popup()
+	var screen_position: Vector2 = DisplayServer.mouse_get_position()
+	add_node_menu.popup(Rect2(screen_position, Vector2.ZERO))
 
 
 func _on_node_move() -> void:

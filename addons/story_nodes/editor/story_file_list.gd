@@ -87,7 +87,8 @@ func _save(index: int) -> void:
 
 	if story_data is not StoryData:
 		return
-	var error = ResourceSaver.save(story_data)
+
+	var error := ResourceSaver.save(story_data)
 
 	if error != OK:
 		push_error('Story save error: ', error)
@@ -96,7 +97,6 @@ func _save(index: int) -> void:
 
 	story_data.is_dirty = false
 	mark_dirty(story_data)
-	select_path(path)
 
 
 func _update_item_list_size() -> void:

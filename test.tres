@@ -32,7 +32,7 @@ instance_id = &"dialogue1"
 graph_scene = ExtResource("5_wjiom")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(260, -20)
+position = Vector2(680, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]

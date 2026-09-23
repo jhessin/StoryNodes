@@ -37,8 +37,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 item_count = 2
-item_0/text = "Main Story"
-item_1/text = "Test Story"
+item_0/text = "Scrap Story"
+item_1/text = "Example"
 
 [node name="CreateButton" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1460475908]
 unique_name_in_owner = true
@@ -50,3 +50,11 @@ text = "+ New Story"
 unique_name_in_owner = true
 title = "Save Story As..."
 filters = PackedStringArray("*.tres ; Godot Resource")
+
+[node name="SaveMenu" type="PopupMenu" parent="." unique_id=748509343]
+unique_name_in_owner = true
+item_count = 2
+item_0/text = "Save"
+item_0/id = 0
+item_1/text = "Save All"
+item_1/id = 1

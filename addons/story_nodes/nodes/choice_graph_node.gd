@@ -134,26 +134,33 @@ func _on_choice_changed(value: String, index: int) -> void:
 
 
 func _focus_index() -> void:
-	var row: HBoxContainer = get_children()[_deleted_index] as HBoxContainer
-	var field: LineEdit = get_children()[_deleted_index] as LineEdit
+	var row: HBoxContainer = get_child(_deleted_index) as HBoxContainer
 
 	if row == null:
-		if field != null:
-			field.grab_focus()
-			field.caret_column = field.text.length()
+		_focus_new_choice_field()
 		return
 
 	var editor: LineEdit = row.get_child(1) as LineEdit
 
 	if editor == null:
+		_focus_new_choice_field()
 		return
 
 	editor.grab_focus()
 	editor.caret_column = editor.text.length()
 
 
+func _focus_new_choice_field() -> void:
+	new_choice_field.grab_focus()
+	new_choice_field.caret_column = new_choice_field.text.length()
+
+
 func _on_add_choice(new_text: String) -> void:
 	if choice_node == null:
+		return
+
+	if new_text.is_empty():
+		push_warning('Cannot create empty choices.')
 		return
 
 	choice_node.choices.append(new_text)

@@ -15,7 +15,6 @@ var _character_library: StoryCharacterLibrary
 var _variable_library: StoryVariableLibrary
 var _standard_node_library: StoryNodeLibrary
 
-@onready var save_button: Button = %SaveButton
 @onready var file_list: StoryFileList = %StoryFileList
 @onready var graph_editor: StoryGraphEditor = %StoryGraphEditor
 @onready var characters_editor: StoryCharactersEditor = %StoryCharactersEditor
@@ -31,7 +30,6 @@ func _ready() -> void:
 	_load_variable_library()
 
 	file_list.story_selected.connect(_on_story_selected)
-	save_button.pressed.connect(_on_save_pressed)
 
 	characters_editor.set_character_library(_character_library)
 	cast_editor.set_story_data(null)
@@ -62,26 +60,6 @@ func set_story_data(data: StoryData) -> void:
 
 	graph_editor.set_story_data(_story_data)
 	cast_editor.set_story_data(_story_data)
-
-
-func save_story() -> Error:
-	var error: Error
-
-	if _story_data == null:
-		return OK
-
-	error = ResourceSaver.save(_story_data)
-
-	if error != OK:
-		push_error('Story save error: ', error)
-		push_error('Story save error string: ', error_string(error))
-		return error
-
-	_story_data.is_dirty = false
-	file_list.mark_dirty(_story_data)
-	file_list.select_path(_story_data.resource_path)
-
-	return OK
 
 
 func _load_character_library() -> void:
@@ -120,13 +98,6 @@ func _inspect_story() -> void:
 
 func _on_story_selected(data: StoryData) -> void:
 	set_story_data(data)
-
-
-func _on_save_pressed() -> void:
-	var error := save_story()
-
-	if error != OK:
-		push_error('Failed to save story: %s' % error_string(error))
 
 
 func _on_story_changed() -> void:

@@ -9,13 +9,17 @@ const ITEM_HEIGHT: float = 32.0
 
 var filesystem: EditorFileSystem
 var selected_path: String = ''
+var selected_index: int = -1
 
 @onready var item_list: ItemList = %ItemList
 @onready var create_button: Button = %CreateButton
 @onready var save_dialog: FileDialog = %SaveDialog
+@onready var save_menu: PopupMenu = %SaveMenu
 
 
 func _ready() -> void:
+	item_list.gui_input.connect(_on_gui_input)
+	save_menu.id_pressed.connect(_on_save_menu_selected)
 	filesystem = EditorInterface.get_resource_filesystem()
 	filesystem.filesystem_changed.connect(_refresh)
 
@@ -58,7 +62,42 @@ func select_path(path: String) -> void:
 
 		if item_path == path:
 			item_list.select(i)
+			selected_index = i
 			return
+
+
+func _on_save_menu_selected(id: int) -> void:
+	match save_menu.get_item_text(id):
+		'Save':
+			if selected_index < 0:
+				return
+
+			_save(selected_index)
+		'Save All':
+			for i: int in item_list.item_count:
+				_save(i)
+
+
+func _save(index: int) -> void:
+	var path := item_list.get_item_metadata(index) as String
+
+	if path.is_empty():
+		return
+
+	var story_data := load(path)
+
+	if story_data is not StoryData:
+		return
+	var error = ResourceSaver.save(story_data)
+
+	if error != OK:
+		push_error('Story save error: ', error)
+		push_error('Story save error string: ', error_string(error))
+		return
+
+	story_data.is_dirty = false
+	mark_dirty(story_data)
+	select_path(path)
 
 
 func _update_item_list_size() -> void:
@@ -153,3 +192,21 @@ func _on_save_dialog_file_selected(path: String) -> void:
 	story_selected.emit(story)
 
 	EditorInterface.inspect_object(story)
+
+
+func _on_gui_input(event: InputEvent) -> void:
+	if event is not InputEventMouseButton:
+		return
+
+	if not event.pressed:
+		return
+
+	if event.button_index != MOUSE_BUTTON_RIGHT:
+		return
+
+	_show_menu(event.global_position)
+
+
+func _show_menu(position: Vector2) -> void:
+	save_menu.position = position
+	save_menu.popup()

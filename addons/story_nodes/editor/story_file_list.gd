@@ -76,6 +76,8 @@ func _on_save_menu_selected(id: int) -> void:
 			for i: int in item_list.item_count:
 				_save(i)
 
+	context_index = -1
+
 
 func _save(index: int) -> void:
 	var path := item_list.get_item_metadata(index) as String

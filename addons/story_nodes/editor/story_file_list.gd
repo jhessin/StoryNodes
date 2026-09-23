@@ -68,10 +68,8 @@ func select_path(path: String) -> void:
 func _on_save_menu_selected(id: int) -> void:
 	match save_menu.get_item_text(id):
 		'Save':
-			if context_index < 0:
-				return
-
-			_save(context_index)
+			if context_index >= 0 and context_index < item_list.item_count:
+				_save(context_index)
 		'Save All':
 			for i: int in item_list.item_count:
 				_save(i)

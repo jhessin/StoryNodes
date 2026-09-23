@@ -42,10 +42,28 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 	if not data is int:
 		return
 
+	if choice_node == null:
+		return
+
 	var source_index: int = data
 	var target_index: int = source_control.get_meta('choice_index')
 
-	print('Dragged choice: ', source_index, ' to choice: ', target_index)
+	if source_index == target_index:
+		return
+
+	if source_index < 0 or source_index >= choice_node.choices.size():
+		return
+
+	if target_index < 0 or target_index >= choice_node.choices.size():
+		return
+
+	choice_node.move_choice(source_index, target_index)
+
+	if story_data != null:
+		story_data.move_link_port(choice_node.instance_id, source_index, target_index)
+
+	_refresh_choices()
+	ports_changed.emit()
 
 
 func _refresh_choices() -> void:

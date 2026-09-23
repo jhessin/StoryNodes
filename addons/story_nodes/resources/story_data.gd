@@ -287,6 +287,23 @@ func shift_link_ports(from: StringName, removed_port: int) -> void:
 	mark_changed()
 
 
+func move_link_port(from: StringName, from_port: int, to_port: int) -> void:
+	if from_port == to_port:
+		return
+
+	for link: StoryLink in get_links_from(from):
+		if link.from_port == from_port:
+			link.from_port = to_port
+		elif from_port < to_port:
+			if link.from_port > from_port and link.from_port <= to_port:
+				link.from_port -= 1
+		else:
+			if link.from_port >= to_port and link.from_port < from_port:
+				link.from_port += 1
+
+	mark_changed()
+
+
 func get_links_from(from: StringName) -> Array[StoryLink]:
 	var results: Array[StoryLink] = []
 

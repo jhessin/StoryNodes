@@ -134,7 +134,20 @@ func _on_choice_changed(value: String, index: int) -> void:
 
 
 func _focus_index() -> void:
-	var editor: LineEdit = get_children()[_deleted_index] as LineEdit
+	var row: HBoxContainer = get_children()[_deleted_index] as HBoxContainer
+	var field: LineEdit = get_children()[_deleted_index] as LineEdit
+
+	if row == null:
+		if field != null:
+			field.grab_focus()
+			field.caret_column = field.text.length()
+		return
+
+	var editor: LineEdit = row.get_child(1) as LineEdit
+
+	if editor == null:
+		return
+
 	editor.grab_focus()
 	editor.caret_column = editor.text.length()
 

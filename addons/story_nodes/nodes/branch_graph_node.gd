@@ -2,6 +2,10 @@
 class_name BranchGraphNode
 extends StoryGraphNode
 
+const CONDITION_ROW_SCENE: PackedScene = preload(
+	'res://addons/story_nodes/nodes/condition_row.tscn'
+)
+
 var branch_node: BranchNode:
 	get:
 		return story_node as BranchNode

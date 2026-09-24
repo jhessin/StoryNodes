@@ -59,19 +59,30 @@ display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
-[sub_resource type="Resource" id="Resource_ygrhq"]
+[sub_resource type="Resource" id="Resource_oysav"]
+script = ExtResource("9_cuebt")
+operator = 0
+value = null
+
+[sub_resource type="Resource" id="Resource_ouikn"]
+script = ExtResource("9_cuebt")
+operator = 0
+value = null
+
+[sub_resource type="Resource" id="Resource_c66mi"]
 script = ExtResource("8_ivuwg")
-name = &"new_variable_2"
+name = &"new_variable"
 
 [sub_resource type="Resource" id="Resource_pptdr"]
 script = ExtResource("11_an2p4")
-variable = SubResource("Resource_ygrhq")
+variable = SubResource("Resource_c66mi")
+conditions = Array[ExtResource("9_cuebt")]([SubResource("Resource_oysav"), SubResource("Resource_ouikn")])
 node_id = &"branch"
 instance_id = &"branch1"
 graph_scene = ExtResource("10_ivuwg")
 display_name = "Branch"
 description = "Branches the story depending on the value of a given variable."
-position = Vector2(440, 320)
+position = Vector2(520, 340)
 metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
 [sub_resource type="Resource" id="Resource_btqi5"]

@@ -26,8 +26,6 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 
 	var source_index: int = data
 
-	print('Dragged choice: ', source_index)
-
 
 func set_story_node(node: StoryNode) -> void:
 	if not node is ChoiceNode:

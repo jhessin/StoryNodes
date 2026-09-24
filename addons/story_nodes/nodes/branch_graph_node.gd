@@ -64,5 +64,6 @@ func _refresh_variable_picker() -> void:
 		variable_picker.add_item(String(variable.name))
 		variable_picker.set_item_id(index, index)
 
-		if branch_node != null and branch_node.variable == variable:
-			variable_picker.select(index)
+		if branch_node != null and branch_node.variable != null:
+			if branch_node.variable.name == variable.name:
+				variable_picker.select(index)

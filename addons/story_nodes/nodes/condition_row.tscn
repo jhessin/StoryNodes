@@ -13,7 +13,7 @@ script = ExtResource("1_bx7ks")
 [node name="DeleteButton" type="Button" parent="." unique_id=1392619919]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 0
 text = "🗑"
 
 [node name="OperatorPicker" type="OptionButton" parent="." unique_id=1466122880]

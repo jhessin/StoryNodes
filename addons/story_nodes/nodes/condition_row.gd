@@ -2,6 +2,8 @@
 class_name ConditionRow
 extends HBoxContainer
 
+signal delete_requested(condition: BranchCondition)
+
 var condition: BranchCondition
 var variable: StoryVariable
 
@@ -13,6 +15,7 @@ var variable: StoryVariable
 func _ready() -> void:
 	operator_picker.item_selected.connect(_on_operator_selected)
 	value_field.text_changed.connect(_on_value_changed)
+	delete_button.pressed.connect(_on_delete_pressed)
 	_populate_operator_picker()
 	_refresh_value_field()
 	_refresh_value()
@@ -53,6 +56,13 @@ func set_variable(value: StoryVariable) -> void:
 			condition.value = false
 
 	operator_picker.select(condition.operator)
+
+
+func _on_delete_pressed() -> void:
+	if condition == null:
+		return
+
+	delete_requested.emit(condition)
 
 
 func _on_operator_selected(index: int) -> void:

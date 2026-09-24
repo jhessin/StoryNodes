@@ -105,7 +105,13 @@ func _refresh_condition_rows() -> void:
 		move_child(condition_row, new_condition_index)
 		condition_row.set_variable(branch_node.variable)
 		condition_row.set_condition(condition)
+		condition_row.delete_requested.connect(_on_condition_delete_requested)
 
 		var slot_index: int = get_children().find(condition_row)
 		set_slot_enabled_right(slot_index, true)
 		set_slot_type_right(slot_index, 0)
+
+
+func _on_condition_delete_requested(condition: BranchCondition) -> void:
+	branch_node.conditions.erase(condition)
+	_refresh_condition_rows()

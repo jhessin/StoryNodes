@@ -46,6 +46,8 @@ func _on_variable_selected(index: int) -> void:
 
 	branch_node.variable = variable
 	branch_node.emit_changed()
+	if story_data != null:
+		story_data.mark_changed()
 
 
 func _refresh_variable_picker() -> void:
@@ -61,3 +63,6 @@ func _refresh_variable_picker() -> void:
 		var index: int = variable_picker.item_count
 		variable_picker.add_item(String(variable.name))
 		variable_picker.set_item_id(index, index)
+
+		if branch_node != null and branch_node.variable == variable:
+			variable_picker.select(index)

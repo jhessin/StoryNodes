@@ -59,19 +59,19 @@ display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
-[sub_resource type="Resource" id="Resource_c66mi"]
+[sub_resource type="Resource" id="Resource_e0v8j"]
 script = ExtResource("8_ivuwg")
-name = &"new_variable"
+name = &"test"
 
 [sub_resource type="Resource" id="Resource_pptdr"]
 script = ExtResource("11_an2p4")
-variable = SubResource("Resource_c66mi")
+variable = SubResource("Resource_e0v8j")
 node_id = &"branch"
 instance_id = &"branch1"
 graph_scene = ExtResource("10_ivuwg")
 display_name = "Branch"
 description = "Branches the story depending on the value of a given variable."
-position = Vector2(520, 340)
+position = Vector2(360, 180)
 metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
 [sub_resource type="Resource" id="Resource_btqi5"]

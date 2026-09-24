@@ -42,7 +42,12 @@ func _on_variable_selected(index: int) -> void:
 	if story_data == null or story_data.variable_library == null:
 		return
 
-	var variable: StoryVariable = story_data.variable_library.variable_list[index]
+	var variables: Array[StoryVariable] = story_data.variable_library.variable_list
+
+	if index < 0 or index >= variables.size():
+		return
+
+	var variable: StoryVariable = variables[index]
 
 	branch_node.variable = variable
 	branch_node.emit_changed()

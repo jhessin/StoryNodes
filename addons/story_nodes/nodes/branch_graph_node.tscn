@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dwyu0hkdrgten"]
 
 [ext_resource type="Script" uid="uid://dxnclnqikel3o" path="res://addons/story_nodes/nodes/branch_graph_node.gd" id="1_b0c3f"]
-[ext_resource type="PackedScene" uid="uid://cm3briejad1qt" path="res://addons/story_nodes/nodes/condition_row.tscn" id="2_aabfr"]
 
 [node name="BranchGraphNode" type="GraphNode" unique_id=566814158]
 custom_minimum_size = Vector2(250, 100)
@@ -23,15 +22,6 @@ slot/1/right_type = 0
 slot/1/right_color = Color(1, 1, 1, 1)
 slot/1/right_icon = null
 slot/1/draw_stylebox = true
-slot/2/left_enabled = false
-slot/2/left_type = 0
-slot/2/left_color = Color(1, 1, 1, 1)
-slot/2/left_icon = null
-slot/2/right_enabled = false
-slot/2/right_type = 0
-slot/2/right_color = Color(1, 1, 1, 1)
-slot/2/right_icon = null
-slot/2/draw_stylebox = true
 script = ExtResource("1_b0c3f")
 
 [node name="VariableSection" type="HBoxContainer" parent="." unique_id=1769865980]
@@ -44,9 +34,6 @@ text = "Variable"
 
 [node name="VariablePicker" type="OptionButton" parent="VariableSection" unique_id=1607622554]
 unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ConditionRow" parent="." unique_id=834450670 instance=ExtResource("2_aabfr")]
 layout_mode = 2
 
 [node name="NewConditionButton" type="Button" parent="." unique_id=763753783]

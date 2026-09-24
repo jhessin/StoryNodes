@@ -28,7 +28,6 @@ func set_condition(value: BranchCondition) -> void:
 		push_error('ConditionRow requires a BranchCondition')
 		return
 
-	operator_picker.select(condition.operator)
 	_refresh_value_field()
 	_refresh_value()
 

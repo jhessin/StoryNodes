@@ -103,8 +103,8 @@ func _refresh_condition_rows() -> void:
 		var new_condition_index: int = get_children().find(new_condition_button)
 		add_child(condition_row)
 		move_child(condition_row, new_condition_index)
-		condition_row.set_variable(branch_node.variable)
 		condition_row.set_condition(condition)
+		condition_row.set_variable(branch_node.variable)
 		condition_row.delete_requested.connect(_on_condition_delete_requested)
 
 		var slot_index: int = get_children().find(condition_row)

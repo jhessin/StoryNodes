@@ -42,18 +42,8 @@ func set_variable(value: StoryVariable) -> void:
 
 	_populate_operator_picker()
 
-	match variable.type:
-		StoryVariable.Type.STRING:
-			condition.operator = BranchCondition.Operator.IS_EMPTY
-			condition.value = ''
-
-		StoryVariable.Type.INT, StoryVariable.Type.FLOAT:
-			condition.operator = BranchCondition.Operator.EQUAL
-			condition.value = 0
-
-		StoryVariable.Type.BOOL:
-			condition.operator = BranchCondition.Operator.EQUAL
-			condition.value = false
+	if condition == null:
+		return
 
 	operator_picker.select(condition.operator)
 

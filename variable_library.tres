@@ -3,6 +3,22 @@
 [ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="1_e0v8j"]
 [ext_resource type="Script" uid="uid://bnyn22r47o86c" path="res://addons/story_nodes/resources/story_variable_library.gd" id="2_e7d0r"]
 
+[sub_resource type="Resource" id="Resource_c66mi"]
+script = ExtResource("1_e0v8j")
+name = &"new_variable"
+
+[sub_resource type="Resource" id="Resource_sn2a2"]
+script = ExtResource("1_e0v8j")
+name = &"new_variable_1"
+
+[sub_resource type="Resource" id="Resource_ygrhq"]
+script = ExtResource("1_e0v8j")
+name = &"new_variable_2"
+
+[sub_resource type="Resource" id="Resource_j6ouu"]
+script = ExtResource("1_e0v8j")
+name = &"new_variable_3"
+
 [sub_resource type="Resource" id="Resource_e0v8j"]
 script = ExtResource("1_e0v8j")
 name = &"test"
@@ -14,6 +30,10 @@ name = &"test2"
 [resource]
 script = ExtResource("2_e7d0r")
 _variables = Dictionary[StringName, ExtResource("1_e0v8j")]({
+&"new_variable": SubResource("Resource_c66mi"),
+&"new_variable_1": SubResource("Resource_sn2a2"),
+&"new_variable_2": SubResource("Resource_ygrhq"),
+&"new_variable_3": SubResource("Resource_j6ouu"),
 &"test": SubResource("Resource_e0v8j"),
 &"test2": SubResource("Resource_e7d0r")
 })

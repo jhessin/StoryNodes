@@ -7,6 +7,7 @@ var variable: StoryVariable
 
 @onready var operator_picker: OptionButton = %OperatorPicker
 @onready var value_field: LineEdit = %ValueField
+@onready var delete_button: Button = %DeleteButton
 
 
 func _ready() -> void:

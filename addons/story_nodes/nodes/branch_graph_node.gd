@@ -50,7 +50,6 @@ func _on_new_condition_pressed() -> void:
 	condition.initialize_for_variable(branch_node.variable)
 
 	branch_node.conditions.append(condition)
-	branch_node.emit_changed()
 	story_data.mark_changed()
 	_refresh_condition_rows()
 

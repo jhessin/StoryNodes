@@ -43,6 +43,8 @@ func set_variable(value: StoryVariable) -> void:
 
 	_populate_operator_picker()
 
+	operator_picker.select(_get_operator_index(variable.operator))
+
 
 func _on_delete_pressed() -> void:
 	if condition == null:
@@ -96,9 +98,6 @@ func _populate_operator_picker() -> void:
 
 		var index: int = operator_picker.item_count - 1
 		operator_picker.set_item_id(index, operator)
-
-		if condition != null and operator == condition.operator:
-			operator_picker.select(index)
 
 
 func _get_operator_text(operator: BranchCondition.Operator) -> String:

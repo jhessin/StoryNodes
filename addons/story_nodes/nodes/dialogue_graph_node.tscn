@@ -3,9 +3,10 @@
 [ext_resource type="Script" uid="uid://cllqdhp7mffgw" path="res://addons/story_nodes/nodes/dialogue_graph_node.gd" id="1_1yvau"]
 
 [node name="DialogueGraphNode" type="GraphNode" unique_id=1626178154]
+custom_minimum_size = Vector2(250, 100)
 anchors_preset = -1
-anchor_right = 0.33072916
-anchor_bottom = 0.39969134
+anchor_right = 0.22916667
+anchor_bottom = 0.2638889
 grow_horizontal = 2
 grow_vertical = 2
 resizable = true

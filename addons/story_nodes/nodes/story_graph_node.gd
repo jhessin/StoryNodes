@@ -45,7 +45,7 @@ func set_story_node(node: StoryNode) -> void:
 	position_offset = story_node.position
 
 	if story_node.size != Vector2.ZERO:
-		size = story_node.size
+		set_deferred('size', story_node.size)
 
 
 func set_story_data(data: StoryData) -> void:

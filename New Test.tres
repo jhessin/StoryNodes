@@ -61,7 +61,7 @@ metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
 [sub_resource type="Resource" id="Resource_ouikn"]
 script = ExtResource("9_cuebt")
-operator = 2
+operator = 5
 value = 0
 
 [sub_resource type="Resource" id="Resource_sn2a2"]

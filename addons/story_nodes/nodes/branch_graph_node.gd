@@ -112,10 +112,18 @@ func _refresh_condition_rows() -> void:
 		condition_row.set_condition(condition)
 		condition_row.set_variable(branch_node.variable)
 		condition_row.delete_requested.connect(_on_condition_delete_requested)
+		condition.changed.connect(_on_condition_changed)
 
 		var slot_index: int = get_children().find(condition_row)
 		set_slot_enabled_right(slot_index, true)
 		set_slot_type_right(slot_index, 0)
+
+
+func _on_condition_changed() -> void:
+	if story_data == null:
+		return
+
+	story_data.mark_changed()
 
 
 func _on_condition_delete_requested(condition: BranchCondition) -> void:

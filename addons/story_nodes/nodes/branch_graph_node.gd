@@ -142,6 +142,11 @@ func _refresh_condition_rows() -> void:
 		set_slot_enabled_right(slot_index, true)
 		set_slot_type_right(slot_index, 0)
 
+	var new_condition_index: int = get_children().find(new_condition_button)
+
+	if new_condition_index >= 0:
+		set_slot_enabled_right(new_condition_index, false)
+
 
 func _on_condition_changed() -> void:
 	if story_data == null:

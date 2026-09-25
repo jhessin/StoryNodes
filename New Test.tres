@@ -57,8 +57,14 @@ to = &"dialogue6"
 [sub_resource type="Resource" id="Resource_ouikn"]
 script = ExtResource("1_gk2xj")
 from = &"branch1"
-to = &"dialogue8"
+to = &"dialogue7"
 from_port = 1
+
+[sub_resource type="Resource" id="Resource_h1p2t"]
+script = ExtResource("1_gk2xj")
+from = &"branch1"
+to = &"dialogue8"
+from_port = 2
 
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
@@ -70,12 +76,17 @@ display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
-[sub_resource type="Resource" id="Resource_h1p2t"]
+[sub_resource type="Resource" id="Resource_x2nhn"]
 script = ExtResource("9_cuebt")
 operator = 4
 value = 0
 
-[sub_resource type="Resource" id="Resource_x2nhn"]
+[sub_resource type="Resource" id="Resource_g30ij"]
+script = ExtResource("9_cuebt")
+operator = 4
+value = 0
+
+[sub_resource type="Resource" id="Resource_68cm5"]
 script = ExtResource("9_cuebt")
 operator = 4
 value = 0
@@ -89,13 +100,13 @@ default_value = 0
 [sub_resource type="Resource" id="Resource_pptdr"]
 script = ExtResource("11_an2p4")
 variable = SubResource("Resource_sn2a2")
-conditions = Array[ExtResource("9_cuebt")]([SubResource("Resource_h1p2t"), SubResource("Resource_x2nhn")])
+conditions = Array[ExtResource("9_cuebt")]([SubResource("Resource_x2nhn"), SubResource("Resource_g30ij"), SubResource("Resource_68cm5")])
 node_id = &"branch"
 instance_id = &"branch1"
 graph_scene = ExtResource("10_ivuwg")
 display_name = "Branch"
 description = "Branches the story depending on the value of a given variable."
-position = Vector2(320, 260)
+position = Vector2(-220, 320)
 size = Vector2(348, 210)
 metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
@@ -107,7 +118,7 @@ instance_id = &"choice1"
 graph_scene = ExtResource("5_qi2dp")
 display_name = "Choice"
 description = "A simple choice."
-position = Vector2(600, -60)
+position = Vector2(980, 0)
 size = Vector2(250, 190)
 metadata/_custom_type_script = "uid://di1clrtje6o4r"
 
@@ -119,7 +130,8 @@ instance_id = &"dialogue1"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(220, -140)
+position = Vector2(220, -160)
+size = Vector2(661.3854, 408.71603)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_bpkqa"]
@@ -130,7 +142,7 @@ instance_id = &"dialogue2"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1420, -300)
+position = Vector2(1340, 540)
 size = Vector2(214, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
@@ -143,8 +155,8 @@ instance_id = &"dialogue3"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1420, -120)
-size = Vector2(214, 160.00003)
+position = Vector2(1340, 800)
+size = Vector2(214, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_l266m"]
@@ -155,7 +167,7 @@ instance_id = &"dialogue4"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1420, 60)
+position = Vector2(1340, 20)
 size = Vector2(214, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
@@ -167,8 +179,8 @@ instance_id = &"dialogue5"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1420, 240)
-size = Vector2(220, 160)
+position = Vector2(1340, 280)
+size = Vector2(214, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_22b2a"]
@@ -179,8 +191,8 @@ instance_id = &"dialogue6"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(780, 220)
-size = Vector2(214, 180)
+position = Vector2(660, 600)
+size = Vector2(220, 180)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_36ldg"]
@@ -191,8 +203,8 @@ instance_id = &"dialogue7"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(780, 420)
-size = Vector2(214, 160)
+position = Vector2(660, 340)
+size = Vector2(220, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_dwqat"]
@@ -203,8 +215,8 @@ instance_id = &"dialogue8"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(780, 600)
-size = Vector2(214, 160)
+position = Vector2(640, 880)
+size = Vector2(240, 180)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]
@@ -238,5 +250,6 @@ SubResource("Resource_5m41q"): null,
 SubResource("Resource_0otey"): null,
 SubResource("Resource_x33uo"): null,
 SubResource("Resource_oysav"): null,
-SubResource("Resource_ouikn"): null
+SubResource("Resource_ouikn"): null,
+SubResource("Resource_h1p2t"): null
 })

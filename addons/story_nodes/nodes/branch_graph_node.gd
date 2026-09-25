@@ -151,9 +151,21 @@ func _on_condition_changed() -> void:
 
 
 func _on_condition_delete_requested(condition: BranchCondition) -> void:
-	branch_node.conditions.erase(condition)
+	var condition_index: int = branch_node.conditions.find(condition)
+
+	if condition_index < 0:
+		return
+
+	if story_data != null:
+		story_data.remove_link_from_port(branch_node.instance_id, condition_index)
+		story_data.shift_link_ports(branch_node.instance_id, condition_index)
+
+	branch_node.conditions.remove_at(condition_index)
 	branch_node.emit_changed()
-	story_data.mark_changed()
+
+	if story_data != null:
+		story_data.mark_changed()
+
 	call_deferred('_refresh_condition_rows')
 
 

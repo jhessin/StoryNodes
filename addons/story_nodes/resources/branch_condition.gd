@@ -5,6 +5,8 @@ extends Resource
 enum Operator {
 	IS_EMPTY,
 	IS_NOT_EMPTY,
+	IS_TRUE,
+	IS_FALSE,
 	EQUAL,
 	NOT_EQUAL,
 	LESS,

@@ -43,11 +43,6 @@ func set_variable(value: StoryVariable) -> void:
 
 	_populate_operator_picker()
 
-	if condition == null:
-		return
-
-	operator_picker.select(condition.operator)
-
 
 func _on_delete_pressed() -> void:
 	if condition == null:
@@ -94,7 +89,7 @@ func _populate_operator_picker() -> void:
 			]
 
 		StoryVariable.Type.BOOL:
-			operators = [BranchCondition.Operator.EQUAL, BranchCondition.Operator.NOT_EQUAL]
+			operators = [BranchCondition.Operator.IS_TRUE, BranchCondition.Operator.IS_FALSE]
 
 	for operator: BranchCondition.Operator in operators:
 		operator_picker.add_item(_get_operator_text(operator))
@@ -121,6 +116,10 @@ func _get_operator_text(operator: BranchCondition.Operator) -> String:
 			return '>'
 		BranchCondition.Operator.GREATER_EQUAL:
 			return '>='
+		BranchCondition.Operator.IS_TRUE:
+			return 'Is True'
+		BranchCondition.Operator.IS_FALSE:
+			return 'Is False'
 
 	return ''
 
@@ -133,6 +132,8 @@ func _refresh_value_field() -> void:
 	value_field.visible = (
 		condition.operator != BranchCondition.Operator.IS_EMPTY
 		and condition.operator != BranchCondition.Operator.IS_NOT_EMPTY
+		and condition.operator != BranchCondition.Operator.IS_TRUE
+		and condition.operator != BranchCondition.Operator.IS_FALSE
 	)
 
 

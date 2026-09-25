@@ -112,7 +112,8 @@ func _refresh_condition_rows() -> void:
 		condition_row.set_condition(condition)
 		condition_row.set_variable(branch_node.variable)
 		condition_row.delete_requested.connect(_on_condition_delete_requested)
-		condition.changed.connect(_on_condition_changed)
+		if not condition.changed.is_connected(_on_condition_changed):
+			condition.changed.connect(_on_condition_changed)
 
 		var slot_index: int = get_children().find(condition_row)
 		set_slot_enabled_right(slot_index, true)

@@ -106,7 +106,7 @@ instance_id = &"branch1"
 graph_scene = ExtResource("10_ivuwg")
 display_name = "Branch"
 description = "Branches the story depending on the value of a given variable."
-position = Vector2(-220, 320)
+position = Vector2(-220, 180)
 size = Vector2(348, 210)
 metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
@@ -118,7 +118,7 @@ instance_id = &"choice1"
 graph_scene = ExtResource("5_qi2dp")
 display_name = "Choice"
 description = "A simple choice."
-position = Vector2(980, 0)
+position = Vector2(560, 0)
 size = Vector2(250, 190)
 metadata/_custom_type_script = "uid://di1clrtje6o4r"
 
@@ -130,8 +130,8 @@ instance_id = &"dialogue1"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(220, -160)
-size = Vector2(661.3854, 408.71603)
+position = Vector2(220, -40)
+size = Vector2(214, 160.00002)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_bpkqa"]
@@ -142,7 +142,7 @@ instance_id = &"dialogue2"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1340, 540)
+position = Vector2(920, 500)
 size = Vector2(214, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
@@ -155,7 +155,7 @@ instance_id = &"dialogue3"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1340, 800)
+position = Vector2(920, -20)
 size = Vector2(214, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
@@ -167,7 +167,7 @@ instance_id = &"dialogue4"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1340, 20)
+position = Vector2(920, 760)
 size = Vector2(214, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
@@ -179,7 +179,7 @@ instance_id = &"dialogue5"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(1340, 280)
+position = Vector2(920, 240)
 size = Vector2(214, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
@@ -191,7 +191,7 @@ instance_id = &"dialogue6"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(660, 600)
+position = Vector2(220, 500)
 size = Vector2(220, 180)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
@@ -203,7 +203,7 @@ instance_id = &"dialogue7"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(660, 340)
+position = Vector2(220, 780)
 size = Vector2(220, 160)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
@@ -215,7 +215,7 @@ instance_id = &"dialogue8"
 graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
-position = Vector2(640, 880)
+position = Vector2(220, 220)
 size = Vector2(240, 180)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 

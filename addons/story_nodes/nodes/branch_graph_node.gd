@@ -181,6 +181,7 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 	branch_node.conditions.insert(target_index, condition)
 
 	if story_data != null:
-		story_data.mark_changed()
+		story_data.move_link_port(branch_node.instance_id, source_index, target_index)
 
 	_refresh_condition_rows()
+	ports_changed.emit()

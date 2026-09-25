@@ -14,3 +14,6 @@ extends Resource
 
 @export_storage
 var position: Vector2 = Vector2.ZERO
+
+@export_storage
+var size: Vector2 = Vector2.ZERO

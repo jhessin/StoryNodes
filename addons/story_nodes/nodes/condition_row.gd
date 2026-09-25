@@ -145,6 +145,15 @@ func _refresh_value() -> void:
 		value_field.text = ''
 		return
 
+	if (
+		condition.operator == BranchCondition.Operator.IS_EMPTY
+		or condition.operator == BranchCondition.Operator.IS_NOT_EMPTY
+		or condition.operator == BranchCondition.Operator.IS_TRUE
+		or condition.operator == BranchCondition.Operator.IS_FALSE
+	):
+		value_field.text = ''
+		return
+
 	value_field.text = str(condition.value)
 
 

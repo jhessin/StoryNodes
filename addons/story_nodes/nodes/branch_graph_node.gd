@@ -119,11 +119,5 @@ func _refresh_condition_rows() -> void:
 
 
 func _on_condition_delete_requested(condition: BranchCondition) -> void:
-	var index_to_delete: int = -1
-	for index: int in range(branch_node.conditions.size()):
-		if branch_node.conditions[index].id == condition.id:
-			index_to_delete = index
-	if index_to_delete >= 0:
-		branch_node.conditions.remove_at(index_to_delete)
-
+	branch_node.conditions.erase(condition)
 	call_deferred('_refresh_condition_rows')

@@ -95,6 +95,10 @@ func _refresh_variable_picker() -> void:
 
 
 func _refresh_condition_rows() -> void:
+	for child: Control in get_children():
+		if child is ConditionRow:
+			child.free()
+
 	for condition: BranchCondition in branch_node.conditions:
 		var condition_row: ConditionRow = CONDITION_ROW_SCENE.instantiate() as ConditionRow
 
@@ -115,5 +119,11 @@ func _refresh_condition_rows() -> void:
 
 
 func _on_condition_delete_requested(condition: BranchCondition) -> void:
-	branch_node.conditions.erase(condition)
-	_refresh_condition_rows()
+	var index_to_delete: int = -1
+	for index: int in range(branch_node.conditions.size()):
+		if branch_node.conditions[index].id == condition.id:
+			index_to_delete = index
+	if index_to_delete >= 0:
+		branch_node.conditions.remove_at(index_to_delete)
+
+	call_deferred('_refresh_condition_rows')

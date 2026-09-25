@@ -16,6 +16,10 @@ enum Operator {
 @export var operator: Operator = Operator.IS_EMPTY
 @export var value: Variant
 
+var id: StringName:
+	get:
+		return "%s_%s" % [operator, value] as StringName
+
 
 func initialize_for_variable(variable: StoryVariable) -> void:
 	if variable == null:

@@ -3,23 +3,9 @@
 [ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="1_e0v8j"]
 [ext_resource type="Script" uid="uid://bnyn22r47o86c" path="res://addons/story_nodes/resources/story_variable_library.gd" id="2_e7d0r"]
 
-[sub_resource type="Resource" id="Resource_e0v8j"]
+[sub_resource type="Resource" id="Resource_j6ouu"]
 script = ExtResource("1_e0v8j")
-name = &"test"
-
-[sub_resource type="Resource" id="Resource_e7d0r"]
-script = ExtResource("1_e0v8j")
-name = &"test2"
-
-[sub_resource type="Resource" id="Resource_c66mi"]
-script = ExtResource("1_e0v8j")
-name = &"my_string_variable"
-
-[sub_resource type="Resource" id="Resource_sn2a2"]
-script = ExtResource("1_e0v8j")
-name = &"my_int_variable"
-type = 1
-default_value = 0
+name = &"my_bool_variable"
 
 [sub_resource type="Resource" id="Resource_ygrhq"]
 script = ExtResource("1_e0v8j")
@@ -27,9 +13,23 @@ name = &"my_float_variable"
 type = 2
 default_value = 0.0
 
-[sub_resource type="Resource" id="Resource_j6ouu"]
+[sub_resource type="Resource" id="Resource_sn2a2"]
 script = ExtResource("1_e0v8j")
-name = &"my_bool_variable"
+name = &"my_int_variable"
+type = 1
+default_value = 0
+
+[sub_resource type="Resource" id="Resource_c66mi"]
+script = ExtResource("1_e0v8j")
+name = &"my_string_variable"
+
+[sub_resource type="Resource" id="Resource_e0v8j"]
+script = ExtResource("1_e0v8j")
+name = &"test"
+
+[sub_resource type="Resource" id="Resource_e7d0r"]
+script = ExtResource("1_e0v8j")
+name = &"test2"
 
 [resource]
 script = ExtResource("2_e7d0r")

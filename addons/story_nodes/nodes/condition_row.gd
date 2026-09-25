@@ -43,7 +43,8 @@ func set_variable(value: StoryVariable) -> void:
 
 	_populate_operator_picker()
 
-	operator_picker.select(_get_operator_index(variable.operator))
+	if condition != null:
+		operator_picker.select(_get_operator_index(condition.operator))
 
 
 func _on_delete_pressed() -> void:

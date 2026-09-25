@@ -144,3 +144,32 @@ func _on_condition_delete_requested(condition: BranchCondition) -> void:
 	branch_node.emit_changed()
 	story_data.mark_changed()
 	call_deferred('_refresh_condition_rows')
+
+
+func _drop_from(target_position: Vector2, data: Variant, source_control: Control) -> void:
+	if not data is int:
+		return
+
+	if branch_node == null:
+		return
+
+	var source_index: int = data
+	var target_index: int = source_control.get_meta('condition_index')
+
+	if source_index == target_index:
+		return
+
+	if source_index < 0 or source_index >= branch_node.conditions.size():
+		return
+
+	if target_index < 0 or target_index >= branch_node.conditions.size():
+		return
+
+	var condition: BranchCondition = branch_node.conditions[source_index]
+	branch_node.conditions.remove_at(source_index)
+	branch_node.conditions.insert(target_index, condition)
+
+	if story_data != null:
+		story_data.mark_changed()
+
+	_refresh_condition_rows()

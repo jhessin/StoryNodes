@@ -172,3 +172,11 @@ func _on_value_changed(value: String) -> void:
 
 		StoryVariable.Type.BOOL:
 			condition.value = value.to_lower() == 'true'
+
+
+func _get_operator_index(operator: BranchCondition.Operator) -> int:
+	for index: int in operator_picker.item_count:
+		if operator_picker.get_item_id(index) == operator:
+			return index
+
+	return -1

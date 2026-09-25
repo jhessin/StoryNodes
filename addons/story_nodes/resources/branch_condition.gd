@@ -33,5 +33,5 @@ func initialize_for_variable(variable: StoryVariable) -> void:
 			value = 0
 
 		StoryVariable.Type.BOOL:
-			operator = Operator.EQUAL
+			operator = Operator.IS_FALSE
 			value = false

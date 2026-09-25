@@ -64,14 +64,14 @@ script = ExtResource("9_cuebt")
 operator = 6
 value = 0
 
-[sub_resource type="Resource" id="Resource_h1p2t"]
-script = ExtResource("9_cuebt")
-operator = 8
-value = 0
-
 [sub_resource type="Resource" id="Resource_x2nhn"]
 script = ExtResource("9_cuebt")
 operator = 4
+value = 0
+
+[sub_resource type="Resource" id="Resource_h1p2t"]
+script = ExtResource("9_cuebt")
+operator = 8
 value = 0
 
 [sub_resource type="Resource" id="Resource_sn2a2"]
@@ -83,7 +83,7 @@ default_value = 0
 [sub_resource type="Resource" id="Resource_pptdr"]
 script = ExtResource("11_an2p4")
 variable = SubResource("Resource_sn2a2")
-conditions = Array[ExtResource("9_cuebt")]([SubResource("Resource_ouikn"), SubResource("Resource_h1p2t"), SubResource("Resource_x2nhn")])
+conditions = Array[ExtResource("9_cuebt")]([SubResource("Resource_ouikn"), SubResource("Resource_x2nhn"), SubResource("Resource_h1p2t")])
 node_id = &"branch"
 instance_id = &"branch1"
 graph_scene = ExtResource("10_ivuwg")

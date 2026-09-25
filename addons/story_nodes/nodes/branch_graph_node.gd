@@ -124,6 +124,17 @@ func _refresh_condition_rows() -> void:
 		condition_row.set_condition(condition)
 		condition_row.set_variable(branch_node.variable)
 		condition_row.delete_requested.connect(_on_condition_delete_requested)
+
+		var condition_index: int = branch_node.conditions.find(condition)
+		condition_row.set_meta('condition_index', condition_index)
+		condition_row.drag_handle.drag_data = condition_index
+
+		condition_row.drag_handle.set_drag_forwarding(
+			Callable(),
+			_can_drop_data,
+			_drop_from.bind(condition_row),
+		)
+
 		if not condition.changed.is_connected(_on_condition_changed):
 			condition.changed.connect(_on_condition_changed)
 

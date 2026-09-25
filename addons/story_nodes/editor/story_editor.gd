@@ -16,7 +16,7 @@ var _variable_library: StoryVariableLibrary
 var _standard_node_library: StoryNodeLibrary
 
 @onready var file_list: StoryFileList = %StoryFileList
-@onready var graph_editor: StoryGraphEditor = %StoryGraphEditor
+@onready var graph_editor: StoryGraphEditor = %Graph
 @onready var characters_editor: StoryCharactersEditor = %StoryCharactersEditor
 @onready var cast_editor: StoryCastEditor = %StoryCastEditor
 @onready var variables_editor: StoryVariablesEditor = %StoryVariablesEditor

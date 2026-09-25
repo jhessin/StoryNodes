@@ -20,6 +20,8 @@ var _connection_to_port: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	visibility_changed.connect(_on_visibility_changed)
+
 	# Standard add node menu
 	graph_edit.gui_input.connect(_on_graph_edit_gui_input)
 	add_node_menu.id_pressed.connect(_on_add_node_menu_id_pressed)
@@ -49,6 +51,13 @@ func _ready() -> void:
 func set_story_data(data: StoryData) -> void:
 	_story_data = data
 	_refresh()
+
+
+func _on_visibility_changed() -> void:
+	if not is_visible_in_tree():
+		return
+
+	_restore_node_sizes()
 
 
 func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
@@ -165,6 +174,8 @@ func _refresh() -> void:
 	await get_tree().process_frame
 
 	_refresh_links()
+
+	await get_tree().process_frame
 
 
 func _on_ports_changed() -> void:
@@ -285,3 +296,9 @@ func _new_instance_id(base_name: String = 'node') -> StringName:
 		index += 1
 
 	return (base_name + str(index)) as StringName
+
+
+func _restore_node_sizes() -> void:
+	for id: StringName in graph_nodes:
+		var graph_node: StoryGraphNode = graph_nodes[id]
+		graph_node.restore_saved_size()

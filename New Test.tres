@@ -131,7 +131,7 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(220, -40)
-size = Vector2(214, 160.00002)
+size = Vector2(254.5, 156.77777)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_bpkqa"]
@@ -143,7 +143,7 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(920, 500)
-size = Vector2(214, 160)
+size = Vector2(250, 131)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_5ug4y"]
@@ -156,7 +156,7 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(920, -20)
-size = Vector2(214, 160)
+size = Vector2(250, 131)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_l266m"]
@@ -168,7 +168,7 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(920, 760)
-size = Vector2(214, 160)
+size = Vector2(250, 131)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_avsc1"]
@@ -180,7 +180,7 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(920, 240)
-size = Vector2(214, 160)
+size = Vector2(250, 131)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_22b2a"]
@@ -192,7 +192,7 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(220, 500)
-size = Vector2(220, 180)
+size = Vector2(250, 145.16656)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_36ldg"]
@@ -204,7 +204,7 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(220, 780)
-size = Vector2(220, 160)
+size = Vector2(250, 131)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_dwqat"]
@@ -216,7 +216,7 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(220, 220)
-size = Vector2(240, 180)
+size = Vector2(250, 145.16666)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]

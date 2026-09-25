@@ -77,15 +77,12 @@ metadata/_tab_index = 0
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Graph" type="Control" parent="VBoxContainer/TabContainer/Stories/StoryTabs" unique_id=1689539484]
+[node name="Graph" parent="VBoxContainer/TabContainer/Stories/StoryTabs" unique_id=370073386 instance=ExtResource("1_fa3ns")]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
-metadata/_tab_index = 1
-
-[node name="StoryGraphEditor" parent="VBoxContainer/TabContainer/Stories/StoryTabs/Graph" unique_id=370073386 instance=ExtResource("1_fa3ns")]
-unique_name_in_owner = true
-layout_mode = 1
 size_flags_horizontal = 3
+metadata/_tab_index = 1
 
 [node name="Custom Nodes" type="Control" parent="VBoxContainer/TabContainer" unique_id=230303278]
 visible = false

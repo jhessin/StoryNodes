@@ -19,6 +19,17 @@ func _ready() -> void:
 	variable_picker.item_selected.connect(_on_variable_selected)
 
 
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+	return data is int
+
+
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	if not data is int:
+		return
+
+	var source_index: int = data
+
+
 func set_story_node(node: StoryNode) -> void:
 	if not node is BranchNode:
 		push_error('BranchGraphNode requires a BranchNode.')

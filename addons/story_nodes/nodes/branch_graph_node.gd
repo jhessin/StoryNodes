@@ -73,6 +73,8 @@ func _on_variable_selected(index: int) -> void:
 	if story_data != null:
 		story_data.mark_changed()
 
+	_refresh_condition_rows()
+
 
 func _refresh_variable_picker() -> void:
 	variable_picker.clear()

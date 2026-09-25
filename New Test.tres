@@ -61,18 +61,18 @@ metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
 [sub_resource type="Resource" id="Resource_oysav"]
 script = ExtResource("9_cuebt")
-operator = 8
+operator = 2
 value = 42
 
-[sub_resource type="Resource" id="Resource_sn2a2"]
+[sub_resource type="Resource" id="Resource_j6ouu"]
 script = ExtResource("8_ivuwg")
-name = &"my_int_variable"
-type = 1
-default_value = 0
+name = &"my_bool_variable"
+type = 0
+default_value = false
 
 [sub_resource type="Resource" id="Resource_pptdr"]
 script = ExtResource("11_an2p4")
-variable = SubResource("Resource_sn2a2")
+variable = SubResource("Resource_j6ouu")
 conditions = Array[ExtResource("9_cuebt")]([SubResource("Resource_oysav")])
 node_id = &"branch"
 instance_id = &"branch1"

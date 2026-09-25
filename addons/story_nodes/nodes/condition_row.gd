@@ -53,6 +53,8 @@ func set_variable(value: StoryVariable) -> void:
 
 		if index >= 0:
 			operator_picker.select(index)
+	_refresh_value_field()
+	_refresh_value()
 
 
 func _on_delete_pressed() -> void:

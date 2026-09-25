@@ -120,4 +120,6 @@ func _refresh_condition_rows() -> void:
 
 func _on_condition_delete_requested(condition: BranchCondition) -> void:
 	branch_node.conditions.erase(condition)
+	branch_node.emit_changed()
+	story_data.mark_changed()
 	call_deferred('_refresh_condition_rows')

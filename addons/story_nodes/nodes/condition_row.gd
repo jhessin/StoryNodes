@@ -10,6 +10,7 @@ var variable: StoryVariable
 @onready var operator_picker: OptionButton = %OperatorPicker
 @onready var value_field: LineEdit = %ValueField
 @onready var delete_button: Button = %DeleteButton
+@onready var drag_handle: StoryDragHandle = %StoryDragHandle
 
 
 func _ready() -> void:
@@ -28,6 +29,7 @@ func set_condition(value: BranchCondition) -> void:
 		push_error('ConditionRow requires a BranchCondition')
 		return
 
+	drag_handle.drag_data = condition
 	_refresh_value_field()
 	_refresh_value()
 

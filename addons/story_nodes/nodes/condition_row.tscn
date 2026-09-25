@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cm3briejad1qt"]
 
 [ext_resource type="Script" uid="uid://tj5ng3wcinbk" path="res://addons/story_nodes/nodes/condition_row.gd" id="1_bx7ks"]
+[ext_resource type="Script" uid="uid://bbiloqb08bngh" path="res://addons/story_nodes/editor/story_drag_handle.gd" id="2_scx26"]
 
 [node name="ConditionRow" type="HBoxContainer" unique_id=834450670]
 anchors_preset = 15
@@ -10,11 +11,13 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_bx7ks")
 
-[node name="DeleteButton" type="Button" parent="." unique_id=1392619919]
+[node name="StoryDragHandle" type="Control" parent="." unique_id=1488235135]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
-size_flags_horizontal = 0
-text = "🗑"
+mouse_default_cursor_shape = 13
+script = ExtResource("2_scx26")
+metadata/_custom_type_script = "uid://bbiloqb08bngh"
 
 [node name="OperatorPicker" type="OptionButton" parent="." unique_id=1466122880]
 unique_name_in_owner = true
@@ -27,3 +30,9 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Value"
+
+[node name="DeleteButton" type="Button" parent="." unique_id=1392619919]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "🗑"

@@ -97,7 +97,7 @@ func _populate_operator_picker() -> void:
 		var index: int = operator_picker.item_count - 1
 		operator_picker.set_item_id(index, operator)
 
-		if operator == condition.operator:
+		if condition != null and operator == condition.operator:
 			operator_picker.select(index)
 
 

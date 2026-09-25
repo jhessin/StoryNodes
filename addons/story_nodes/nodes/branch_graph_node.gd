@@ -166,7 +166,7 @@ func _on_condition_delete_requested(condition: BranchCondition) -> void:
 	if story_data != null:
 		story_data.mark_changed()
 
-	call_deferred('_refresh_condition_rows')
+	call_deferred('_refresh_condition_rows_and_notify')
 
 
 func _drop_from(target_position: Vector2, data: Variant, source_control: Control) -> void:
@@ -195,5 +195,10 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 	if story_data != null:
 		story_data.move_link_port(branch_node.instance_id, source_index, target_index)
 
+	_refresh_condition_rows()
+	ports_changed.emit()
+
+
+func _refresh_condition_rows_and_notify() -> void:
 	_refresh_condition_rows()
 	ports_changed.emit()

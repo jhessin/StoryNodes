@@ -93,9 +93,12 @@ func _populate_operator_picker() -> void:
 
 	for operator: BranchCondition.Operator in operators:
 		operator_picker.add_item(_get_operator_text(operator))
-		operator_picker.set_item_id(operator_picker.item_count - 1, operator)
+
+		var index: int = operator_picker.item_count - 1
+		operator_picker.set_item_id(index, operator)
+
 		if operator == condition.operator:
-			operator_picker.select(operator_picker.item_count - 1)
+			operator_picker.select(index)
 
 
 func _get_operator_text(operator: BranchCondition.Operator) -> String:

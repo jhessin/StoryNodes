@@ -49,6 +49,7 @@ func set_variable(value: StoryVariable) -> void:
 		if index < 0 and operator_picker.item_count > 0:
 			index = 0
 			condition.operator = operator_picker.get_item_id(index)
+			condition.emit_changed()
 
 		if index >= 0:
 			operator_picker.select(index)

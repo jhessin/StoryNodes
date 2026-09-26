@@ -8,10 +8,14 @@ var story_node: StoryNode
 var story_data: StoryData
 
 var _restoring_size: bool = false
+var _size_initialized: bool = false
 
 
 func _notification(what: int) -> void:
 	if what != NOTIFICATION_RESIZED:
+		return
+
+	if not _size_initialized:
 		return
 
 	if _restoring_size:
@@ -66,9 +70,9 @@ func restore_saved_size() -> void:
 	if story_node == null:
 		return
 
-	if story_node.size == Vector2.ZERO:
-		return
+	if story_node.size != Vector2.ZERO:
+		_restoring_size = true
+		size = story_node.size
+		_restoring_size = false
 
-	_restoring_size = true
-	size = story_node.size
-	_restoring_size = false
+	_size_initialized = true

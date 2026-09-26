@@ -14,6 +14,7 @@ var _story_data: StoryData
 var _character_library: StoryCharacterLibrary
 var _variable_library: StoryVariableLibrary
 var _standard_node_library: StoryNodeLibrary
+var _undo_redo: EditorUndoRedoManager
 
 @onready var file_list: StoryFileList = %StoryFileList
 @onready var graph_editor: StoryGraphEditor = %Graph
@@ -24,6 +25,8 @@ var _standard_node_library: StoryNodeLibrary
 
 
 func _ready() -> void:
+	_undo_redo = EditorInterface.get_editor_undo_redo()
+
 	_standard_node_library = StorySettings.get_standard_library()
 
 	_load_character_library()
@@ -60,6 +63,10 @@ func set_story_data(data: StoryData) -> void:
 
 	graph_editor.set_story_data(_story_data)
 	cast_editor.set_story_data(_story_data)
+
+
+func get_undo_redo() -> EditorUndoRedoManager:
+	return _undo_redo
 
 
 func _load_character_library() -> void:

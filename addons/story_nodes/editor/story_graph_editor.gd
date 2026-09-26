@@ -141,33 +141,32 @@ func _on_node_move() -> void:
 		push_error('No Selected Story')
 		return
 
-	var moved_nodes: Dictionary[StringName, Vector2] = { }
-
-	for id: StringName in graph_nodes:
-		var graph_node: StoryGraphNode = graph_nodes[id]
-
-		if graph_node.story_node == null:
-			continue
-
-		moved_nodes[id] = graph_node.position_offset
-
-	if moved_nodes.is_empty():
+	if _node_move_positions.is_empty():
 		return
 
 	_undo_redo.create_action('Move Story Nodes')
 
-	for id: StringName in moved_nodes:
-		var graph_node: StoryGraphNode = graph_nodes[id]
-		var story_node: StoryNode = graph_node.story_node
+	for id: StringName in _node_move_positions:
+		var graph_node: StoryGraphNode = graph_nodes.get(id)
 
-		var old_position: Vector2 = story_node.position
-		var new_position: Vector2 = moved_nodes[id]
+		if graph_node == null or graph_node.story_node == null:
+			continue
+
+		var story_node: StoryNode = graph_node.story_node
+		var old_position: Vector2 = _node_move_positions[id]
+		var new_position: Vector2 = graph_node.position_offset
+
+		if old_position == new_position:
+			continue
 
 		_undo_redo.add_do_property(story_node, 'position', new_position)
+		_undo_redo.add_do_property(graph_node, 'position_offset', new_position)
 
 		_undo_redo.add_undo_property(story_node, 'position', old_position)
+		_undo_redo.add_undo_property(graph_node, 'position_offset', old_position)
 
-		_undo_redo.commit_action()
+	_undo_redo.commit_action()
+	_node_move_positions.clear()
 
 
 func _refresh() -> void:

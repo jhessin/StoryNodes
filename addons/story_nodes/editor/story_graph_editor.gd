@@ -7,6 +7,8 @@ var _standard_node_library: StoryNodeLibrary = preload(
 	'res://addons/story_nodes/resources/libraries/standard_node_library.tres'
 )
 var _story_data: StoryData
+var _undo_redo: EditorUndoRedoManager
+var _node_move_positions: Dictionary[StringName, Vector2] = { }
 
 var _new_node_position: Vector2 = Vector2.ZERO
 var _connection_from_node: StringName = &''
@@ -20,6 +22,8 @@ var _connection_to_port: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	_undo_redo = EditorInterface.get_editor_undo_redo()
+
 	visibility_changed.connect(_on_visibility_changed)
 
 	# Standard add node menu
@@ -42,6 +46,7 @@ func _ready() -> void:
 	graph_edit.disconnection_request.connect(_on_disconnection_request)
 
 	# Moving nodes.
+	graph_edit.begin_node_move.connect(_on_node_move_started)
 	graph_edit.end_node_move.connect(_on_node_move)
 
 	# Build the node library
@@ -51,6 +56,18 @@ func _ready() -> void:
 func set_story_data(data: StoryData) -> void:
 	_story_data = data
 	_refresh()
+
+
+func _on_node_move_started() -> void:
+	_node_move_positions.clear()
+
+	for id: StringName in graph_nodes:
+		var graph_node: StoryGraphNode = graph_nodes[id]
+
+		if graph_node.story_node == null:
+			continue
+
+		_node_move_positions[id] = graph_node.position_offset
 
 
 func _on_visibility_changed() -> void:
@@ -124,14 +141,33 @@ func _on_node_move() -> void:
 		push_error('No Selected Story')
 		return
 
+	var moved_nodes: Dictionary[StringName, Vector2] = { }
+
 	for id: StringName in graph_nodes:
 		var graph_node: StoryGraphNode = graph_nodes[id]
 
 		if graph_node.story_node == null:
 			continue
 
-		graph_node.story_node.position = graph_node.position_offset
-		_story_data.mark_changed()
+		moved_nodes[id] = graph_node.position_offset
+
+	if moved_nodes.is_empty():
+		return
+
+	_undo_redo.create_action('Move Story Nodes')
+
+	for id: StringName in moved_nodes:
+		var graph_node: StoryGraphNode = graph_nodes[id]
+		var story_node: StoryNode = graph_node.story_node
+
+		var old_position: Vector2 = story_node.position
+		var new_position: Vector2 = moved_nodes[id]
+
+		_undo_redo.add_do_property(story_node, 'position', new_position)
+
+		_undo_redo.add_undo_property(story_node, 'position', old_position)
+
+		_undo_redo.commit_action()
 
 
 func _refresh() -> void:

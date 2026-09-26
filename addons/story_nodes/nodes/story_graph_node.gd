@@ -7,7 +7,7 @@ signal ports_changed
 var story_node: StoryNode
 var story_data: StoryData
 
-var _restoring_size: bool = false
+# var _restoring_size: bool = false
 var _size_initialized: bool = false
 
 
@@ -18,9 +18,8 @@ func _notification(what: int) -> void:
 	if not _size_initialized:
 		return
 
-	if _restoring_size:
-		return
-
+	# if _restoring_size:
+	# return
 	if story_node == null:
 		return
 
@@ -71,8 +70,12 @@ func restore_saved_size() -> void:
 		return
 
 	if story_node.size != Vector2.ZERO:
-		_restoring_size = true
+		# _restoring_size = true
 		size = story_node.size
-		_restoring_size = false
+		# _restoring_size = false
 
+	call_deferred('_finish_size_initialization')
+
+
+func _finish_size_initialization() -> void:
 	_size_initialized = true

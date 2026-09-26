@@ -41,6 +41,9 @@ text = "Character"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+focus_neighbor_bottom = NodePath("../../Dialogue")
+focus_next = NodePath("../../Dialogue")
+focus_previous = NodePath("../../Dialogue")
 item_count = 1
 popup/item_0/text = "Bob"
 popup/item_0/id = 0
@@ -51,5 +54,10 @@ text = "Dialogue:"
 
 [node name="Dialogue" type="TextEdit" parent="VBoxContainer" unique_id=1427343329]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 size_flags_vertical = 3
+focus_neighbor_top = NodePath("../HBoxContainer/CharacterPicker")
+focus_next = NodePath("../HBoxContainer/CharacterPicker")
+focus_previous = NodePath("../HBoxContainer/CharacterPicker")
+placeholder_text = "Enter Dialogue Text Here..."

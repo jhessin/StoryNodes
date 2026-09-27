@@ -25,11 +25,12 @@ right_disconnects = true
 [node name="AddNodeMenu" type="PopupMenu" parent="." unique_id=339714119]
 unique_name_in_owner = true
 oversampling_override = 1.0
-size = Vector2i(108, 62)
-visible = true
+size = Vector2i(108, 89)
 min_size = Vector2i(108, 2)
-item_count = 2
-item_0/text = "Choice"
+item_count = 3
+item_0/text = "Branch"
 item_0/id = 0
-item_1/text = "Dialogue"
+item_1/text = "Choice"
 item_1/id = 1
+item_2/text = "Dialogue"
+item_2/id = 2

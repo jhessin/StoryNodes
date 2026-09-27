@@ -63,6 +63,16 @@ func _on_visibility_changed() -> void:
 	_restore_node_sizes()
 
 
+func _restore_deleted_nodes(nodes: Array[StoryNode], links: Array[StoryLink]) -> void:
+	for node: StoryNode in nodes:
+		_story_data.add_node(node)
+
+	for link: StoryLink in links:
+		_story_data.add_link(link.from, link.to, link.from_port, link.to_port)
+
+	_refresh()
+
+
 func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 	if _story_data == null:
 		push_error('No Selected Story')
@@ -73,6 +83,17 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 
 	_undo_redo.create_action('Delete Story Nodes')
 
+	var removed_links: Array[StoryLink] = []
+	var removed_nodes: Array[StoryNode] = []
+
+	for link: StoryLink in _story_data.link_list:
+		for id: StringName in nodes:
+			var node = _story_data.get_node(id)
+			if node not in removed_nodes:
+				removed_nodes.append(node)
+			if link.from == id or link.to == id:
+				removed_links.append(link)
+
 	for id: StringName in nodes:
 		var story_node: StoryNode = _story_data.get_node(id)
 
@@ -81,11 +102,9 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 
 		_undo_redo.add_do_method(_story_data, 'remove_node', id)
 
-		_undo_redo.add_undo_method(_story_data, 'add_node', story_node)
+		_undo_redo.add_undo_method(self, '_restore_deleted_nodes', removed_nodes, removed_links)
 
 	_undo_redo.add_do_method(self, '_refresh')
-
-	_undo_redo.add_undo_method(self, '_refresh')
 
 	_undo_redo.commit_action()
 

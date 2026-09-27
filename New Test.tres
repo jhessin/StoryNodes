@@ -16,61 +16,6 @@
 [ext_resource type="PackedScene" uid="uid://dwyu0hkdrgten" path="res://addons/story_nodes/nodes/branch_graph_node.tscn" id="10_ivuwg"]
 [ext_resource type="Script" uid="uid://dflbb5l7krrii" path="res://addons/story_nodes/resources/nodes/branch_node.gd" id="11_an2p4"]
 
-[sub_resource type="Resource" id="Resource_cuebt"]
-script = ExtResource("1_gk2xj")
-from = &"dialogue1"
-to = &"choice1"
-
-[sub_resource type="Resource" id="Resource_ivuwg"]
-script = ExtResource("1_gk2xj")
-from = &"__start__"
-to = &"dialogue1"
-
-[sub_resource type="Resource" id="Resource_fv2by"]
-script = ExtResource("1_gk2xj")
-from = &"choice1"
-to = &"dialogue2"
-
-[sub_resource type="Resource" id="Resource_5m41q"]
-script = ExtResource("1_gk2xj")
-from = &"choice1"
-to = &"dialogue3"
-from_port = 1
-
-[sub_resource type="Resource" id="Resource_0otey"]
-script = ExtResource("1_gk2xj")
-from = &"choice1"
-to = &"dialogue4"
-from_port = 2
-
-[sub_resource type="Resource" id="Resource_x33uo"]
-script = ExtResource("1_gk2xj")
-from = &"choice1"
-to = &"dialogue5"
-from_port = 3
-
-[sub_resource type="Resource" id="Resource_oysav"]
-script = ExtResource("1_gk2xj")
-from = &"branch1"
-to = &"dialogue6"
-
-[sub_resource type="Resource" id="Resource_ouikn"]
-script = ExtResource("1_gk2xj")
-from = &"branch1"
-to = &"dialogue7"
-from_port = 1
-
-[sub_resource type="Resource" id="Resource_h1p2t"]
-script = ExtResource("1_gk2xj")
-from = &"branch1"
-to = &"dialogue8"
-from_port = 2
-
-[sub_resource type="Resource" id="Resource_rc1te"]
-script = ExtResource("1_gk2xj")
-from = &"dialogue2"
-to = &"branch1"
-
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
 node_id = &"start_node"
@@ -246,16 +191,4 @@ _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"dialogue6": SubResource("Resource_22b2a"),
 &"dialogue7": SubResource("Resource_36ldg"),
 &"dialogue8": SubResource("Resource_dwqat")
-})
-_links = Dictionary[ExtResource("1_gk2xj"), Object]({
-SubResource("Resource_cuebt"): null,
-SubResource("Resource_ivuwg"): null,
-SubResource("Resource_fv2by"): null,
-SubResource("Resource_5m41q"): null,
-SubResource("Resource_0otey"): null,
-SubResource("Resource_x33uo"): null,
-SubResource("Resource_oysav"): null,
-SubResource("Resource_ouikn"): null,
-SubResource("Resource_h1p2t"): null,
-SubResource("Resource_rc1te"): null
 })

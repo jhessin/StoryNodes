@@ -8,7 +8,6 @@ var _standard_node_library: StoryNodeLibrary = preload(
 )
 var _story_data: StoryData
 var _undo_redo: EditorUndoRedoManager
-var _node_move_positions: Dictionary[StringName, Vector2] = { }
 
 var _new_node_position: Vector2 = Vector2.ZERO
 var _connection_from_node: StringName = &''
@@ -46,7 +45,6 @@ func _ready() -> void:
 	graph_edit.disconnection_request.connect(_on_disconnection_request)
 
 	# Moving nodes.
-	graph_edit.begin_node_move.connect(_on_node_move_started)
 	graph_edit.end_node_move.connect(_on_node_move)
 
 	# Build the node library
@@ -56,18 +54,6 @@ func _ready() -> void:
 func set_story_data(data: StoryData) -> void:
 	_story_data = data
 	_refresh()
-
-
-func _on_node_move_started() -> void:
-	_node_move_positions.clear()
-
-	for id: StringName in graph_nodes:
-		var graph_node: StoryGraphNode = graph_nodes[id]
-
-		if graph_node.story_node == null:
-			continue
-
-		_node_move_positions[id] = graph_node.position_offset
 
 
 func _on_visibility_changed() -> void:
@@ -82,10 +68,26 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 		push_error('No Selected Story')
 		return
 
-	for id: StringName in nodes:
-		_story_data.remove_node(id)
+	if nodes.is_empty():
+		return
 
-	_refresh()
+	_undo_redo.create_action('Delete Story Nodes')
+
+	for id: StringName in nodes:
+		var story_node: StoryNode = _story_data.get_node(id)
+
+		if story_node == null:
+			continue
+
+		_undo_redo.add_do_method(_story_data, 'remove_node', id)
+
+		_undo_redo.add_undo_method(_story_data, 'add_node', story_node)
+
+	_undo_redo.add_do_method(self, '_refresh')
+
+	_undo_redo.add_undo_method(self, '_refresh')
+
+	_undo_redo.commit_action()
 
 
 func _on_graph_edit_gui_input(event: InputEvent) -> void:
@@ -141,19 +143,16 @@ func _on_node_move() -> void:
 		push_error('No Selected Story')
 		return
 
-	if _node_move_positions.is_empty():
-		return
-
 	_undo_redo.create_action('Move Story Nodes')
 
-	for id: StringName in _node_move_positions:
+	for id: StringName in graph_nodes:
 		var graph_node: StoryGraphNode = graph_nodes.get(id)
 
 		if graph_node == null or graph_node.story_node == null:
 			continue
 
 		var story_node: StoryNode = graph_node.story_node
-		var old_position: Vector2 = _node_move_positions[id]
+		var old_position: Vector2 = graph_node.story_node.position
 		var new_position: Vector2 = graph_node.position_offset
 
 		if old_position == new_position:
@@ -166,7 +165,6 @@ func _on_node_move() -> void:
 		_undo_redo.add_undo_property(graph_node, 'position_offset', old_position)
 
 	_undo_redo.commit_action()
-	_node_move_positions.clear()
 
 
 func _refresh() -> void:

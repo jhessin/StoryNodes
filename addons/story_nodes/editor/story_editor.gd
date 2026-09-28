@@ -16,6 +16,11 @@ var _variable_library: StoryVariableLibrary
 var _standard_node_library: StoryNodeLibrary
 var _undo_redo: EditorUndoRedoManager
 var _saved_undo_version: int = 0
+var _is_dirty: bool:
+	get:
+		if _undo_redo == null:
+			return false
+		return _undo_redo.get_version() != _saved_undo_version
 
 @onready var file_list: StoryFileList = %StoryFileList
 @onready var graph_editor: StoryGraphEditor = %Graph

@@ -195,6 +195,7 @@ func _on_node_move() -> void:
 
 func _refresh() -> void:
 	graph_nodes.clear()
+	graph_edit.clear_connections()
 
 	for child: Node in graph_edit.get_children():
 		if child is GraphNode:

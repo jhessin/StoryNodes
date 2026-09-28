@@ -65,6 +65,7 @@ var cast_count: int:
 		return _cast.size()
 
 var is_dirty: bool = false
+var edit_revision: int = 0
 
 @export_storage
 var _cast: Dictionary[StringName, bool] = { }

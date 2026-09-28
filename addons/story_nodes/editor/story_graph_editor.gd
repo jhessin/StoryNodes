@@ -285,9 +285,15 @@ func _on_disconnection_request(
 		push_error('Link does not exist.')
 		return
 
-	_story_data.remove_link(link)
+	_undo_redo.create_action('Delete Story Link')
 
-	graph_edit.disconnect_node(from_node, from_port, to_node, to_port)
+	_undo_redo.add_do_method(_story_data, 'remove_link', link)
+	_undo_redo.add_do_method(graph_edit, 'disconnect_node', from_node, from_port, to_node, to_port)
+
+	_undo_redo.add_undo_method(_story_data, 'add_link', from_node, to_node, from_port, to_port)
+	_undo_redo.add_undo_method(graph_edit, 'connect_node', from_node, from_port, to_node, to_port)
+
+	_undo_redo.commit_action()
 
 
 func _populate_add_node_menu() -> void:

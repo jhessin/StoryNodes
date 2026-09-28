@@ -21,11 +21,6 @@ script = ExtResource("1_gk2xj")
 from = &"__start__"
 to = &"dialogue1"
 
-[sub_resource type="Resource" id="Resource_0otey"]
-script = ExtResource("1_gk2xj")
-from = &"dialogue1"
-to = &"choice1"
-
 [sub_resource type="Resource" id="Resource_x33uo"]
 script = ExtResource("1_gk2xj")
 from = &"choice1"
@@ -70,6 +65,11 @@ script = ExtResource("1_gk2xj")
 from = &"branch1"
 to = &"dialogue8"
 from_port = 2
+
+[sub_resource type="Resource" id="Resource_0otey"]
+script = ExtResource("1_gk2xj")
+from = &"dialogue1"
+to = &"choice1"
 
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
@@ -249,7 +249,6 @@ _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 })
 _links = Dictionary[ExtResource("1_gk2xj"), Object]({
 SubResource("Resource_ivuwg"): null,
-SubResource("Resource_0otey"): null,
 SubResource("Resource_x33uo"): null,
 SubResource("Resource_oysav"): null,
 SubResource("Resource_ouikn"): null,
@@ -257,5 +256,6 @@ SubResource("Resource_h1p2t"): null,
 SubResource("Resource_rc1te"): null,
 SubResource("Resource_wm5s6"): null,
 SubResource("Resource_2f2l3"): null,
-SubResource("Resource_trtel"): null
+SubResource("Resource_trtel"): null,
+SubResource("Resource_0otey"): null
 })

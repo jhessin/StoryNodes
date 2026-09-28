@@ -260,13 +260,28 @@ func _on_connection_request(
 		push_error('No Selected Story')
 		return
 
-	var link := _story_data.add_link(from_node, to_node, from_port, to_port)
+	_undo_redo.create_action('Create Story Link')
 
-	if link == null:
-		push_error('Could not create link')
-		return
+	_undo_redo.add_do_method(_story_data, 'add_link', from_node, to_node, from_port, to_port)
+	_undo_redo.add_do_method(graph_edit, 'connect_node', from_node, from_port, to_node, to_port)
 
-	graph_edit.connect_node(from_node, from_port, to_node, to_port)
+	var link: StoryLink = StoryLink.new()
+	link.from = from_node
+	link.to = to_node
+	link.from_port = from_port
+	link.to_port = to_port
+
+	_undo_redo.add_undo_method(_story_data, 'remove_link', link)
+	_undo_redo.add_undo_method(
+		graph_edit,
+		'disconnect_node',
+		from_node,
+		from_port,
+		to_node,
+		to_port,
+	)
+
+	_undo_redo.commit_action()
 
 
 func _on_disconnection_request(
@@ -326,8 +341,10 @@ func _add_node_from_node(node: StoryNode) -> void:
 	story_node.instance_id = _new_instance_id(story_node.node_id)
 	story_node.position = _new_node_position
 
-	if not _story_data.add_node(story_node):
-		return
+	_undo_redo.create_action('Add Story Node')
+
+	_undo_redo.add_do_method(_story_data, 'add_node', story_node)
+	_undo_redo.add_undo_method(_story_data, 'remove_node', story_node.instance_id)
 
 	if not _connection_from_node.is_empty():
 		_on_connection_request(
@@ -343,7 +360,11 @@ func _add_node_from_node(node: StoryNode) -> void:
 		_on_connection_request(story_node.instance_id, 0, _connection_to_node, _connection_to_port)
 		_connection_to_node = &''
 		_connection_to_port = 0
-	_refresh()
+
+	_undo_redo.add_do_method(self, '_refresh')
+	_undo_redo.add_undo_method(self, '_refresh')
+
+	_undo_redo.commit_action()
 
 
 func _new_instance_id(base_name: String = 'node') -> StringName:

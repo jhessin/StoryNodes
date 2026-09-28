@@ -34,6 +34,7 @@ graph_scene = ExtResource("6_lwo30")
 display_name = "Branch"
 description = "Branches the story depending on the value of a given variable."
 position = Vector2(360, 140)
+size = Vector2(296, 108)
 metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
 [resource]

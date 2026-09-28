@@ -71,7 +71,7 @@ func restore_saved_size() -> void:
 
 	if story_node.size != Vector2.ZERO:
 		# _restoring_size = true
-		size = story_node.size
+		set_deferred('size', story_node.size)
 		# _restoring_size = false
 
 	call_deferred('_finish_size_initialization')

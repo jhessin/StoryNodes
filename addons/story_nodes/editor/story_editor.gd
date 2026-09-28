@@ -109,3 +109,4 @@ func _on_story_selected(data: StoryData) -> void:
 
 func _on_story_changed() -> void:
 	file_list.mark_dirty()
+	graph_editor.set_story_data(_story_data)

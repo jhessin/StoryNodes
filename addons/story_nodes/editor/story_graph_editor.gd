@@ -53,6 +53,7 @@ func _ready() -> void:
 
 func set_story_data(data: StoryData) -> void:
 	_story_data = data
+
 	_refresh()
 
 
@@ -105,6 +106,7 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 		_undo_redo.add_undo_method(self, '_restore_deleted_nodes', removed_nodes, removed_links)
 
 	_undo_redo.add_do_method(self, '_refresh')
+	_undo_redo.add_undo_method(self, '_refresh')
 
 	_undo_redo.commit_action()
 
@@ -181,13 +183,14 @@ func _on_node_move() -> void:
 			continue
 
 		_undo_redo.add_do_property(story_node, 'position', new_position)
-		_undo_redo.add_do_property(graph_node, 'position_offset', new_position)
 
 		_undo_redo.add_undo_property(story_node, 'position', old_position)
-		_undo_redo.add_undo_property(graph_node, 'position_offset', old_position)
 
 	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
 	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+
+	_undo_redo.add_do_method(self, '_refresh')
+	_undo_redo.add_undo_method(self, '_refresh')
 
 	_undo_redo.commit_action()
 	print('Story: ', _story_data.resource_path, ' Revision: ', _story_data.edit_revision)
@@ -231,11 +234,12 @@ func _refresh() -> void:
 
 		graph_nodes[node.instance_id] = graph_node
 
+	if is_visible_in_tree():
+		_restore_node_sizes()
+
 	await get_tree().process_frame
 
 	_refresh_links()
-
-	await get_tree().process_frame
 
 
 func _on_ports_changed() -> void:
@@ -271,7 +275,6 @@ func _on_connection_request(
 	_undo_redo.create_action('Create Story Link', UndoRedo.MERGE_DISABLE, _story_data)
 
 	_undo_redo.add_do_method(_story_data, 'add_link', from_node, to_node, from_port, to_port)
-	_undo_redo.add_do_method(graph_edit, 'connect_node', from_node, from_port, to_node, to_port)
 
 	var link: StoryLink = StoryLink.new()
 	link.from = from_node
@@ -280,14 +283,9 @@ func _on_connection_request(
 	link.to_port = to_port
 
 	_undo_redo.add_undo_method(_story_data, 'remove_link', link)
-	_undo_redo.add_undo_method(
-		graph_edit,
-		'disconnect_node',
-		from_node,
-		from_port,
-		to_node,
-		to_port,
-	)
+
+	_undo_redo.add_do_method(self, '_refresh')
+	_undo_redo.add_undo_method(self, '_refresh')
 
 	_undo_redo.commit_action()
 
@@ -311,10 +309,11 @@ func _on_disconnection_request(
 	_undo_redo.create_action('Delete Story Link', UndoRedo.MERGE_DISABLE, _story_data)
 
 	_undo_redo.add_do_method(_story_data, 'remove_link', link)
-	_undo_redo.add_do_method(graph_edit, 'disconnect_node', from_node, from_port, to_node, to_port)
 
 	_undo_redo.add_undo_method(_story_data, 'add_link', from_node, to_node, from_port, to_port)
-	_undo_redo.add_undo_method(graph_edit, 'connect_node', from_node, from_port, to_node, to_port)
+
+	_undo_redo.add_do_method(self, '_refresh')
+	_undo_redo.add_undo_method(self, '_refresh')
 
 	_undo_redo.commit_action()
 

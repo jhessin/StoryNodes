@@ -98,7 +98,6 @@ func _save(index: int) -> void:
 
 	story_data.is_dirty = false
 
-	var history_id: int = _undo_redo.get_object_history_id(story_data)
 	_saved_revisions[path] = story_data.edit_revision
 	mark_dirty()
 

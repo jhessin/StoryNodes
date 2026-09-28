@@ -47,7 +47,7 @@ func _on_character_selected(index: int) -> void:
 	dialogue_node.emit_changed()
 
 	if story_data != null:
-		story_data.mark_changed()
+		story_data.emit_changed()
 
 
 func _refresh_character_picker() -> void:
@@ -83,4 +83,4 @@ func _on_dialogue_changed() -> void:
 	dialogue_node.dialogue = dialogue_edit.text
 
 	if story_data != null:
-		story_data.mark_changed()
+		story_data.emit_changed()

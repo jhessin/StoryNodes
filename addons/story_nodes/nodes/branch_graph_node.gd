@@ -61,7 +61,7 @@ func _on_new_condition_pressed() -> void:
 	condition.initialize_for_variable(branch_node.variable)
 
 	branch_node.conditions.append(condition)
-	story_data.mark_changed()
+	story_data.emit_changed()
 	_refresh_condition_rows()
 
 
@@ -82,7 +82,7 @@ func _on_variable_selected(index: int) -> void:
 	branch_node.variable = variable
 	branch_node.emit_changed()
 	if story_data != null:
-		story_data.mark_changed()
+		story_data.emit_changed()
 
 	_refresh_condition_rows()
 
@@ -152,7 +152,7 @@ func _on_condition_changed() -> void:
 	if story_data == null:
 		return
 
-	story_data.mark_changed()
+	story_data.emit_changed()
 
 
 func _on_condition_delete_requested(condition: BranchCondition) -> void:
@@ -169,7 +169,7 @@ func _on_condition_delete_requested(condition: BranchCondition) -> void:
 	branch_node.emit_changed()
 
 	if story_data != null:
-		story_data.mark_changed()
+		story_data.emit_changed()
 
 	call_deferred('_refresh_condition_rows_and_notify')
 

@@ -128,7 +128,7 @@ func _on_choice_changed(value: String, index: int) -> void:
 	choice_node.emit_changed()
 
 	if story_data != null:
-		story_data.mark_changed()
+		story_data.emit_changed()
 
 
 func _focus_index() -> void:
@@ -165,7 +165,7 @@ func _on_add_choice(new_text: String) -> void:
 	choice_node.emit_changed()
 
 	if story_data != null:
-		story_data.mark_changed()
+		story_data.emit_changed()
 
 	new_choice_field.text = ''
 
@@ -187,7 +187,7 @@ func _delete_choice(index: int) -> void:
 	choice_node.emit_changed()
 
 	if story_data != null:
-		story_data.mark_changed()
+		story_data.emit_changed()
 
 	call_deferred('_refresh_choices_and_notify')
 

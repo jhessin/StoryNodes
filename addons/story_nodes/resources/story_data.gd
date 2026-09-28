@@ -10,14 +10,14 @@ const START_NODE_ID: StringName = &'__start__'
 			return
 		title = value
 		if not resource_path.is_empty():
-			mark_changed()
+			emit_changed()
 @export var description: String = '':
 	set(value):
 		if description == value:
 			return
 		description = value
 		if not resource_path.is_empty():
-			mark_changed()
+			emit_changed()
 @export var character_library: StoryCharacterLibrary
 @export var variable_library: StoryVariableLibrary
 
@@ -64,7 +64,6 @@ var cast_count: int:
 	get:
 		return _cast.size()
 
-var is_dirty: bool = false
 var edit_revision: int = 0
 
 @export_storage
@@ -84,11 +83,6 @@ func _init() -> void:
 	_ensure_start()
 
 
-func mark_changed() -> void:
-	is_dirty = true
-	emit_changed()
-
-
 ## ===
 ## Node methods
 ## ===
@@ -101,7 +95,7 @@ func add_node(node: StoryNode) -> bool:
 
 	_nodes[node.instance_id] = node
 
-	mark_changed()
+	emit_changed()
 	return true
 
 
@@ -186,14 +180,14 @@ func remove_node(id: StringName) -> void:
 			remove_link(link)
 
 	_nodes.erase(id)
-	mark_changed()
+	emit_changed()
 
 
 func clear_nodes() -> void:
 	_links.clear()
 	_nodes.clear()
 	_ensure_start()
-	mark_changed()
+	emit_changed()
 
 
 ## ===
@@ -218,7 +212,7 @@ func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int
 	link.to_port = to_port
 
 	_links[link] = null
-	mark_changed()
+	emit_changed()
 
 	return link
 
@@ -248,7 +242,7 @@ func has_links() -> bool:
 
 func remove_link(link: StoryLink) -> void:
 	_links.erase(link)
-	mark_changed()
+	emit_changed()
 
 
 func remove_links_from(id: StringName) -> void:
@@ -285,7 +279,7 @@ func shift_link_ports(from: StringName, removed_port: int) -> void:
 		if link.from_port > removed_port:
 			link.from_port -= 1
 
-	mark_changed()
+	emit_changed()
 
 
 func move_link_port(from: StringName, from_port: int, to_port: int) -> void:
@@ -302,7 +296,7 @@ func move_link_port(from: StringName, from_port: int, to_port: int) -> void:
 			if link.from_port >= to_port and link.from_port < from_port:
 				link.from_port += 1
 
-	mark_changed()
+	emit_changed()
 
 
 func get_links_from(from: StringName) -> Array[StoryLink]:
@@ -327,14 +321,14 @@ func get_links_to(to: StringName) -> Array[StoryLink]:
 
 func clear_links() -> void:
 	_links.clear()
-	mark_changed()
+	emit_changed()
 
 
 func clear() -> void:
 	_links.clear()
 	_nodes.clear()
 	_ensure_start()
-	mark_changed()
+	emit_changed()
 
 
 func is_valid() -> bool:
@@ -395,7 +389,7 @@ func add_to_cast(character: StoryCharacter) -> void:
 		return
 
 	_cast[character.id] = true
-	mark_changed()
+	emit_changed()
 
 
 func remove_from_cast(character: StoryCharacter) -> void:
@@ -408,7 +402,7 @@ func remove_from_cast(character: StoryCharacter) -> void:
 		return
 
 	_cast.erase(character.id)
-	mark_changed()
+	emit_changed()
 
 
 func is_in_cast(character: StoryCharacter) -> bool:
@@ -426,7 +420,7 @@ func clear_cast() -> void:
 		return
 
 	_cast.clear()
-	mark_changed()
+	emit_changed()
 
 
 ## ===

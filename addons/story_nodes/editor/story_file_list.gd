@@ -29,7 +29,7 @@ var _is_dirty: Dictionary[int, bool]:
 
 func _ready() -> void:
 	_undo_redo = EditorInterface.get_editor_undo_redo()
-	_undo_redo.version_changed.connect(mark_dirty)
+	_undo_redo.history_changed.connect(mark_dirty)
 	item_list.gui_input.connect(_on_gui_input)
 	save_menu.id_pressed.connect(_on_save_menu_selected)
 	filesystem = EditorInterface.get_resource_filesystem()

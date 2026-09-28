@@ -8,7 +8,6 @@ var _standard_node_library: StoryNodeLibrary = preload(
 )
 var _story_data: StoryData
 var _undo_redo: EditorUndoRedoManager
-var _saved_undo_version: int = 0
 
 var _new_node_position: Vector2 = Vector2.ZERO
 var _connection_from_node: StringName = &''
@@ -54,7 +53,6 @@ func _ready() -> void:
 
 func set_story_data(data: StoryData) -> void:
 	_story_data = data
-	_saved_undo_version = _undo_redo.get_version()
 	_refresh()
 
 

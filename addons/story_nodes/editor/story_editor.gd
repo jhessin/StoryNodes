@@ -15,6 +15,7 @@ var _character_library: StoryCharacterLibrary
 var _variable_library: StoryVariableLibrary
 var _standard_node_library: StoryNodeLibrary
 var _undo_redo: EditorUndoRedoManager
+var _saved_undo_version: int = 0
 
 @onready var file_list: StoryFileList = %StoryFileList
 @onready var graph_editor: StoryGraphEditor = %Graph
@@ -47,6 +48,7 @@ func set_story_data(data: StoryData) -> void:
 			_story_data.changed.disconnect(_on_story_changed)
 
 	_story_data = data
+	_saved_undo_version = _undo_redo.get_version()
 
 	if _story_data != null:
 		if _story_data.character_library == null:

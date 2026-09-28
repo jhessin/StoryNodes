@@ -21,6 +21,10 @@ const START_NODE_ID: StringName = &'__start__'
 @export var character_library: StoryCharacterLibrary
 @export var variable_library: StoryVariableLibrary
 
+var history_id: int:
+	get:
+		return EditorInterface.get_editor_undo_redo().get_object_history_id(self)
+
 var node_list: Array[StoryNode]:
 	get:
 		return _nodes.values()

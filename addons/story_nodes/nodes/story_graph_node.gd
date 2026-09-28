@@ -28,8 +28,8 @@ func _notification(what: int) -> void:
 
 	story_node.size = size
 
-	if story_data != null:
-		story_data.emit_changed()
+	# if story_data != null:
+	# 	story_data.emit_changed()
 
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:

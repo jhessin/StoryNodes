@@ -60,7 +60,6 @@ func mark_dirty() -> void:
 
 		item_list.set_item_text(i, title)
 		item_list.set_item_tooltip(i, data.description)
-		return
 
 
 func select_path(path: String) -> void:

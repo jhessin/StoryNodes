@@ -164,6 +164,9 @@ func _on_node_move() -> void:
 
 	_undo_redo.create_action('Move Story Nodes', UndoRedo.MERGE_DISABLE, _story_data)
 
+	var old_revision: int = _story_data.edit_revision
+	var new_revision: int = old_revision + 1
+
 	for id: StringName in graph_nodes:
 		var graph_node: StoryGraphNode = graph_nodes.get(id)
 
@@ -183,7 +186,11 @@ func _on_node_move() -> void:
 		_undo_redo.add_undo_property(story_node, 'position', old_position)
 		_undo_redo.add_undo_property(graph_node, 'position_offset', old_position)
 
+	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+
 	_undo_redo.commit_action()
+	print('Story: ', _story_data.resource_path, ' Revision: ', _story_data.edit_revision)
 
 
 func _refresh() -> void:

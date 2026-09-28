@@ -12,14 +12,7 @@ var selected_path: String = ''
 var context_index: int = -1
 
 var _undo_redo: EditorUndoRedoManager
-var _story_histories: Dictionary[int, UndoRedo] = { }
-var _saved_undo_versions: Dictionary[int, int] = { }
-var _is_dirty: Dictionary[int, bool]:
-	get:
-		var result: Dictionary[int, bool] = { }
-		for id: int in _story_histories.keys():
-			result[id] = _story_histories[id].get_version() != _saved_undo_versions[id]
-		return result
+var _saved_revisions: Dictionary[String, int] = { }
 
 @onready var item_list: ItemList = %ItemList
 @onready var create_button: Button = %CreateButton
@@ -54,8 +47,8 @@ func mark_dirty() -> void:
 		if title.is_empty():
 			title = path
 
-		var history_id: int = _undo_redo.get_object_history_id(data)
-		if _is_dirty[history_id]:
+		var saved_revision: int = _saved_revisions.get(path, data.edit_revision)
+		if data.edit_revision != saved_revision:
 			title += '(*)'
 
 		item_list.set_item_text(i, title)
@@ -106,7 +99,7 @@ func _save(index: int) -> void:
 	story_data.is_dirty = false
 
 	var history_id: int = _undo_redo.get_object_history_id(story_data)
-	_saved_undo_versions[history_id] = _story_histories[history_id].get_version()
+	_saved_revisions[path] = story_data.edit_revision
 	mark_dirty()
 
 
@@ -144,12 +137,8 @@ func _scan_directory(directory: EditorFileSystemDirectory) -> void:
 		var resource := load(path)
 
 		if resource is StoryData:
-			var history_id: int = _undo_redo.get_object_history_id(resource)
-			_story_histories[history_id] = EditorInterface \
-					.get_editor_undo_redo() \
-					.get_history_undo_redo(history_id)
-			if not _saved_undo_versions.has(history_id):
-				_saved_undo_versions[history_id] = _story_histories[history_id].get_version()
+			if not _saved_revisions.has(path):
+				_saved_revisions[path] = resource.edit_revision
 
 			if resource.title.is_empty():
 				item_list.add_item(path)

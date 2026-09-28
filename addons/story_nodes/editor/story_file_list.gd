@@ -11,6 +11,7 @@ var filesystem: EditorFileSystem
 var selected_path: String = ''
 var context_index: int = -1
 
+var _undo_redo: EditorUndoRedoManager
 var _story_histories: Dictionary[int, UndoRedo] = { }
 var _saved_undo_versions: Dictionary[int, int] = { }
 var _is_dirty: Dictionary[int, bool]:
@@ -27,6 +28,8 @@ var _is_dirty: Dictionary[int, bool]:
 
 
 func _ready() -> void:
+	_undo_redo = EditorInterface.get_editor_undo_redo()
+	_undo_redo.version_changed.connect(mark_dirty)
 	item_list.gui_input.connect(_on_gui_input)
 	save_menu.id_pressed.connect(_on_save_menu_selected)
 	filesystem = EditorInterface.get_resource_filesystem()
@@ -40,23 +43,19 @@ func _ready() -> void:
 		_refresh()
 
 
-func mark_dirty(data: StoryData) -> void:
-	if data == null:
-		return
-
+func mark_dirty() -> void:
 	for i: int in item_list.item_count:
 		var path := item_list.get_item_metadata(i) as String
 
-		# TODO: use the path to get the story_data and the story_data.history_id to get the dirty state.
-		if path != data.resource_path:
-			continue
+		var data: Resource = load(path)
 
-		var title := data.title
+		var title: String = data.title
 
 		if title.is_empty():
 			title = path
 
-		if _is_dirty[data.history_id]:
+		var history_id: int = _undo_redo.get_object_history_id(data)
+		if _is_dirty[history_id]:
 			title += '(*)'
 
 		item_list.set_item_text(i, title)
@@ -106,8 +105,10 @@ func _save(index: int) -> void:
 		return
 
 	story_data.is_dirty = false
-	_saved_undo_versions[story_data.history_id] = _story_histories[story_data.history_id].get_version()
-	mark_dirty(story_data)
+
+	var history_id: int = _undo_redo.get_object_history_id(story_data)
+	_saved_undo_versions[history_id] = _story_histories[history_id].get_version()
+	mark_dirty()
 
 
 func _update_item_list_size() -> void:
@@ -144,11 +145,13 @@ func _scan_directory(directory: EditorFileSystemDirectory) -> void:
 		var resource := load(path)
 
 		if resource is StoryData:
-			var history_id: int = resource.history_id
+			var history_id: int = _undo_redo.get_object_history_id(resource)
 			_story_histories[history_id] = EditorInterface \
 					.get_editor_undo_redo() \
 					.get_history_undo_redo(history_id)
-			_saved_undo_versions[history_id] = _story_histories[history_id].get_version()
+			if not _saved_undo_versions.has(history_id):
+				_saved_undo_versions[history_id] = _story_histories[history_id].get_version()
+
 			if resource.title.is_empty():
 				item_list.add_item(path)
 			else:
@@ -158,7 +161,7 @@ func _scan_directory(directory: EditorFileSystemDirectory) -> void:
 			item_list.set_item_metadata(index, path)
 			var description: String = resource.description
 			item_list.set_item_tooltip(index, description)
-			mark_dirty(resource as StoryData)
+			mark_dirty()
 
 	for i: int in directory.get_subdir_count():
 		_scan_directory(directory.get_subdir(i))

@@ -15,14 +15,6 @@ var _character_library: StoryCharacterLibrary
 var _variable_library: StoryVariableLibrary
 var _standard_node_library: StoryNodeLibrary
 var _undo_redo: EditorUndoRedoManager
-var _story_histories: Dictionary[int, UndoRedo] = { }
-var _saved_undo_versions: Dictionary[int, int] = { }
-var _is_dirty: Dictionary[int, bool]:
-	get:
-		var result: Dictionary[int, bool] = { }
-		for id: int in _story_histories.keys():
-			result[id] = _story_histories[id].get_version() != _saved_undo_versions[id]
-		return result
 
 @onready var file_list: StoryFileList = %StoryFileList
 @onready var graph_editor: StoryGraphEditor = %Graph
@@ -34,7 +26,6 @@ var _is_dirty: Dictionary[int, bool]:
 
 func _ready() -> void:
 	_undo_redo = EditorInterface.get_editor_undo_redo()
-	_undo_redo.version_changed.connect(_on_story_changed)
 
 	_standard_node_library = StorySettings.get_standard_library()
 
@@ -58,10 +49,6 @@ func set_story_data(data: StoryData) -> void:
 	_story_data = data
 
 	if _story_data != null:
-		var history_id: int = _story_data.history_id
-		_story_histories[history_id] = _undo_redo.get_history_undo_redo(history_id)
-		_saved_undo_versions[history_id] = _story_histories[history_id].get_version()
-
 		if _story_data.character_library == null:
 			_story_data.character_library = _character_library
 		if _story_data.variable_library == null:
@@ -70,7 +57,7 @@ func set_story_data(data: StoryData) -> void:
 		_story_data.ensure_start_node()
 		_story_data.changed.connect(_on_story_changed)
 
-		file_list.mark_dirty(_story_data)
+		file_list.mark_dirty()
 		file_list.select_path(_story_data.resource_path)
 		call_deferred('_inspect_story')
 
@@ -121,4 +108,4 @@ func _on_story_selected(data: StoryData) -> void:
 
 
 func _on_story_changed() -> void:
-	file_list.mark_dirty(_story_data)
+	file_list.mark_dirty()

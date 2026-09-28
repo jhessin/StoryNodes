@@ -21,55 +21,55 @@ script = ExtResource("1_gk2xj")
 from = &"__start__"
 to = &"dialogue1"
 
-[sub_resource type="Resource" id="Resource_x33uo"]
+[sub_resource type="Resource" id="Resource_0otey"]
 script = ExtResource("1_gk2xj")
 from = &"choice1"
 to = &"dialogue2"
 
-[sub_resource type="Resource" id="Resource_oysav"]
+[sub_resource type="Resource" id="Resource_x33uo"]
 script = ExtResource("1_gk2xj")
 from = &"choice1"
 to = &"dialogue3"
 from_port = 1
 
-[sub_resource type="Resource" id="Resource_ouikn"]
+[sub_resource type="Resource" id="Resource_oysav"]
 script = ExtResource("1_gk2xj")
 from = &"choice1"
 to = &"dialogue4"
 from_port = 2
 
-[sub_resource type="Resource" id="Resource_h1p2t"]
+[sub_resource type="Resource" id="Resource_ouikn"]
 script = ExtResource("1_gk2xj")
 from = &"choice1"
 to = &"dialogue5"
 from_port = 3
 
-[sub_resource type="Resource" id="Resource_rc1te"]
+[sub_resource type="Resource" id="Resource_h1p2t"]
 script = ExtResource("1_gk2xj")
 from = &"dialogue2"
 to = &"branch1"
 
-[sub_resource type="Resource" id="Resource_wm5s6"]
+[sub_resource type="Resource" id="Resource_rc1te"]
 script = ExtResource("1_gk2xj")
 from = &"branch1"
 to = &"dialogue6"
 
-[sub_resource type="Resource" id="Resource_2f2l3"]
-script = ExtResource("1_gk2xj")
-from = &"branch1"
-to = &"dialogue7"
-from_port = 1
-
-[sub_resource type="Resource" id="Resource_trtel"]
+[sub_resource type="Resource" id="Resource_wm5s6"]
 script = ExtResource("1_gk2xj")
 from = &"branch1"
 to = &"dialogue8"
 from_port = 2
 
-[sub_resource type="Resource" id="Resource_0otey"]
+[sub_resource type="Resource" id="Resource_2f2l3"]
 script = ExtResource("1_gk2xj")
 from = &"dialogue1"
 to = &"choice1"
+
+[sub_resource type="Resource" id="Resource_trtel"]
+script = ExtResource("1_gk2xj")
+from = &"branch1"
+to = &"dialogue7"
+from_port = 1
 
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
@@ -83,28 +83,28 @@ metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
 [sub_resource type="Resource" id="Resource_x2nhn"]
 script = ExtResource("9_cuebt")
-operator = 6
+operator = 2
 value = 0
 
 [sub_resource type="Resource" id="Resource_g30ij"]
 script = ExtResource("9_cuebt")
-operator = 4
+operator = 2
 value = 0
 
 [sub_resource type="Resource" id="Resource_68cm5"]
 script = ExtResource("9_cuebt")
-operator = 8
+operator = 2
 value = 0
 
-[sub_resource type="Resource" id="Resource_sn2a2"]
+[sub_resource type="Resource" id="Resource_j6ouu"]
 script = ExtResource("8_ivuwg")
-name = &"my_int_variable"
-type = 1
-default_value = 0
+name = &"my_bool_variable"
+type = 0
+default_value = false
 
 [sub_resource type="Resource" id="Resource_pptdr"]
 script = ExtResource("11_an2p4")
-variable = SubResource("Resource_sn2a2")
+variable = SubResource("Resource_j6ouu")
 conditions = Array[ExtResource("9_cuebt")]([SubResource("Resource_x2nhn"), SubResource("Resource_g30ij"), SubResource("Resource_68cm5")])
 node_id = &"branch"
 instance_id = &"branch1"
@@ -126,18 +126,6 @@ description = "A simple choice."
 position = Vector2(547.79486, -59.999996)
 size = Vector2(250, 190)
 metadata/_custom_type_script = "uid://di1clrtje6o4r"
-
-[sub_resource type="Resource" id="Resource_an2p4"]
-script = ExtResource("8_5m41q")
-dialogue = "So what's it going to be?"
-node_id = &"dialogue"
-instance_id = &"dialogue1"
-graph_scene = ExtResource("7_fv2by")
-display_name = "Dialogue"
-description = "An NPC conversation."
-position = Vector2(180, -20)
-size = Vector2(292.91382, 174.45221)
-metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [sub_resource type="Resource" id="Resource_bpkqa"]
 script = ExtResource("8_5m41q")
@@ -200,18 +188,6 @@ position = Vector2(1780, -260)
 size = Vector2(257.57996, 165.48)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
-[sub_resource type="Resource" id="Resource_36ldg"]
-script = ExtResource("8_5m41q")
-dialogue = "Equals"
-node_id = &"dialogue"
-instance_id = &"dialogue7"
-graph_scene = ExtResource("7_fv2by")
-display_name = "Dialogue"
-description = "An NPC conversation."
-position = Vector2(1780, -80)
-size = Vector2(278.79016, 148.53998)
-metadata/_custom_type_script = "uid://cbnuc0rxniwju"
-
 [sub_resource type="Resource" id="Resource_dwqat"]
 script = ExtResource("8_5m41q")
 dialogue = ">"
@@ -221,7 +197,31 @@ graph_scene = ExtResource("7_fv2by")
 display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(1780, 120)
-size = Vector2(277.57996, 155.2299)
+size = Vector2(277.58008, 155.22992)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_an2p4"]
+script = ExtResource("8_5m41q")
+dialogue = "So what's it going to be?"
+node_id = &"dialogue"
+instance_id = &"dialogue1"
+graph_scene = ExtResource("7_fv2by")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(180, -20)
+size = Vector2(292.91382, 174.45221)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_36ldg"]
+script = ExtResource("8_5m41q")
+dialogue = "Equals"
+node_id = &"dialogue"
+instance_id = &"dialogue7"
+graph_scene = ExtResource("7_fv2by")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(1780, -80)
+size = Vector2(278.79004, 148.53998)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
 [resource]
@@ -249,6 +249,7 @@ _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 })
 _links = Dictionary[ExtResource("1_gk2xj"), Object]({
 SubResource("Resource_ivuwg"): null,
+SubResource("Resource_0otey"): null,
 SubResource("Resource_x33uo"): null,
 SubResource("Resource_oysav"): null,
 SubResource("Resource_ouikn"): null,
@@ -256,6 +257,5 @@ SubResource("Resource_h1p2t"): null,
 SubResource("Resource_rc1te"): null,
 SubResource("Resource_wm5s6"): null,
 SubResource("Resource_2f2l3"): null,
-SubResource("Resource_trtel"): null,
-SubResource("Resource_0otey"): null
+SubResource("Resource_trtel"): null
 })

@@ -81,7 +81,7 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 	if nodes.is_empty():
 		return
 
-	_undo_redo.create_action('Delete Story Nodes')
+	_undo_redo.create_action('Delete Story Nodes', UndoRedo.MERGE_DISABLE, _story_data)
 
 	var removed_links: Array[StoryLink] = []
 	var removed_nodes: Array[StoryNode] = []
@@ -162,7 +162,7 @@ func _on_node_move() -> void:
 		push_error('No Selected Story')
 		return
 
-	_undo_redo.create_action('Move Story Nodes')
+	_undo_redo.create_action('Move Story Nodes', UndoRedo.MERGE_DISABLE, _story_data)
 
 	for id: StringName in graph_nodes:
 		var graph_node: StoryGraphNode = graph_nodes.get(id)
@@ -260,7 +260,7 @@ func _on_connection_request(
 		push_error('No Selected Story')
 		return
 
-	_undo_redo.create_action('Create Story Link')
+	_undo_redo.create_action('Create Story Link', UndoRedo.MERGE_DISABLE, _story_data)
 
 	_undo_redo.add_do_method(_story_data, 'add_link', from_node, to_node, from_port, to_port)
 	_undo_redo.add_do_method(graph_edit, 'connect_node', from_node, from_port, to_node, to_port)
@@ -300,7 +300,7 @@ func _on_disconnection_request(
 		push_error('Link does not exist.')
 		return
 
-	_undo_redo.create_action('Delete Story Link')
+	_undo_redo.create_action('Delete Story Link', UndoRedo.MERGE_DISABLE, _story_data)
 
 	_undo_redo.add_do_method(_story_data, 'remove_link', link)
 	_undo_redo.add_do_method(graph_edit, 'disconnect_node', from_node, from_port, to_node, to_port)
@@ -341,7 +341,7 @@ func _add_node_from_node(node: StoryNode) -> void:
 	story_node.instance_id = _new_instance_id(story_node.node_id)
 	story_node.position = _new_node_position
 
-	_undo_redo.create_action('Add Story Node')
+	_undo_redo.create_action('Add Story Node', UndoRedo.MERGE_DISABLE, _story_data)
 
 	_undo_redo.add_do_method(_story_data, 'add_node', story_node)
 	_undo_redo.add_undo_method(_story_data, 'remove_node', story_node.instance_id)

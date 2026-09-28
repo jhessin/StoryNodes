@@ -15,13 +15,13 @@ var _character_library: StoryCharacterLibrary
 var _variable_library: StoryVariableLibrary
 var _standard_node_library: StoryNodeLibrary
 var _undo_redo: EditorUndoRedoManager
+var _story_history: UndoRedo
 var _saved_undo_version: int = 0
-var _story_undo_version: int = 0
 var _is_dirty: bool:
 	get:
-		if _undo_redo == null:
+		if _story_history == null:
 			return false
-		return _story_undo_version != _saved_undo_version
+		return _story_history.get_version() != _saved_undo_version
 
 @onready var file_list: StoryFileList = %StoryFileList
 @onready var graph_editor: StoryGraphEditor = %Graph
@@ -33,6 +33,7 @@ var _is_dirty: bool:
 
 func _ready() -> void:
 	_undo_redo = EditorInterface.get_editor_undo_redo()
+	_undo_redo.version_changed.connect(_on_version_changed)
 
 	_standard_node_library = StorySettings.get_standard_library()
 
@@ -54,9 +55,12 @@ func set_story_data(data: StoryData) -> void:
 			_story_data.changed.disconnect(_on_story_changed)
 
 	_story_data = data
-	_saved_undo_version = _undo_redo.get_version()
 
 	if _story_data != null:
+		var history_id: int = _undo_redo.get_object_history_id(_story_data)
+		_story_history = _undo_redo.get_history_undo_redo(history_id)
+		_saved_undo_version = _story_history.get_version()
+
 		if _story_data.character_library == null:
 			_story_data.character_library = _character_library
 		if _story_data.variable_library == null:
@@ -75,6 +79,11 @@ func set_story_data(data: StoryData) -> void:
 
 func get_undo_redo() -> EditorUndoRedoManager:
 	return _undo_redo
+
+
+func _on_version_changed() -> void:
+	if _story_data == null:
+		return
 
 
 func _load_character_library() -> void:

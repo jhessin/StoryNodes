@@ -101,8 +101,6 @@ func _save(index: int) -> void:
 		push_error('Story save error string: ', error_string(error))
 		return
 
-	story_data.is_dirty = false
-
 	_saved_revisions[path] = story_data.edit_revision
 	mark_dirty()
 

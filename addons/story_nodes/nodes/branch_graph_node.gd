@@ -54,12 +54,11 @@ func set_story_data(data: StoryData) -> void:
 
 
 func _on_new_condition_pressed() -> void:
-	if branch_node == null:
+	if branch_node == null or branch_node.variable == null:
 		return
 
 	var condition: BranchCondition = BranchCondition.new()
 	condition.initialize_for_variable(branch_node.variable)
-
 	branch_node.conditions.append(condition)
 	story_data.emit_changed()
 	_refresh_condition_rows()
@@ -69,21 +68,34 @@ func _on_variable_selected(index: int) -> void:
 	if branch_node == null:
 		return
 
+	if index == 0:
+		branch_node.variable = null
+		branch_node.emit_changed()
+
+		if story_data != null:
+			story_data.emit_changed()
+
+		new_condition_button.disabled = true
+		_refresh_condition_rows()
+		return
+
+	new_condition_button.disabled = false
+
 	if story_data == null or story_data.variable_library == null:
 		return
 
+	var variable_index: int = index - 1
 	var variables: Array[StoryVariable] = story_data.variable_library.variable_list
 
-	if index < 0 or index >= variables.size():
+	if variable_index < 0 or variable_index >= variables.size():
 		return
 
-	var variable: StoryVariable = variables[index]
+	var variable: StoryVariable = variables[variable_index]
 
 	branch_node.variable = variable
 	branch_node.emit_changed()
-	if story_data != null:
-		story_data.emit_changed()
 
+	story_data.emit_changed()
 	_refresh_condition_rows()
 
 
@@ -93,23 +105,29 @@ func _refresh_variable_picker() -> void:
 	if story_data == null:
 		return
 
+	variable_picker.add_item('None')
+	variable_picker.set_item_id(0, -1)
+	variable_picker.select(0)
+
 	if story_data.variable_library == null:
 		return
 
 	for variable: StoryVariable in story_data.variable_library.variable_list:
 		var index: int = variable_picker.item_count
 		variable_picker.add_item(String(variable.name))
-		variable_picker.set_item_id(index, index)
+		variable_picker.set_item_id(index, index - 1)
 
-		if branch_node != null and branch_node.variable != null:
-			if branch_node.variable.name == variable.name:
-				variable_picker.select(index)
+		if branch_node != null and branch_node.variable == variable:
+			variable_picker.select(index)
 
 
 func _refresh_condition_rows() -> void:
 	for child: Control in get_children():
 		if child is ConditionRow:
 			child.free()
+
+	if branch_node == null or branch_node.variable == null:
+		return
 
 	for condition: BranchCondition in branch_node.conditions:
 		var condition_row: ConditionRow = CONDITION_ROW_SCENE.instantiate() as ConditionRow

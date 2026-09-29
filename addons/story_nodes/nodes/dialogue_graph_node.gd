@@ -13,6 +13,7 @@ var dialogue_node: DialogueNode:
 func _ready() -> void:
 	character_picker.item_selected.connect(_on_character_selected)
 	dialogue_edit.text_changed.connect(_on_dialogue_changed)
+	super._ready()
 
 
 func set_story_data(data: StoryData) -> void:

@@ -14,6 +14,7 @@ var _deleted_index: int = 0
 func _ready() -> void:
 	new_choice_field.text_submitted.connect(_on_add_choice)
 	_refresh_choices()
+	super._ready()
 
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:

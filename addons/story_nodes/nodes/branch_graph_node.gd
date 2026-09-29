@@ -22,6 +22,8 @@ func _ready() -> void:
 	else:
 		new_condition_button.disabled = false
 
+	super._ready()
+
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	return data is int

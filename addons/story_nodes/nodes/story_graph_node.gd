@@ -12,8 +12,8 @@ var _undo_redo: EditorUndoRedoManager
 
 
 func _ready() -> void:
-	if not resize_request.is_connected(_on_resize_end):
-		resize_request.connect(_on_resize_end)
+	if not resize_end.is_connected(_on_resize_end):
+		resize_end.connect(_on_resize_end)
 
 	_undo_redo = EditorInterface.get_editor_undo_redo()
 

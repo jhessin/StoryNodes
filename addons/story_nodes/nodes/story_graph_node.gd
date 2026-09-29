@@ -8,30 +8,12 @@ var story_node: StoryNode
 var story_data: StoryData
 
 # var _restoring_size: bool = false
-var _size_initialized: bool = false
-var _resize_start_size: Vector2
-var _resize_in_progress: bool = false
+var _undo_redo: EditorUndoRedoManager
 
 
-func _notification(what: int) -> void:
-	if what != NOTIFICATION_RESIZED:
-		return
-
-	if not _size_initialized:
-		return
-
-	# if _restoring_size:
-	# return
-	if story_node == null:
-		return
-
-	if story_node.size == size:
-		return
-
-	story_node.size = size
-
-	# if story_data != null:
-	# 	story_data.emit_changed()
+func _ready() -> void:
+	resize_end.connect(_on_resize_end)
+	_undo_redo = EditorInterface.get_editor_undo_redo()
 
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
@@ -76,8 +58,27 @@ func restore_saved_size() -> void:
 		set_deferred('size', story_node.size)
 		# _restoring_size = false
 
-	call_deferred('_finish_size_initialization')
 
+func _on_resize_end(new_size: Vector2) -> void:
+	print('_on_resize_end called')
+	if story_node == null:
+		return
+	print('story_node is not null')
 
-func _finish_size_initialization() -> void:
-	_size_initialized = true
+	var old_size := story_node.size
+
+	if new_size == old_size:
+		return
+
+	_undo_redo.create_action('Change node size', UndoRedo.MERGE_DISABLE, story_data)
+
+	_undo_redo.add_do_property(story_node, 'size', new_size)
+
+	_undo_redo.add_undo_property(story_node, 'size', old_size)
+
+	var old_revision: int = story_data.edit_revision
+	var new_revision: int = old_revision + 1
+	_undo_redo.add_do_property(story_data, 'edit_revision', new_revision)
+	_undo_redo.add_undo_property(story_data, 'edit_revision', old_revision)
+
+	_undo_redo.commit_action()

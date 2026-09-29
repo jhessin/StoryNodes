@@ -27,16 +27,25 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 
 
 func set_story_node(node: StoryNode) -> void:
+	if story_node != null:
+		if story_node.changed.is_connected(_on_story_node_changed):
+			story_node.changed.disconnect(_on_story_node_changed)
+
 	story_node = node
 
 	if story_node == null:
 		push_error('Story node should be set when using a StoryGraphNode')
 		return
 
+	if not story_node.changed.is_connected(_on_story_node_changed):
+		story_node.changed.connect(_on_story_node_changed)
+
 	if not story_node.instance_id.is_empty():
 		name = String(story_node.instance_id)
+
 	title = story_node.display_name + '(' + story_node.instance_id + ')'
 	position_offset = story_node.position
+	set_deferred('size', story_node.size)
 
 
 func set_story_data(data: StoryData) -> void:
@@ -73,8 +82,10 @@ func _on_resize_end(new_size: Vector2) -> void:
 	_undo_redo.create_action('Change node size', UndoRedo.MERGE_DISABLE, story_data)
 
 	_undo_redo.add_do_property(story_node, 'size', new_size)
+	_undo_redo.add_do_method(story_node, 'emit_changed')
 
 	_undo_redo.add_undo_property(story_node, 'size', old_size)
+	_undo_redo.add_undo_method(story_node, 'emit_changed')
 
 	var old_revision: int = story_data.edit_revision
 	var new_revision: int = old_revision + 1
@@ -82,3 +93,11 @@ func _on_resize_end(new_size: Vector2) -> void:
 	_undo_redo.add_undo_property(story_data, 'edit_revision', old_revision)
 
 	_undo_redo.commit_action()
+
+
+func _on_story_node_changed() -> void:
+	if story_node == null:
+		return
+
+	if size != story_node.size:
+		size = story_node.size

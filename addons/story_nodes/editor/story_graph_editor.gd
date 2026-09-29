@@ -52,6 +52,9 @@ func _ready() -> void:
 
 
 func set_story_data(data: StoryData) -> void:
+	if _story_data == data:
+		return
+
 	_story_data = data
 
 	_refresh()

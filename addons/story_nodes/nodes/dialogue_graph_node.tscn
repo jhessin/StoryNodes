@@ -61,3 +61,5 @@ focus_neighbor_top = NodePath("../HBoxContainer/CharacterPicker")
 focus_next = NodePath("../HBoxContainer/CharacterPicker")
 focus_previous = NodePath("../HBoxContainer/CharacterPicker")
 placeholder_text = "Enter Dialogue Text Here..."
+
+[connection signal="resize_end" from="." to="." method="_on_resize_end"]

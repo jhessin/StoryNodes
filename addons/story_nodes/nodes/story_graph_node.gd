@@ -12,7 +12,9 @@ var _undo_redo: EditorUndoRedoManager
 
 
 func _ready() -> void:
-	resize_end.connect(_on_resize_end)
+	if not resize_request.is_connected(_on_resize_end):
+		resize_request.connect(_on_resize_end)
+
 	_undo_redo = EditorInterface.get_editor_undo_redo()
 
 
@@ -60,10 +62,8 @@ func restore_saved_size() -> void:
 
 
 func _on_resize_end(new_size: Vector2) -> void:
-	print('_on_resize_end called')
 	if story_node == null:
 		return
-	print('story_node is not null')
 
 	var old_size := story_node.size
 

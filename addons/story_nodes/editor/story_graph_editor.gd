@@ -105,6 +105,11 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 
 		_undo_redo.add_undo_method(self, '_restore_deleted_nodes', removed_nodes, removed_links)
 
+	var old_revision: int = _story_data.edit_revision
+	var new_revision: int = old_revision + 1
+	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+
 	_undo_redo.add_do_method(self, '_refresh')
 	_undo_redo.add_undo_method(self, '_refresh')
 
@@ -166,9 +171,6 @@ func _on_node_move() -> void:
 
 	_undo_redo.create_action('Move Story Nodes', UndoRedo.MERGE_DISABLE, _story_data)
 
-	var old_revision: int = _story_data.edit_revision
-	var new_revision: int = old_revision + 1
-
 	for id: StringName in graph_nodes:
 		var graph_node: StoryGraphNode = graph_nodes.get(id)
 
@@ -186,6 +188,8 @@ func _on_node_move() -> void:
 
 		_undo_redo.add_undo_property(story_node, 'position', old_position)
 
+	var old_revision: int = _story_data.edit_revision
+	var new_revision: int = old_revision + 1
 	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
 	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
 
@@ -193,7 +197,6 @@ func _on_node_move() -> void:
 	_undo_redo.add_undo_method(self, '_refresh')
 
 	_undo_redo.commit_action()
-	print('Story: ', _story_data.resource_path, ' Revision: ', _story_data.edit_revision)
 
 
 func _refresh() -> void:
@@ -284,6 +287,11 @@ func _on_connection_request(
 
 	_undo_redo.add_undo_method(_story_data, 'remove_link', link)
 
+	var old_revision: int = _story_data.edit_revision
+	var new_revision: int = old_revision + 1
+	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+
 	_undo_redo.add_do_method(self, '_refresh')
 	_undo_redo.add_undo_method(self, '_refresh')
 
@@ -311,6 +319,11 @@ func _on_disconnection_request(
 	_undo_redo.add_do_method(_story_data, 'remove_link', link)
 
 	_undo_redo.add_undo_method(_story_data, 'add_link', from_node, to_node, from_port, to_port)
+
+	var old_revision: int = _story_data.edit_revision
+	var new_revision: int = old_revision + 1
+	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
 
 	_undo_redo.add_do_method(self, '_refresh')
 	_undo_redo.add_undo_method(self, '_refresh')
@@ -367,6 +380,11 @@ func _add_node_from_node(node: StoryNode) -> void:
 		_on_connection_request(story_node.instance_id, 0, _connection_to_node, _connection_to_port)
 		_connection_to_node = &''
 		_connection_to_port = 0
+
+	var old_revision: int = _story_data.edit_revision
+	var new_revision: int = old_revision + 1
+	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
 
 	_undo_redo.add_do_method(self, '_refresh')
 	_undo_redo.add_undo_method(self, '_refresh')

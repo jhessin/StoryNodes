@@ -60,16 +60,16 @@ from = &"branch1"
 to = &"dialogue8"
 from_port = 2
 
-[sub_resource type="Resource" id="Resource_2f2l3"]
-script = ExtResource("1_gk2xj")
-from = &"dialogue1"
-to = &"choice1"
-
 [sub_resource type="Resource" id="Resource_trtel"]
 script = ExtResource("1_gk2xj")
 from = &"branch1"
 to = &"dialogue7"
 from_port = 1
+
+[sub_resource type="Resource" id="Resource_2f2l3"]
+script = ExtResource("1_gk2xj")
+from = &"dialogue1"
+to = &"choice1"
 
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
@@ -256,6 +256,6 @@ SubResource("Resource_ouikn"): null,
 SubResource("Resource_h1p2t"): null,
 SubResource("Resource_rc1te"): null,
 SubResource("Resource_wm5s6"): null,
-SubResource("Resource_2f2l3"): null,
-SubResource("Resource_trtel"): null
+SubResource("Resource_trtel"): null,
+SubResource("Resource_2f2l3"): null
 })

@@ -82,10 +82,8 @@ func _on_resize_end(new_size: Vector2) -> void:
 	_undo_redo.create_action('Change node size', UndoRedo.MERGE_DISABLE, story_data)
 
 	_undo_redo.add_do_property(story_node, 'size', new_size)
-	_undo_redo.add_do_method(story_node, 'emit_changed')
 
 	_undo_redo.add_undo_property(story_node, 'size', old_size)
-	_undo_redo.add_undo_method(story_node, 'emit_changed')
 
 	var old_revision: int = story_data.edit_revision
 	var new_revision: int = old_revision + 1

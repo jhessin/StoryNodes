@@ -16,4 +16,9 @@ extends Resource
 var position: Vector2 = Vector2.ZERO
 
 @export_storage
-var size: Vector2 = Vector2.ZERO
+var size: Vector2 = Vector2.ZERO:
+	set(value):
+		if size == value:
+			return
+		size = value
+		emit_changed()

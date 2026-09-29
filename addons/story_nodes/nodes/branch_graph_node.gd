@@ -17,6 +17,10 @@ var branch_node: BranchNode:
 func _ready() -> void:
 	new_condition_button.pressed.connect(_on_new_condition_pressed)
 	variable_picker.item_selected.connect(_on_variable_selected)
+	if branch_node == null or branch_node.variable == null:
+		new_condition_button.disabled = true
+	else:
+		new_condition_button.disabled = false
 
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
@@ -164,6 +168,8 @@ func _refresh_condition_rows() -> void:
 
 	if new_condition_index >= 0:
 		set_slot_enabled_right(new_condition_index, false)
+
+	call_deferred('reset_size')
 
 
 func _on_condition_changed() -> void:

@@ -9,6 +9,8 @@ var story_data: StoryData
 
 # var _restoring_size: bool = false
 var _size_initialized: bool = false
+var _resize_start_size: Vector2
+var _resize_in_progress: bool = false
 
 
 func _notification(what: int) -> void:

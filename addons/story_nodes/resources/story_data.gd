@@ -21,6 +21,8 @@ const START_NODE_ID: StringName = &'__start__'
 @export var character_library: StoryCharacterLibrary
 @export var variable_library: StoryVariableLibrary
 
+var undo_redo: UndoRedo = UndoRedo.new()
+
 var node_list: Array[StoryNode]:
 	get:
 		return _nodes.values()

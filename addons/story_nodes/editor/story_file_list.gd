@@ -11,7 +11,7 @@ var filesystem: EditorFileSystem
 var selected_path: String = ''
 var context_index: int = -1
 
-var _undo_redo: EditorUndoRedoManager
+var _selected_story: StoryData
 var _saved_revisions: Dictionary[String, int] = { }
 
 @onready var item_list: ItemList = %ItemList
@@ -21,9 +21,6 @@ var _saved_revisions: Dictionary[String, int] = { }
 
 
 func _ready() -> void:
-	_undo_redo = EditorInterface.get_editor_undo_redo()
-	_undo_redo.history_changed.connect(mark_dirty)
-	_undo_redo.version_changed.connect(mark_dirty)
 	item_list.gui_input.connect(_on_gui_input)
 	save_menu.id_pressed.connect(_on_save_menu_selected)
 	filesystem = EditorInterface.get_resource_filesystem()
@@ -43,6 +40,13 @@ func mark_dirty() -> void:
 
 func select_path(path: String) -> void:
 	selected_path = path
+
+	if not selected_path.is_empty():
+		_selected_story = load(path) as StoryData
+		if not _selected_story.undo_redo.version_changed.is_connected(mark_dirty):
+			_selected_story.undo_redo.version_changed.connect(mark_dirty)
+		if not _selected_story.changed.is_connected(mark_dirty):
+			_selected_story.changed.connect(mark_dirty)
 
 	for i: int in item_list.item_count:
 		var item_path := item_list.get_item_metadata(i) as String

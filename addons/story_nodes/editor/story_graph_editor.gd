@@ -7,7 +7,6 @@ var _standard_node_library: StoryNodeLibrary = preload(
 	'res://addons/story_nodes/resources/libraries/standard_node_library.tres'
 )
 var _story_data: StoryData
-var _undo_redo: EditorUndoRedoManager
 
 var _new_node_position: Vector2 = Vector2.ZERO
 var _connection_from_node: StringName = &''
@@ -21,8 +20,6 @@ var _connection_to_port: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	_undo_redo = EditorInterface.get_editor_undo_redo()
-
 	visibility_changed.connect(_on_visibility_changed)
 
 	# Standard add node menu
@@ -85,7 +82,9 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 	if nodes.is_empty():
 		return
 
-	_undo_redo.create_action('Delete Story Nodes', UndoRedo.MERGE_DISABLE, _story_data)
+	var undo_redo := _story_data.undo_redo
+
+	undo_redo.create_action('Delete Story Nodes')
 
 	var removed_links: Array[StoryLink] = []
 	var removed_nodes: Array[StoryNode] = []
@@ -104,19 +103,19 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 		if story_node == null:
 			continue
 
-		_undo_redo.add_do_method(_story_data, 'remove_node', id)
+		undo_redo.add_do_method(_story_data.remove_node.bind(id))
 
-		_undo_redo.add_undo_method(self, '_restore_deleted_nodes', removed_nodes, removed_links)
+		undo_redo.add_undo_method(_restore_deleted_nodes.bind(removed_nodes, removed_links))
 
 	var old_revision: int = _story_data.edit_revision
 	var new_revision: int = old_revision + 1
-	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
 
-	_undo_redo.add_do_method(self, '_refresh')
-	_undo_redo.add_undo_method(self, '_refresh')
+	undo_redo.add_do_method(_refresh)
+	undo_redo.add_undo_method(_refresh)
 
-	_undo_redo.commit_action()
+	undo_redo.commit_action()
 
 
 func _on_graph_edit_gui_input(event: InputEvent) -> void:
@@ -172,7 +171,9 @@ func _on_node_move() -> void:
 		push_error('No Selected Story')
 		return
 
-	_undo_redo.create_action('Move Story Nodes', UndoRedo.MERGE_DISABLE, _story_data)
+	var undo_redo := _story_data.undo_redo
+
+	undo_redo.create_action('Move Story Nodes')
 
 	for id: StringName in graph_nodes:
 		var graph_node: StoryGraphNode = graph_nodes.get(id)
@@ -187,19 +188,19 @@ func _on_node_move() -> void:
 		if old_position == new_position:
 			continue
 
-		_undo_redo.add_do_property(story_node, 'position', new_position)
+		undo_redo.add_do_property(story_node, 'position', new_position)
 
-		_undo_redo.add_undo_property(story_node, 'position', old_position)
+		undo_redo.add_undo_property(story_node, 'position', old_position)
 
 	var old_revision: int = _story_data.edit_revision
 	var new_revision: int = old_revision + 1
-	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
 
-	_undo_redo.add_do_method(self, '_refresh')
-	_undo_redo.add_undo_method(self, '_refresh')
+	undo_redo.add_do_method(_refresh)
+	undo_redo.add_undo_method(_refresh)
 
-	_undo_redo.commit_action()
+	undo_redo.commit_action()
 
 
 func _refresh() -> void:
@@ -278,9 +279,11 @@ func _on_connection_request(
 		push_error('No Selected Story')
 		return
 
-	_undo_redo.create_action('Create Story Link', UndoRedo.MERGE_DISABLE, _story_data)
+	var undo_redo := _story_data.undo_redo
 
-	_undo_redo.add_do_method(_story_data, 'add_link', from_node, to_node, from_port, to_port)
+	undo_redo.create_action('Create Story Link')
+
+	undo_redo.add_do_method(_story_data.add_link.bind(from_node, to_node, from_port, to_port))
 
 	var link: StoryLink = StoryLink.new()
 	link.from = from_node
@@ -288,17 +291,17 @@ func _on_connection_request(
 	link.from_port = from_port
 	link.to_port = to_port
 
-	_undo_redo.add_undo_method(_story_data, 'remove_link', link)
+	undo_redo.add_undo_method(_story_data.remove_link.bind(link))
 
 	var old_revision: int = _story_data.edit_revision
 	var new_revision: int = old_revision + 1
-	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
 
-	_undo_redo.add_do_method(self, '_refresh')
-	_undo_redo.add_undo_method(self, '_refresh')
+	undo_redo.add_do_method(_refresh)
+	undo_redo.add_undo_method(_refresh)
 
-	_undo_redo.commit_action()
+	undo_redo.commit_action()
 
 
 func _on_disconnection_request(
@@ -316,22 +319,23 @@ func _on_disconnection_request(
 	if link == null:
 		push_error('Link does not exist.')
 		return
+	var undo_redo := _story_data.undo_redo
 
-	_undo_redo.create_action('Delete Story Link', UndoRedo.MERGE_DISABLE, _story_data)
+	undo_redo.create_action('Delete Story Link')
 
-	_undo_redo.add_do_method(_story_data, 'remove_link', link)
+	undo_redo.add_do_method(_story_data.remove_link.bind(link))
 
-	_undo_redo.add_undo_method(_story_data, 'add_link', from_node, to_node, from_port, to_port)
+	undo_redo.add_undo_method(_story_data.add_link.bind(from_node, to_node, from_port, to_port))
 
 	var old_revision: int = _story_data.edit_revision
 	var new_revision: int = old_revision + 1
-	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
 
-	_undo_redo.add_do_method(self, '_refresh')
-	_undo_redo.add_undo_method(self, '_refresh')
+	undo_redo.add_do_method(_refresh)
+	undo_redo.add_undo_method(_refresh)
 
-	_undo_redo.commit_action()
+	undo_redo.commit_action()
 
 
 func _populate_add_node_menu() -> void:
@@ -364,10 +368,12 @@ func _add_node_from_node(node: StoryNode) -> void:
 	story_node.instance_id = _new_instance_id(story_node.node_id)
 	story_node.position = _new_node_position
 
-	_undo_redo.create_action('Add Story Node', UndoRedo.MERGE_DISABLE, _story_data)
+	var undo_redo := _story_data.undo_redo
 
-	_undo_redo.add_do_method(_story_data, 'add_node', story_node)
-	_undo_redo.add_undo_method(_story_data, 'remove_node', story_node.instance_id)
+	undo_redo.create_action('Add Story Node')
+
+	undo_redo.add_do_method(_story_data.add_node.bind(story_node))
+	undo_redo.add_undo_method(_story_data.remove_node.bind(story_node.instance_id))
 
 	if not _connection_from_node.is_empty():
 		_on_connection_request(
@@ -386,13 +392,13 @@ func _add_node_from_node(node: StoryNode) -> void:
 
 	var old_revision: int = _story_data.edit_revision
 	var new_revision: int = old_revision + 1
-	_undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	_undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
+	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
 
-	_undo_redo.add_do_method(self, '_refresh')
-	_undo_redo.add_undo_method(self, '_refresh')
+	undo_redo.add_do_method(_refresh)
+	undo_redo.add_undo_method(_refresh)
 
-	_undo_redo.commit_action()
+	undo_redo.commit_action()
 
 
 func _new_instance_id(base_name: String = 'node') -> StringName:

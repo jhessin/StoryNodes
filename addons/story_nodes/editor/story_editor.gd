@@ -38,6 +38,24 @@ func _ready() -> void:
 	node_library_editor.set_library(_standard_node_library)
 
 
+func _input(event: InputEvent) -> void:
+	if not file_list.is_visible_in_tree():
+		return
+
+	if _story_data == null:
+		return
+
+	if event.is_action_pressed('ui_undo'):
+		_story_data.undo_redo.undo()
+		get_viewport().set_input_as_handled()
+		return
+
+	if event.is_action_pressed('ui_redo'):
+		_story_data.undo_redo.redo()
+		get_viewport().set_input_as_handled()
+		return
+
+
 func set_story_data(data: StoryData) -> void:
 	if _story_data != null:
 		if _story_data.changed.is_connected(_on_story_changed):
@@ -103,21 +121,3 @@ func _on_story_selected(data: StoryData) -> void:
 func _on_story_changed() -> void:
 	file_list.mark_dirty()
 	graph_editor.set_story_data(_story_data)
-
-
-func _shortcut_input(event: InputEvent) -> void:
-	if not file_list.is_visible_in_tree():
-		return
-
-	if _story_data == null:
-		return
-
-	if event.is_action_pressed('ui_undo'):
-		_story_data.undo_redo.undo()
-		get_viewport().set_input_as_handled()
-		return
-
-	if event.is_action_pressed('ui_redo'):
-		_story_data.undo_redo.redo()
-		get_viewport().set_input_as_handled()
-		return

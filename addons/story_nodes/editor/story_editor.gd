@@ -45,13 +45,13 @@ func _input(event: InputEvent) -> void:
 	if _story_data == null:
 		return
 
-	if event.is_action_pressed('ui_undo'):
-		_story_data.undo_redo.undo()
+	if event.is_action_pressed('ui_redo'):
+		_story_data.undo_redo.redo()
 		get_viewport().set_input_as_handled()
 		return
 
-	if event.is_action_pressed('ui_redo'):
-		_story_data.undo_redo.redo()
+	if event.is_action_pressed('ui_undo'):
+		_story_data.undo_redo.undo()
 		get_viewport().set_input_as_handled()
 		return
 

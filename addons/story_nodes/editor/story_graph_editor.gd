@@ -107,10 +107,7 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 
 		undo_redo.add_undo_method(_restore_deleted_nodes.bind(removed_nodes, removed_links))
 
-	var old_revision: int = _story_data.edit_revision
-	var new_revision: int = old_revision + 1
-	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	_story_data.update_revision()
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
@@ -192,10 +189,7 @@ func _on_node_move() -> void:
 
 		undo_redo.add_undo_property(story_node, 'position', old_position)
 
-	var old_revision: int = _story_data.edit_revision
-	var new_revision: int = old_revision + 1
-	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	_story_data.update_revision()
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
@@ -293,10 +287,7 @@ func _on_connection_request(
 
 	undo_redo.add_undo_method(_story_data.remove_link.bind(link))
 
-	var old_revision: int = _story_data.edit_revision
-	var new_revision: int = old_revision + 1
-	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	_story_data.update_revision()
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
@@ -327,10 +318,7 @@ func _on_disconnection_request(
 
 	undo_redo.add_undo_method(_story_data.add_link.bind(from_node, to_node, from_port, to_port))
 
-	var old_revision: int = _story_data.edit_revision
-	var new_revision: int = old_revision + 1
-	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	_story_data.update_revision()
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
@@ -390,10 +378,7 @@ func _add_node_from_node(node: StoryNode) -> void:
 		_connection_to_node = &''
 		_connection_to_port = 0
 
-	var old_revision: int = _story_data.edit_revision
-	var new_revision: int = old_revision + 1
-	undo_redo.add_do_property(_story_data, 'edit_revision', new_revision)
-	undo_redo.add_undo_property(_story_data, 'edit_revision', old_revision)
+	_story_data.update_revision()
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)

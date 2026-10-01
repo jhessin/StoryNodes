@@ -86,6 +86,16 @@ func _init() -> void:
 
 
 ## ===
+## UndoRedo methods
+## ===
+func update_revision() -> void:
+	var old_revision: int = edit_revision
+	var new_revision: int = old_revision + 1
+	undo_redo.add_do_property(self, 'edit_revision', new_revision)
+	undo_redo.add_undo_property(self, 'edit_revision', old_revision)
+
+
+## ===
 ## Node methods
 ## ===
 func add_node(node: StoryNode) -> bool:

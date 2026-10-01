@@ -13,6 +13,9 @@ var character_ids: Array[StringName]:
 var character_count: int:
 	get:
 		return _characters.size()
+
+var undo_redo: UndoRedo = UndoRedo.new()
+
 @export_storage
 var _characters: Dictionary[StringName, StoryCharacter] = { }
 

@@ -39,20 +39,29 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not file_list.is_visible_in_tree():
-		return
-
 	if _story_data == null:
 		return
 
 	if event.is_action_pressed('ui_redo'):
-		_story_data.undo_redo.redo()
-		get_viewport().set_input_as_handled()
+		if file_list.is_visible_in_tree():
+			if _story_data.undo_redo.has_redo():
+				_story_data.undo_redo.redo()
+				get_viewport().set_input_as_handled()
+		if characters_editor.is_visible_in_tree():
+			if _character_library.undo_redo.has_redo():
+				_character_library.undo_redo.redo()
+				get_viewport().set_input_as_handled()
 		return
 
 	if event.is_action_pressed('ui_undo'):
-		_story_data.undo_redo.undo()
-		get_viewport().set_input_as_handled()
+		if file_list.is_visible_in_tree():
+			if _story_data.undo_redo.has_undo():
+				_story_data.undo_redo.undo()
+				get_viewport().set_input_as_handled()
+		if characters_editor.is_visible_in_tree():
+			if _character_library.undo_redo.has_undo():
+				_character_library.undo_redo.undo()
+				get_viewport().set_input_as_handled()
 		return
 
 

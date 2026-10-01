@@ -44,16 +44,38 @@ func _on_character_dropped_to_cast(character: StoryCharacter) -> void:
 	if _story_data == null:
 		return
 
-	_story_data.add_to_cast(character)
-	_refresh()
+	var undo_redo := _story_data.undo_redo
+
+	undo_redo.create_action('Add character to cast')
+
+	undo_redo.add_do_method(_story_data.add_to_cast.bind(character))
+	undo_redo.add_do_method(_refresh)
+
+	undo_redo.add_undo_method(_story_data.remove_from_cast.bind(character))
+	undo_redo.add_undo_method(_refresh)
+
+	_story_data.update_revision()
+
+	undo_redo.commit_action()
 
 
 func _on_character_dropped_to_library(character: StoryCharacter) -> void:
 	if _story_data == null:
 		return
 
-	_story_data.remove_from_cast(character)
-	_refresh()
+	var undo_redo := _story_data.undo_redo
+
+	undo_redo.create_action('Remove character from cast')
+
+	undo_redo.add_do_method(_story_data.remove_from_cast.bind(character))
+	undo_redo.add_do_method(_refresh)
+
+	undo_redo.add_undo_method(_story_data.add_to_cast.bind(character))
+	undo_redo.add_undo_method(_refresh)
+
+	_story_data.update_revision()
+
+	undo_redo.commit_action()
 
 
 func _refresh() -> void:

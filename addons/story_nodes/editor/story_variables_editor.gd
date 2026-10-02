@@ -39,8 +39,17 @@ func _on_delete_button_pressed() -> void:
 	if _variable_library == null or selected_variable == null:
 		return
 
-	_variable_library.remove_variable(selected_variable.name)
-	_refresh()
+	var undo_redo := _variable_library.undo_redo
+
+	undo_redo.create_action('Delete Variable')
+
+	undo_redo.add_do_method(_variable_library.remove_variable.bind(selected_variable.name))
+	undo_redo.add_do_method(_refresh)
+
+	undo_redo.add_undo_method(_variable_library.add_variable.bind(selected_variable))
+	undo_redo.add_undo_method(_refresh)
+
+	undo_redo.commit_action()
 
 
 func _build_type_options() -> void:
@@ -60,7 +69,9 @@ func _refresh() -> void:
 		return
 
 	for variable: StoryVariable in _variable_library.variable_list:
+		var index := variable_list.item_count
 		variable_list.add_item(variable.name)
+		variable_list.set_item_metadata(index, variable)
 
 	_update_item_list_size()
 
@@ -73,12 +84,57 @@ func _on_variable_selected(index: int) -> void:
 	if _variable_library == null:
 		return
 
-	var variables := _variable_library.variable_list
+	var variable = variable_list.get_item_metadata(index) as StoryVariable
 
-	if index < 0 or index >= variables.size():
+	_select_variable(variable)
+
+
+func _on_new_variable_pressed() -> void:
+	if _variable_library == null:
 		return
 
-	selected_variable = variables[index]
+	var variable_name := _get_unique_variable_name()
+
+	var variable := StoryVariable.new(variable_name, StoryVariable.Type.STRING, '')
+
+	var undo_redo := _variable_library.undo_redo
+
+	undo_redo.create_action('Add New Variable')
+
+	undo_redo.add_do_method(_variable_library.add_variable.bind(variable))
+	undo_redo.add_do_method(_refresh)
+	undo_redo.add_do_method(_select_variable.bind(variable))
+	undo_redo.add_do_method(name_edit.grab_focus)
+	undo_redo.add_do_method(name_edit.select_all)
+
+	undo_redo.add_undo_method(_variable_library.remove_variable.bind(variable.name))
+	undo_redo.add_undo_method(_refresh)
+	undo_redo.add_undo_method(_select_variable)
+
+	undo_redo.commit_action()
+
+
+func _select_variable(variable: StoryVariable = null) -> void:
+	if variable == null:
+		selected_variable = null
+		name_edit.text = ''
+		type_option.select(0)
+		_rebuild_default_value_editor()
+
+		type_option.disabled = true
+		return
+
+	type_option.disabled = false
+
+	var index := _find_index_for_variable(variable)
+
+	if index == -1:
+		push_error('Invalid variable selected: ', variable.name)
+		return
+
+	variable_list.select(index)
+
+	selected_variable = variable_list.get_item_metadata(index) as StoryVariable
 
 	name_edit.text = selected_variable.name
 
@@ -90,28 +146,13 @@ func _on_variable_selected(index: int) -> void:
 	_rebuild_default_value_editor()
 
 
-func _on_new_variable_pressed() -> void:
-	if _variable_library == null:
-		return
+func _find_index_for_variable(variable: StoryVariable) -> int:
+	for i: int in range(variable_list.item_count):
+		var current_var := variable_list.get_item_metadata(i) as StoryVariable
+		if current_var.name == variable.name:
+			return i
 
-	var variable_name := _get_unique_variable_name()
-
-	var variable := StoryVariable.new(variable_name, StoryVariable.Type.STRING, '')
-
-	_variable_library.add_variable(variable)
-
-	_refresh()
-
-	var index := _variable_library.variable_list.find(variable)
-
-	if index == -1:
-		return
-
-	variable_list.select(index)
-	_on_variable_selected(index)
-
-	name_edit.grab_focus()
-	name_edit.select_all()
+	return -1
 
 
 func _get_unique_variable_name(base_name: StringName = &'new_variable') -> StringName:
@@ -144,6 +185,35 @@ func _rebuild_default_value_editor() -> void:
 
 		StoryVariable.Type.STRING:
 			_create_string_editor()
+
+
+func _update_default_value_editor() -> void:
+	var editor: Node = default_value_container.get_children()[0]
+
+	match selected_variable.type:
+		StoryVariable.Type.BOOL:
+			if editor is not CheckBox:
+				push_error('Invalid bool editor')
+				return
+
+			editor.button_pressed = bool(selected_variable.default_value)
+		StoryVariable.Type.INT:
+			if editor is not SpinBox:
+				push_error('Invalid int editor')
+				return
+			editor.value = int(selected_variable.default_value)
+
+		StoryVariable.Type.FLOAT:
+			if editor is not SpinBox:
+				push_error('Invalid float editor')
+				return
+			editor.value = float(selected_variable.default_value)
+
+		StoryVariable.Type.STRING:
+			if editor is not LineEdit:
+				push_error('Invalid string editor')
+				return
+			editor.text = str(selected_variable.default_value)
 
 
 func _create_bool_editor() -> void:
@@ -191,41 +261,89 @@ func _create_string_editor() -> void:
 	editor.name = 'DefaultValueEdit'
 	editor.text = str(selected_variable.default_value)
 
-	editor.text_changed.connect(_on_string_default_changed)
+	editor.text_submitted.connect(_on_string_default_changed)
 
 	default_value_container.add_child(editor)
 
 
-func _on_bool_default_changed(value: bool) -> void:
+func _on_bool_default_changed(new_value: bool) -> void:
 	if selected_variable == null:
 		return
 
-	selected_variable.default_value = value
-	_variable_library.emit_changed()
+	var undo_redo := _variable_library.undo_redo
+	var old_value := bool(selected_variable.default_value)
+
+	undo_redo.create_action('Change default value')
+
+	undo_redo.add_do_property(selected_variable, 'default_value', bool(new_value))
+	undo_redo.add_do_method(_update_default_value_editor)
+	undo_redo.add_do_method(_variable_library.emit_changed)
+
+	undo_redo.add_undo_property(selected_variable, 'default_value', old_value)
+	undo_redo.add_undo_method(_update_default_value_editor)
+	undo_redo.add_undo_method(_variable_library.emit_changed)
+
+	undo_redo.commit_action()
 
 
-func _on_int_default_changed(value: float) -> void:
+func _on_int_default_changed(new_value: float) -> void:
 	if selected_variable == null:
 		return
 
-	selected_variable.default_value = int(value)
-	_variable_library.emit_changed()
+	var old_value := int(selected_variable.default_value)
+	var undo_redo := _variable_library.undo_redo
+
+	undo_redo.create_action('Change default value')
+
+	undo_redo.add_do_property(selected_variable, 'default_value', int(new_value))
+	undo_redo.add_do_method(_update_default_value_editor)
+	undo_redo.add_do_method(_variable_library.emit_changed)
+
+	undo_redo.add_undo_property(selected_variable, 'default_value', old_value)
+	undo_redo.add_undo_method(_update_default_value_editor)
+	undo_redo.add_undo_method(_variable_library.emit_changed)
+
+	undo_redo.commit_action()
 
 
-func _on_float_default_changed(value: float) -> void:
+func _on_float_default_changed(new_value: float) -> void:
 	if selected_variable == null:
 		return
 
-	selected_variable.default_value = value
-	_variable_library.emit_changed()
+	var old_value := float(selected_variable.default_value)
+	var undo_redo := _variable_library.undo_redo
+
+	undo_redo.create_action('Change default value')
+
+	undo_redo.add_do_property(selected_variable, 'default_value', float(new_value))
+	undo_redo.add_do_method(_update_default_value_editor)
+	undo_redo.add_do_method(_variable_library.emit_changed)
+
+	undo_redo.add_undo_property(selected_variable, 'default_value', old_value)
+	undo_redo.add_undo_method(_update_default_value_editor)
+	undo_redo.add_undo_method(_variable_library.emit_changed)
+
+	undo_redo.commit_action()
 
 
-func _on_string_default_changed(value: String) -> void:
+func _on_string_default_changed(new_value: String) -> void:
 	if selected_variable == null:
 		return
 
-	selected_variable.default_value = value
-	_variable_library.emit_changed()
+	var old_value := str(selected_variable.default_value)
+	var undo_redo := _variable_library.undo_redo
+
+	undo_redo.create_action('Change default value')
+
+	undo_redo.add_do_property(selected_variable, 'default_value', str(new_value))
+	undo_redo.add_do_method(_update_default_value_editor)
+	undo_redo.add_do_method(_variable_library.emit_changed)
+
+	undo_redo.add_undo_property(selected_variable, 'default_value', old_value)
+	undo_redo.add_undo_method(_update_default_value_editor)
+	undo_redo.add_undo_method(_variable_library.emit_changed)
+
+	undo_redo.commit_action()
 
 
 func _on_name_changed(new_name: StringName) -> void:
@@ -237,6 +355,13 @@ func _on_name_changed(new_name: StringName) -> void:
 
 	if new_name == selected_variable.name:
 		return
+
+	var old_value := selected_variable.name
+	var undo_redo := _variable_library.undo_redo
+
+	undo_redo.create_action('Change variable name')
+
+	undo_redo.commit_action()
 
 	var resolved_name = _variable_library.rename_variable(selected_variable.name, new_name)
 

@@ -48,6 +48,10 @@ func _input(event: InputEvent) -> void:
 			if _character_library.undo_redo.has_redo():
 				_character_library.undo_redo.redo()
 				get_viewport().set_input_as_handled()
+		if variables_editor.is_visible_in_tree():
+			if _variable_library.undo_redo.has_redo():
+				_variable_library.undo_redo.redo()
+				get_viewport().set_input_as_handled()
 		return
 
 	if event.is_action_pressed('ui_undo'):
@@ -58,6 +62,10 @@ func _input(event: InputEvent) -> void:
 		if characters_editor.is_visible_in_tree():
 			if _character_library.undo_redo.has_undo():
 				_character_library.undo_redo.undo()
+				get_viewport().set_input_as_handled()
+		if variables_editor.is_visible_in_tree():
+			if _variable_library.undo_redo.has_undo():
+				_variable_library.undo_redo.undo()
 				get_viewport().set_input_as_handled()
 		return
 

@@ -100,6 +100,8 @@ func _on_delete_character_pressed() -> void:
 
 	var undo_redo := _character_library.undo_redo
 
+	undo_redo.create_action('Delete Character')
+
 	undo_redo.add_do_method(_character_library.remove_character.bind(selected_character.id))
 	undo_redo.add_do_property(self, 'selected_character', null)
 	undo_redo.add_do_property(name_edit, 'text', '')

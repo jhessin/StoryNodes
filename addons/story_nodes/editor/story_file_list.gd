@@ -83,6 +83,12 @@ func _on_save_menu_selected(id: int) -> void:
 		'Save All':
 			for i: int in item_list.item_count:
 				_save(i)
+		'Revert':
+			# TODO: revert the current file to the last saved state using the undo system.
+			pass
+		'Revert All':
+			# TODO: revert all files to the last saved state using the undo system.
+			pass
 
 	context_index = -1
 

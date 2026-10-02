@@ -103,18 +103,14 @@ func _on_delete_character_pressed() -> void:
 	undo_redo.create_action('Delete Character')
 
 	undo_redo.add_do_method(_character_library.remove_character.bind(selected_character.id))
-	undo_redo.add_do_property(self, 'selected_character', null)
-	undo_redo.add_do_property(name_edit, 'text', '')
-	undo_redo.add_do_property(color_edit, 'color', Color.WHITE)
-	undo_redo.add_do_property(image_edit, 'edited_resource', null)
 	undo_redo.add_do_method(_refresh)
+	undo_redo.add_do_method(_select_character)
+	undo_redo.add_do_property(self, 'selected_character', null)
 
 	undo_redo.add_undo_method(_character_library.add_character.bind(selected_character))
-	undo_redo.add_undo_property(self, 'selected_character', selected_character)
-	undo_redo.add_undo_property(name_edit, 'text', selected_character.name)
-	undo_redo.add_undo_property(color_edit, 'color', selected_character.color)
-	undo_redo.add_undo_property(image_edit, 'edited_resource', selected_character.image)
 	undo_redo.add_undo_method(_refresh)
+	undo_redo.add_undo_method(_select_character.bind(selected_character))
+	undo_redo.add_undo_property(self, 'selected_character', selected_character)
 
 	undo_redo.commit_action()
 
@@ -144,7 +140,12 @@ func _on_name_changed(new_name: String) -> void:
 
 
 func _on_character_selected(index: int) -> void:
-	var new_character := _character_library.character_list[index]
+	var new_character := character_list.get_item_metadata(index) as StoryCharacter
+	if new_character.id not in _character_library.character_ids:
+		push_error(
+			'Invalid character - there is no character %s in the character library'
+			% new_character.id
+		)
 	var old_character := selected_character
 
 	var undo_redo := _character_library.undo_redo
@@ -167,7 +168,7 @@ func _on_character_selected(index: int) -> void:
 	undo_redo.commit_action()
 
 
-func _select_character(character: StoryCharacter) -> void:
+func _select_character(character: StoryCharacter = null) -> void:
 	if character == null:
 		character_list.deselect_all()
 		name_edit.text = ''
@@ -181,7 +182,12 @@ func _select_character(character: StoryCharacter) -> void:
 
 		return
 
-	var index := _character_library.character_list.find(character)
+	var index := _find_index_for_character(character)
+
+	if index == -1:
+		push_error('Invalid character selected: %s' % character.id)
+		return
+
 	character_list.select(index)
 	name_edit.text = character.name
 	id_edit.text = character.id
@@ -210,15 +216,25 @@ func _on_new_character_submitted(text: String) -> void:
 
 	_refresh()
 
-	var index := _character_library.character_list.find(character)
+	var index := _find_index_for_character(character)
 
 	if index == -1:
+		push_error('New character "%s" not found in the character list' % character.id)
 		return
 
 	character_list.select(index)
 	_on_character_selected(index)
 	new_character_name.grab_focus()
 	new_character_name.select_all()
+
+
+func _find_index_for_character(character: StoryCharacter) -> int:
+	for i: int in range(character_list.item_count):
+		var character_at_index := character_list.get_item_metadata(i) as StoryCharacter
+		if character.id == character_at_index.id:
+			return i
+
+	return -1
 
 
 func _on_new_character_pressed() -> void:
@@ -232,7 +248,9 @@ func _refresh() -> void:
 		return
 
 	for character: StoryCharacter in _character_library.character_list:
+		var index := character_list.item_count
 		character_list.add_item(character.name)
+		character_list.set_item_metadata(index, character)
 
 	_update_item_list_size()
 

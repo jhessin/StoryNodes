@@ -84,7 +84,8 @@ func _on_save_menu_selected(id: int) -> void:
 			for i: int in item_list.item_count:
 				_save(i)
 		'Revert':
-			# TODO: revert the current file to the last saved state using the undo system.
+			if context_index >= 0 and context_index < item_list.item_count:
+				_revert(context_index)
 			pass
 		'Revert All':
 			# TODO: revert all files to the last saved state using the undo system.
@@ -112,6 +113,29 @@ func _save(index: int) -> void:
 		return
 
 	_saved_revisions[path] = story_data.edit_revision
+	mark_dirty()
+
+
+func _revert(index: int) -> void:
+	var path := item_list.get_item_metadata(index) as String
+
+	if path.is_empty():
+		return
+
+	var story_data: StoryData = load(path) as StoryData
+
+	if story_data == null:
+		return
+
+	var saved_revision: int = _saved_revisions.get(path, story_data.edit_revision)
+
+	if story_data.edit_revision > saved_revision:
+		while story_data.edit_revision > saved_revision and story_data.undo_redo.has_undo():
+			story_data.undo_redo.undo()
+	elif story_data.edit_revision < saved_revision:
+		while story_data.edit_revision < saved_revision and story_data.undo_redo.has_redo():
+			story_data.undo_redo.redo()
+
 	mark_dirty()
 
 

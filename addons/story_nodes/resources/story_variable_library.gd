@@ -14,6 +14,8 @@ var variable_names: Array[StringName]:
 	get:
 		return _variables.keys()
 
+var undo_redo: UndoRedo = UndoRedo.new()
+
 @export_storage
 var _variables: Dictionary[StringName, StoryVariable] = { }
 

@@ -81,14 +81,15 @@ func _on_save_menu_selected(id: int) -> void:
 			if context_index >= 0 and context_index < item_list.item_count:
 				_save(context_index)
 		'Save All':
-			for i: int in item_list.item_count:
+			for i: int in range(item_list.item_count):
 				_save(i)
 		'Revert':
 			if context_index >= 0 and context_index < item_list.item_count:
 				_revert(context_index)
 			pass
 		'Revert All':
-			# TODO: revert all files to the last saved state using the undo system.
+			for i: int in range(item_list.item_count):
+				_revert(i)
 			pass
 
 	context_index = -1

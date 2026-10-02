@@ -39,12 +39,9 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if _story_data == null:
-		return
-
 	if event.is_action_pressed('ui_redo'):
 		if file_list.is_visible_in_tree():
-			if _story_data.undo_redo.has_redo():
+			if _story_data == null or _story_data.undo_redo.has_redo():
 				_story_data.undo_redo.redo()
 				get_viewport().set_input_as_handled()
 		if characters_editor.is_visible_in_tree():
@@ -55,7 +52,7 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed('ui_undo'):
 		if file_list.is_visible_in_tree():
-			if _story_data.undo_redo.has_undo():
+			if _story_data == null or _story_data.undo_redo.has_undo():
 				_story_data.undo_redo.undo()
 				get_viewport().set_input_as_handled()
 		if characters_editor.is_visible_in_tree():

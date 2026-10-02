@@ -84,9 +84,17 @@ func _on_variable_selected(index: int) -> void:
 	if _variable_library == null:
 		return
 
-	var variable = variable_list.get_item_metadata(index) as StoryVariable
+	var new_variable := variable_list.get_item_metadata(index) as StoryVariable
+	var old_variable := selected_variable
 
-	_select_variable(variable)
+	var undo_redo := _variable_library.undo_redo
+
+	undo_redo.create_action('Select Variable')
+
+	undo_redo.add_do_method(_select_variable.bind(new_variable))
+	undo_redo.add_undo_method(_select_variable.bind(old_variable))
+
+	undo_redo.commit_action()
 
 
 func _on_new_variable_pressed() -> void:
@@ -116,7 +124,10 @@ func _on_new_variable_pressed() -> void:
 
 func _select_variable(variable: StoryVariable = null) -> void:
 	if variable == null:
+		variable_list.deselect_all()
+
 		selected_variable = null
+
 		name_edit.text = ''
 		type_option.select(0)
 		_rebuild_default_value_editor()
@@ -356,20 +367,30 @@ func _on_name_changed(new_name: StringName) -> void:
 	if new_name == selected_variable.name:
 		return
 
-	var old_value := selected_variable.name
+	# TODO
+	var old_variable := selected_variable
+	var old_value := old_variable.name
+	var new_value := _variable_library.resolve_name(old_value, new_name)
 	var undo_redo := _variable_library.undo_redo
+
+	if new_value.is_empty():
+		push_error('Could not update the name of %s to %s' % [old_value, new_value])
+		return
+
+	var new_variable := old_variable.duplicate()
+	new_variable.name = new_value
 
 	undo_redo.create_action('Change variable name')
 
+	undo_redo.add_do_method(_variable_library.rename_variable.bind(old_value, new_value))
+	undo_redo.add_do_method(_refresh)
+	undo_redo.add_do_method(_select_variable.bind(new_variable))
+
+	undo_redo.add_undo_method(_variable_library.rename_variable.bind(new_value, old_value))
+	undo_redo.add_undo_method(_refresh)
+	undo_redo.add_undo_method(_select_variable.bind(old_variable))
+
 	undo_redo.commit_action()
-
-	var resolved_name = _variable_library.rename_variable(selected_variable.name, new_name)
-
-	if resolved_name.is_empty():
-		push_error('Could not update the name of %s' % new_name)
-		return
-
-	_refresh()
 
 
 func _on_type_selected(index: int) -> void:

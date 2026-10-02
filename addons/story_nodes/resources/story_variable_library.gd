@@ -47,17 +47,7 @@ func remove_variable(id: StringName) -> void:
 
 
 func rename_variable(old_name: StringName, new_name: StringName) -> StringName:
-	if not _variables.has(old_name):
-		push_error('Cannot rename "%s": variable does not exist.' % old_name)
-		return &''
-
-	if new_name.is_empty():
-		push_error('Cannot rename a variable with an empty name!')
-		return &''
-
-	if _variables.has(new_name):
-		push_error('Cannot use "%s": variable name is already used.' % new_name)
-		return &''
+	new_name = resolve_name(old_name, new_name)
 
 	var variable := get_variable(old_name)
 	variable.name = new_name
@@ -66,6 +56,21 @@ func rename_variable(old_name: StringName, new_name: StringName) -> StringName:
 	add_variable(variable)
 	emit_changed()
 	return variable.name
+
+
+func resolve_name(old_name: StringName, new_name: StringName) -> StringName:
+	if not _variables.has(old_name):
+		push_error('Cannot rename "%s": variable does not exist.' % old_name)
+		return &''
+
+	if new_name.is_empty():
+		push_error('Cannot rename a variable with an empty name!')
+		return &''
+
+	while _variables.has(new_name):
+		new_name += '_'
+
+	return new_name
 
 
 func get_variable(variable_name: StringName) -> StoryVariable:

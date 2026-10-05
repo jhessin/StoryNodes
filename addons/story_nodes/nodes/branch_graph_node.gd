@@ -17,10 +17,6 @@ var branch_node: BranchNode:
 func _ready() -> void:
 	new_condition_button.pressed.connect(_on_new_condition_pressed)
 	variable_picker.item_selected.connect(_on_variable_selected)
-	if branch_node == null or branch_node.variable == null:
-		new_condition_button.disabled = true
-	else:
-		new_condition_button.disabled = false
 
 	super._ready()
 
@@ -45,6 +41,18 @@ func set_story_node(node: StoryNode) -> void:
 	_refresh_variable_picker()
 	_refresh_condition_rows()
 
+	if is_visible_in_tree():
+		var index := _find_index_for_variable(story_node.variable)
+		variable_picker.select(index)
+	else:
+		if not visibility_changed.is_connected(_on_visibility_changed):
+			visibility_changed.connect(_on_visibility_changed)
+
+	if branch_node == null or branch_node.variable == null:
+		new_condition_button.disabled = true
+	else:
+		new_condition_button.disabled = false
+
 
 func set_story_data(data: StoryData) -> void:
 	super.set_story_data(data)
@@ -59,33 +67,74 @@ func set_story_data(data: StoryData) -> void:
 	_refresh_variable_picker()
 
 
+func _on_visibility_changed():
+	if is_visible_in_tree():
+		var index := _find_index_for_variable(story_node.variable)
+		variable_picker.select(index)
+		if visibility_changed.is_connected(_on_visibility_changed):
+			visibility_changed.disconnect(_on_visibility_changed)
+
+
 func _on_new_condition_pressed() -> void:
+	print('New Condition Pressed: ', branch_node == null, branch_node.variable == null)
 	if branch_node == null or branch_node.variable == null:
 		return
 
 	var condition: BranchCondition = BranchCondition.new()
 	condition.initialize_for_variable(branch_node.variable)
-	branch_node.conditions.append(condition)
-	story_data.emit_changed()
-	_refresh_condition_rows()
+
+	var undo_redo := story_data.undo_redo
+
+	undo_redo.create_action('Add new condition')
+
+	undo_redo.add_do_method(branch_node.conditions.append.bind(condition))
+	undo_redo.add_do_method(story_data.emit_changed)
+	undo_redo.add_do_method(_refresh_condition_rows)
+
+	undo_redo.add_undo_method(branch_node.conditions.erase.bind(condition))
+	undo_redo.add_undo_method(story_data.emit_changed)
+	undo_redo.add_undo_method(_refresh_condition_rows)
+
+	story_data.update_revision()
+
+	undo_redo.commit_action()
 
 
 func _on_variable_selected(index: int) -> void:
-	if branch_node == null:
+	if branch_node == null or story_data == null:
 		return
+
+	var undo_redo := story_data.undo_redo
+
+	undo_redo.create_action('Select Variable')
+	var previous_variable := branch_node.variable
+	var previous_index := _find_index_for_variable(previous_variable)
 
 	if index == 0:
-		branch_node.variable = null
-		branch_node.emit_changed()
+		if previous_variable == null:
+			return
 
-		if story_data != null:
-			story_data.emit_changed()
+		undo_redo.add_do_property(branch_node, 'variable', null)
+		undo_redo.add_do_method(branch_node.emit_changed)
+		undo_redo.add_do_method(story_data.emit_changed)
+		undo_redo.add_do_property(new_condition_button, 'disabled', true)
+		undo_redo.add_do_method(variable_picker.select.bind(index))
+		undo_redo.add_do_method(_refresh_condition_rows)
 
-		new_condition_button.disabled = true
-		_refresh_condition_rows()
+		undo_redo.add_undo_property(branch_node, 'variable', previous_variable)
+		undo_redo.add_undo_method(branch_node.emit_changed)
+		undo_redo.add_undo_method(story_data.emit_changed)
+		undo_redo.add_undo_property(new_condition_button, 'disabled', false)
+		undo_redo.add_undo_method(_refresh_condition_rows)
+		undo_redo.add_undo_method(variable_picker.select.bind(previous_index))
+
+		story_data.update_revision()
+
+		undo_redo.commit_action()
+
 		return
 
-	new_condition_button.disabled = false
+	undo_redo.add_do_property(new_condition_button, 'disabled', false)
 
 	if story_data == null or story_data.variable_library == null:
 		return
@@ -98,11 +147,35 @@ func _on_variable_selected(index: int) -> void:
 
 	var variable: StoryVariable = variables[variable_index]
 
-	branch_node.variable = variable
-	branch_node.emit_changed()
+	undo_redo.add_do_property(branch_node, 'variable', variable)
+	undo_redo.add_do_method(branch_node.emit_changed)
+	undo_redo.add_do_method(story_data.emit_changed)
+	undo_redo.add_do_method(variable_picker.select.bind(index))
+	undo_redo.add_do_method(_refresh_condition_rows)
 
-	story_data.emit_changed()
-	_refresh_condition_rows()
+	undo_redo.add_undo_property(branch_node, 'variable', previous_variable)
+	undo_redo.add_undo_method(branch_node.emit_changed)
+	undo_redo.add_undo_method(story_data.emit_changed)
+	undo_redo.add_undo_property(new_condition_button, 'disabled', false)
+	undo_redo.add_undo_method(variable_picker.select.bind(previous_index))
+	undo_redo.add_undo_method(_refresh_condition_rows)
+
+	story_data.update_revision()
+
+	undo_redo.commit_action()
+
+
+func _find_index_for_variable(variable: StoryVariable) -> int:
+	if story_data == null or story_data.variable_library == null:
+		return -1
+
+	for i: int in range(story_data.variable_library.variable_list.size()):
+		var v: StoryVariable = story_data.variable_library.variable_list[i]
+
+		if v.name == variable.name:
+			return i + 1
+
+	return -1
 
 
 func _refresh_variable_picker() -> void:

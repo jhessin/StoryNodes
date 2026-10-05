@@ -267,20 +267,29 @@ func remove_links_to(id: StringName) -> void:
 		remove_link(link)
 
 
-func remove_links(id: StringName) -> void:
-	remove_links_from(id)
-	remove_links_to(id)
+# Remove the links provided
+func remove_links(links: Array[StoryLink]) -> void:
+	for link: StoryLink in links:
+		remove_link(link)
 
 
-func remove_link_from_port(from: StringName, from_port: int) -> void:
-	var links_to_remove: Array[StoryLink] = []
+func add_links(links: Array[StoryLink]) -> void:
+	for link: StoryLink in links:
+		add_link(link.from, link.to, link.from_port, link.to_port)
+
+
+func get_links_from_port(from: StringName, from_port: int) -> Array[StoryLink]:
+	var result: Array[StoryLink] = []
 
 	for link: StoryLink in _links:
 		if link.from == from and link.from_port == from_port:
-			links_to_remove.append(link)
+			result.append(link)
+	return result
 
-	for link: StoryLink in links_to_remove:
-		remove_link(link)
+
+func remove_link_from_port(from: StringName, from_port: int) -> void:
+	var links_to_remove: Array[StoryLink] = get_links_from_port(from, from_port)
+	remove_links(links_to_remove)
 
 
 func shift_link_ports(from: StringName, removed_port: int) -> void:
@@ -290,6 +299,17 @@ func shift_link_ports(from: StringName, removed_port: int) -> void:
 
 		if link.from_port > removed_port:
 			link.from_port -= 1
+
+	emit_changed()
+
+
+func unshift_link_ports(from: StringName, replaced_port: int) -> void:
+	for link: StoryLink in _links:
+		if link.from != from:
+			continue
+
+		if link.from_port >= replaced_port:
+			link.from_port += 1
 
 	emit_changed()
 

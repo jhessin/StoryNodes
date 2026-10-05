@@ -76,28 +76,52 @@ func _on_visibility_changed():
 
 
 func _on_new_condition_pressed() -> void:
-	print('New Condition Pressed: ', branch_node == null, branch_node.variable == null)
+	if branch_node == null:
+		return
+
+	if branch_node.variable == null:
+		return
+
 	if branch_node == null or branch_node.variable == null:
 		return
 
 	var condition: BranchCondition = BranchCondition.new()
 	condition.initialize_for_variable(branch_node.variable)
 
+	if story_data == null:
+		return
+
 	var undo_redo := story_data.undo_redo
 
 	undo_redo.create_action('Add new condition')
 
-	undo_redo.add_do_method(branch_node.conditions.append.bind(condition))
-	undo_redo.add_do_method(story_data.emit_changed)
-	undo_redo.add_do_method(_refresh_condition_rows)
+	undo_redo.add_do_method(_add_condition.bind(condition))
 
-	undo_redo.add_undo_method(branch_node.conditions.erase.bind(condition))
-	undo_redo.add_undo_method(story_data.emit_changed)
-	undo_redo.add_undo_method(_refresh_condition_rows)
+	undo_redo.add_undo_method(_remove_condition.bind(condition))
 
 	story_data.update_revision()
 
-	undo_redo.commit_action()
+	undo_redo.commit_action(true)
+
+
+func _add_condition(condition: BranchCondition, notify: bool = false) -> void:
+	branch_node.conditions.append(condition)
+	branch_node.emit_changed()
+	story_data.emit_changed()
+	if notify:
+		call_deferred('_refresh_condition_rows_and_notify')
+	else:
+		_refresh_condition_rows()
+
+
+func _remove_condition(condition: BranchCondition, notify: bool = false) -> void:
+	branch_node.conditions.erase(condition)
+	branch_node.emit_changed()
+	story_data.emit_changed()
+	if notify:
+		call_deferred('_refresh_condition_rows_and_notify')
+	else:
+		_refresh_condition_rows()
 
 
 func _on_variable_selected(index: int) -> void:
@@ -112,6 +136,7 @@ func _on_variable_selected(index: int) -> void:
 
 	if index == 0:
 		if previous_variable == null:
+			undo_redo.abort_action()
 			return
 
 		undo_redo.add_do_property(branch_node, 'variable', null)
@@ -137,12 +162,14 @@ func _on_variable_selected(index: int) -> void:
 	undo_redo.add_do_property(new_condition_button, 'disabled', false)
 
 	if story_data == null or story_data.variable_library == null:
+		undo_redo.abort_action()
 		return
 
 	var variable_index: int = index - 1
 	var variables: Array[StoryVariable] = story_data.variable_library.variable_list
 
 	if variable_index < 0 or variable_index >= variables.size():
+		undo_redo.abort_action()
 		return
 
 	var variable: StoryVariable = variables[variable_index]
@@ -255,22 +282,39 @@ func _on_condition_changed() -> void:
 
 
 func _on_condition_delete_requested(condition: BranchCondition) -> void:
+	if story_data == null:
+		return
 	var condition_index: int = branch_node.conditions.find(condition)
 
 	if condition_index < 0:
 		return
 
-	if story_data != null:
-		story_data.remove_link_from_port(branch_node.instance_id, condition_index)
-		story_data.shift_link_ports(branch_node.instance_id, condition_index)
+	var undo_redo := story_data.undo_redo
 
-	branch_node.conditions.remove_at(condition_index)
-	branch_node.emit_changed()
+	undo_redo.create_action('Delete Condition')
 
-	if story_data != null:
-		story_data.emit_changed()
+	var links: Array[StoryLink] = story_data.get_links_from_port(
+		branch_node.instance_id,
+		condition_index,
+	)
 
-	call_deferred('_refresh_condition_rows_and_notify')
+	undo_redo.add_do_method(story_data.remove_links.bind(links))
+	undo_redo.add_do_method(story_data.shift_link_ports.bind(
+			branch_node.instance_id,
+			condition_index,
+		))
+	undo_redo.add_do_method(_remove_condition.bind(condition, true))
+
+	undo_redo.add_do_method(_add_condition.bind(condition, true))
+	undo_redo.add_undo_method(story_data.add_links.bind(links))
+	undo_redo.add_undo_method(story_data.unshift_link_ports.bind(
+			branch_node.instance_id,
+			condition_index,
+		))
+
+	story_data.update_revision()
+
+	undo_redo.commit_action()
 
 
 func _drop_from(target_position: Vector2, data: Variant, source_control: Control) -> void:

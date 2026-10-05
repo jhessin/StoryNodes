@@ -37,11 +37,6 @@ script = ExtResource("5_a7wtu")
 operator = 2
 value = false
 
-[sub_resource type="Resource" id="Resource_a7wtu"]
-script = ExtResource("5_a7wtu")
-operator = 3
-value = false
-
 [sub_resource type="Resource" id="Resource_j6ouu"]
 script = ExtResource("8_n87su")
 name = &"my_bool"
@@ -51,7 +46,7 @@ default_value = false
 [sub_resource type="Resource" id="Resource_34mvg"]
 script = ExtResource("7_kg8mt")
 variable = SubResource("Resource_j6ouu")
-conditions = Array[ExtResource("5_a7wtu")]([SubResource("Resource_8frqp"), SubResource("Resource_kh6m1"), SubResource("Resource_a7wtu")])
+conditions = Array[ExtResource("5_a7wtu")]([SubResource("Resource_8frqp"), SubResource("Resource_kh6m1")])
 node_id = &"branch"
 instance_id = &"branch1"
 graph_scene = ExtResource("6_lwo30")

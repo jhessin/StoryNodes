@@ -113,6 +113,7 @@ func _save(index: int) -> void:
 		push_error('Story save error string: ', error_string(error))
 		return
 
+	story_data.undo_redo.clear_history()
 	_saved_revisions[path] = story_data.edit_revision
 	mark_dirty()
 

@@ -20,13 +20,13 @@ to = &"choice1"
 [sub_resource type="Resource" id="Resource_n87su"]
 script = ExtResource("2_gbd8m")
 from = &"choice1"
-to = &"dialogue1"
+to = &"dialogue2"
+from_port = 1
 
 [sub_resource type="Resource" id="Resource_hyxlp"]
 script = ExtResource("2_gbd8m")
 from = &"choice1"
-to = &"dialogue2"
-from_port = 1
+to = &"dialogue1"
 
 [sub_resource type="Resource" id="Resource_lwo30"]
 script = ExtResource("3_y21bs")

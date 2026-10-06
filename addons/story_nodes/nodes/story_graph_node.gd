@@ -83,8 +83,6 @@ func _on_resize_end(new_size: Vector2) -> void:
 
 	undo_redo.add_undo_property(story_node, 'size', old_size)
 
-	story_data.update_revision()
-
 	undo_redo.commit_action()
 
 

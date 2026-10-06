@@ -66,7 +66,9 @@ var cast_count: int:
 	get:
 		return _cast.size()
 
-var edit_revision: int = 0
+var edit_revision: int:
+	get:
+		return undo_redo.get_version()
 
 @export_storage
 var _cast: Dictionary[StringName, bool] = { }

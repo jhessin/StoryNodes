@@ -107,8 +107,6 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 
 		undo_redo.add_undo_method(_restore_deleted_nodes.bind(removed_nodes, removed_links))
 
-	_story_data.update_revision()
-
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
 
@@ -188,8 +186,6 @@ func _on_node_move() -> void:
 		undo_redo.add_do_property(story_node, 'position', new_position)
 
 		undo_redo.add_undo_property(story_node, 'position', old_position)
-
-	_story_data.update_revision()
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
@@ -287,8 +283,6 @@ func _on_connection_request(
 
 	undo_redo.add_undo_method(_story_data.remove_link.bind(link))
 
-	_story_data.update_revision()
-
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
 
@@ -317,8 +311,6 @@ func _on_disconnection_request(
 	undo_redo.add_do_method(_story_data.remove_link.bind(link))
 
 	undo_redo.add_undo_method(_story_data.add_link.bind(from_node, to_node, from_port, to_port))
-
-	_story_data.update_revision()
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
@@ -377,8 +369,6 @@ func _add_node_from_node(node: StoryNode) -> void:
 		_on_connection_request(story_node.instance_id, 0, _connection_to_node, _connection_to_port)
 		_connection_to_node = &''
 		_connection_to_port = 0
-
-	_story_data.update_revision()
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)

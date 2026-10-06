@@ -54,8 +54,6 @@ func _on_character_dropped_to_cast(character: StoryCharacter) -> void:
 	undo_redo.add_undo_method(_story_data.remove_from_cast.bind(character))
 	undo_redo.add_undo_method(_refresh)
 
-	_story_data.update_revision()
-
 	undo_redo.commit_action()
 
 
@@ -72,8 +70,6 @@ func _on_character_dropped_to_library(character: StoryCharacter) -> void:
 
 	undo_redo.add_undo_method(_story_data.add_to_cast.bind(character))
 	undo_redo.add_undo_method(_refresh)
-
-	_story_data.update_revision()
 
 	undo_redo.commit_action()
 

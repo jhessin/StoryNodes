@@ -96,7 +96,6 @@ func _on_new_condition_pressed() -> void:
 	undo_redo.create_action('Add new condition')
 	undo_redo.add_do_method(_add_condition.bind(condition))
 	undo_redo.add_undo_method(_remove_condition.bind(condition))
-	story_data.update_revision()
 	undo_redo.commit_action(true)
 
 
@@ -149,8 +148,6 @@ func _on_variable_selected(index: int) -> void:
 		undo_redo.add_undo_method(_refresh_condition_rows)
 		undo_redo.add_undo_method(variable_picker.select.bind(previous_index))
 
-		story_data.update_revision()
-
 		undo_redo.commit_action()
 
 		return
@@ -182,8 +179,6 @@ func _on_variable_selected(index: int) -> void:
 	undo_redo.add_undo_property(new_condition_button, 'disabled', false)
 	undo_redo.add_undo_method(variable_picker.select.bind(previous_index))
 	undo_redo.add_undo_method(_refresh_condition_rows)
-
-	story_data.update_revision()
 
 	undo_redo.commit_action()
 
@@ -307,7 +302,6 @@ func _on_condition_delete_requested(condition: BranchCondition) -> void:
 			branch_node.instance_id,
 			condition_index,
 		))
-	story_data.update_revision()
 
 	undo_redo.commit_action()
 
@@ -316,7 +310,7 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 	if not data is int:
 		return
 
-	if branch_node == null:
+	if branch_node == null or story_data == null:
 		return
 
 	var source_index: int = data
@@ -331,13 +325,22 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 	if target_index < 0 or target_index >= branch_node.conditions.size():
 		return
 
+	var undo_redo := story_data.undo_redo
+
+	undo_redo.create_action('Move Condition')
+
+	undo_redo.add_do_method(_move_condition.bind(source_index, target_index))
+
+	undo_redo.add_undo_method(_move_condition.bind(target_index, source_index))
+
+	undo_redo.commit_action()
+
+
+func _move_condition(source_index: int, target_index: int) -> void:
 	var condition: BranchCondition = branch_node.conditions[source_index]
 	branch_node.conditions.remove_at(source_index)
 	branch_node.conditions.insert(target_index, condition)
-
-	if story_data != null:
-		story_data.move_link_port(branch_node.instance_id, source_index, target_index)
-
+	story_data.move_link_port(branch_node.instance_id, source_index, target_index)
 	_refresh_condition_rows()
 	ports_changed.emit()
 

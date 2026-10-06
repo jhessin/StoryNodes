@@ -133,11 +133,21 @@ func _on_choice_changed(new_choice: String, index: int) -> void:
 		undo_redo.create_action('Delete Choice')
 
 		# TODO - save the links and recreate them on undo
+		var links: Array[StoryLink] = story_data.get_links_from_port(choice_node.instance_id, index)
+
 		undo_redo.add_do_method(_delete_choice.bind(index))
 		undo_redo.add_do_method(_focus_index.bind(index - 1 if index > 0 else 0))
 
 		undo_redo.add_undo_method(_add_choice.bind(index, old_choice))
+		for link: StoryLink in links:
+			undo_redo.add_undo_method(story_data.add_link.bind(
+					link.from,
+					link.to,
+					link.from_port,
+					link.to_port,
+				))
 		undo_redo.add_undo_method(_focus_index.bind(index - 1 if index > 0 else 0))
+		undo_redo.add_undo_method(_refresh_choices_and_notify)
 
 		undo_redo.call_deferred('commit_action')
 		return

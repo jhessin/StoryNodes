@@ -197,11 +197,9 @@ func _refresh_value() -> void:
 		return
 
 	var focused: bool = value_field.has_focus()
-	var line: int
 	var col: int
 
 	if focused:
-		line = value_field.get_caret_line()
 		col = value_field.get_caret_column()
 
 	if (
@@ -215,7 +213,6 @@ func _refresh_value() -> void:
 
 	value_field.text = str(condition.value)
 	if focused:
-		value_field.set_caret_line(line)
 		value_field.set_caret_column(col)
 
 

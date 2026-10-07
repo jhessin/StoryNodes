@@ -171,18 +171,15 @@ func _update_choice(index: int, new_value: String) -> void:
 		return
 
 	var focused: bool = editor.has_focus()
-	var line: int
 	var col: int
 
 	if focused:
-		line = editor.get_caret_line()
 		col = editor.get_caret_column()
 
 	choice_node.choices[index] = new_value
 	editor.text = new_value
 
 	if focused:
-		editor.set_caret_line(line)
 		editor.set_caret_column(col)
 
 	choice_node.emit_changed()

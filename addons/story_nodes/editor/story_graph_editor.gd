@@ -62,6 +62,7 @@ func _on_visibility_changed() -> void:
 		return
 
 	_restore_node_sizes()
+	_refresh()
 
 
 func _restore_deleted_nodes(nodes: Array[StoryNode], links: Array[StoryLink]) -> void:
@@ -241,10 +242,16 @@ func _refresh() -> void:
 
 func _on_ports_changed() -> void:
 	graph_edit.clear_connections()
+
+	await get_tree().process_frame
+
 	_refresh_links()
 
 
 func _refresh_links() -> void:
+	if not is_visible_in_tree():
+		return
+
 	if _story_data == null:
 		push_error('No Selected Story')
 		return
@@ -254,6 +261,14 @@ func _refresh_links() -> void:
 		var to_node: StoryGraphNode = graph_nodes.get(link.to)
 
 		if from_node == null or to_node == null:
+			continue
+
+		if link.from_port < 0 or link.from_port >= from_node.get_output_port_count():
+			push_error('Invalid output port %d on node %s.' % [link.from_port, from_node.name])
+			continue
+
+		if link.to_port < 0 or link.to_port >= to_node.get_input_port_count():
+			push_error('Invalid input port %d on node %s.' % [link.to_port, to_node.name])
 			continue
 
 		graph_edit.connect_node(from_node.name, link.from_port, to_node.name, link.to_port)

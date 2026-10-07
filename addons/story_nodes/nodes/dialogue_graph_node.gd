@@ -41,14 +41,36 @@ func _on_character_selected(index: int) -> void:
 	if not story_node is DialogueNode:
 		return
 
-	var dialogue_node := story_node as DialogueNode
-	var character := character_picker.get_item_metadata(index) as StoryCharacter
+	if undo_redo == null:
+		push_error('StoryData must be assigned to DialogueGraphNode')
+
+	var new_character := character_picker.get_item_metadata(index) as StoryCharacter
+	var old_character := dialogue_node.character
+
+	undo_redo.create_action('Select Character')
+
+	undo_redo.add_do_method(_select_character.bind(new_character))
+	undo_redo.add_undo_method(_select_character.bind(old_character))
+
+	undo_redo.commit_action()
+
+
+func _select_character(character: StoryCharacter) -> void:
+	character_picker.select(_find_character_index(character))
 
 	dialogue_node.character = character.id
 	dialogue_node.emit_changed()
 
 	if story_data != null:
 		story_data.emit_changed()
+
+
+func _find_character_index(character: StoryCharacter) -> int:
+	for i: int in range(character_picker.item_count):
+		var this_char := character_picker.get_item_metadata(i) as StoryCharacter
+		if this_char.id == character.id:
+			return i
+	return -1
 
 
 func _refresh_character_picker() -> void:
@@ -80,8 +102,30 @@ func _on_dialogue_changed() -> void:
 	if not story_node is DialogueNode:
 		return
 
-	var dialogue_node := story_node as DialogueNode
-	dialogue_node.dialogue = dialogue_edit.text
+	var old_text := dialogue_node.dialogue
+	var new_text := dialogue_edit.text
 
-	if story_data != null:
-		story_data.emit_changed()
+	undo_redo.create_action('Update Dialogue')
+
+	undo_redo.add_do_method(_update_dialogue.bind(new_text))
+	undo_redo.add_undo_method(_update_dialogue.bind(old_text))
+
+	undo_redo.commit_action()
+
+
+func _update_dialogue(text: String) -> void:
+	dialogue_node.dialogue = text
+	var focused: bool = dialogue_edit.has_focus()
+	var line: int
+	var col: int
+
+	if focused:
+		line = dialogue_edit.get_caret_line()
+		col = dialogue_edit.get_caret_column()
+
+	dialogue_edit.text = text
+	if focused:
+		dialogue_edit.set_caret_column(col)
+		dialogue_edit.set_caret_line(line)
+
+	story_data.emit_changed()

@@ -196,6 +196,14 @@ func _refresh_value() -> void:
 		value_field.text = ''
 		return
 
+	var focused: bool = value_field.has_focus()
+	var line: int
+	var col: int
+
+	if focused:
+		line = value_field.get_caret_line()
+		col = value_field.get_caret_column()
+
 	if (
 		condition.operator == BranchCondition.Operator.IS_EMPTY
 		or condition.operator == BranchCondition.Operator.IS_NOT_EMPTY
@@ -206,8 +214,9 @@ func _refresh_value() -> void:
 		return
 
 	value_field.text = str(condition.value)
-	value_field.grab_focus()
-	value_field.caret_column = value_field.text.length()
+	if focused:
+		value_field.set_caret_line(line)
+		value_field.set_caret_column(col)
 
 
 func _on_value_changed(value: String) -> void:

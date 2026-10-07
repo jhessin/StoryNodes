@@ -7,6 +7,12 @@ signal ports_changed
 var story_node: StoryNode
 var story_data: StoryData
 
+var undo_redo: UndoRedo:
+	get:
+		if story_data == null:
+			return null
+		return story_data.undo_redo
+
 
 # var _restoring_size: bool = false
 func _ready() -> void:

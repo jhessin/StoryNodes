@@ -170,11 +170,21 @@ func _update_choice(index: int, new_value: String) -> void:
 		_focus_new_choice_field()
 		return
 
+	var focused: bool = editor.has_focus()
+	var line: int
+	var col: int
+
+	if focused:
+		line = editor.get_caret_line()
+		col = editor.get_caret_column()
+
 	choice_node.choices[index] = new_value
 	editor.text = new_value
 
-	editor.grab_focus()
-	editor.caret_column = editor.text.length()
+	if focused:
+		editor.set_caret_line(line)
+		editor.set_caret_column(col)
+
 	choice_node.emit_changed()
 	story_data.emit_changed()
 

@@ -47,7 +47,7 @@ func set_condition(value: BranchCondition) -> void:
 	condition = value
 	drag_handle.drag_data = value
 	_refresh_value_field()
-	_refresh_value
+	_refresh_value()
 
 
 func set_variable(value: StoryVariable) -> void:
@@ -218,7 +218,7 @@ func _on_value_changed(value: String) -> void:
 		return
 
 	undo_redo.create_action('Update value')
-	var old_value = condition.value
+	var old_value = str(condition.value)
 	var new_value = value
 
 	undo_redo.add_do_method(_update_value.bind(new_value))

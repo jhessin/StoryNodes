@@ -6,6 +6,13 @@ signal delete_requested(condition: BranchCondition)
 
 var condition: BranchCondition
 var variable: StoryVariable
+var story_data: StoryData
+
+var undo_redo: UndoRedo:
+	get:
+		if story_data == null:
+			return null
+		return story_data.undo_redo
 
 @onready var operator_picker: OptionButton = %OperatorPicker
 @onready var value_field: LineEdit = %ValueField
@@ -22,16 +29,25 @@ func _ready() -> void:
 	_refresh_value()
 
 
-func set_condition(value: BranchCondition) -> void:
-	condition = value
+func set_story_data(data: StoryData) -> void:
+	story_data = data
 
-	if condition == null:
+
+func set_condition(value: BranchCondition) -> void:
+	if value == null:
 		push_error('ConditionRow requires a BranchCondition')
 		return
 
-	drag_handle.drag_data = condition
+	var old_value := condition
+	var new_value := value
+
+	if old_value == new_value:
+		return
+
+	condition = value
+	drag_handle.drag_data = value
 	_refresh_value_field()
-	_refresh_value()
+	_refresh_value
 
 
 func set_variable(value: StoryVariable) -> void:
@@ -68,10 +84,35 @@ func _on_operator_selected(index: int) -> void:
 	if condition == null:
 		return
 
-	condition.operator = operator_picker.get_item_id(index) as BranchCondition.Operator
+	if undo_redo == null:
+		push_error('Must Set story data for ConditionRow')
+		return
+
+	var old_value: BranchCondition.Operator = condition.operator
+	var new_value: BranchCondition.Operator = operator_picker.get_item_id(index) as BranchCondition.Operator
+
+	undo_redo.create_action('Update Operator')
+
+	undo_redo.add_do_method(_update_operator.bind(new_value))
+	undo_redo.add_undo_method(_update_operator.bind(old_value))
+
+	undo_redo.commit_action()
+
+
+func _update_operator(operator: BranchCondition.Operator) -> void:
+	operator_picker.select(_find_index_for_operator(operator))
+
+	condition.operator = operator
 	condition.emit_changed()
 	_refresh_value_field()
 	_refresh_value()
+
+
+func _find_index_for_operator(operator: BranchCondition.Operator) -> int:
+	for i: int in range(operator_picker.item_count):
+		if operator_picker.get_item_id(i) == int(operator):
+			return i
+	return -1
 
 
 func _populate_operator_picker() -> void:
@@ -165,12 +206,28 @@ func _refresh_value() -> void:
 		return
 
 	value_field.text = str(condition.value)
+	value_field.grab_focus()
+	value_field.caret_column = value_field.text.length()
 
 
 func _on_value_changed(value: String) -> void:
 	if condition == null or variable == null:
 		return
+	if undo_redo == null:
+		push_error('Must Set story data for ConditionRow')
+		return
 
+	undo_redo.create_action('Update value')
+	var old_value = condition.value
+	var new_value = value
+
+	undo_redo.add_do_method(_update_value.bind(new_value))
+	undo_redo.add_undo_method(_update_value.bind(old_value))
+
+	undo_redo.commit_action()
+
+
+func _update_value(value: String) -> void:
 	match variable.type:
 		StoryVariable.Type.STRING:
 			condition.value = value
@@ -183,6 +240,7 @@ func _on_value_changed(value: String) -> void:
 		StoryVariable.Type.BOOL:
 			condition.value = value.to_lower() == 'true'
 
+	_refresh_value()
 	condition.emit_changed()
 
 

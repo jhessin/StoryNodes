@@ -131,7 +131,7 @@ func _on_variable_selected(index: int) -> void:
 
 	if index == 0:
 		if previous_variable == null:
-			undo_redo.abort_action()
+			undo_redo.commit_action()
 			return
 
 		undo_redo.add_do_property(branch_node, 'variable', null)
@@ -155,14 +155,14 @@ func _on_variable_selected(index: int) -> void:
 	undo_redo.add_do_property(new_condition_button, 'disabled', false)
 
 	if story_data == null or story_data.variable_library == null:
-		undo_redo.abort_action()
+		undo_redo.commit_action()
 		return
 
 	var variable_index: int = index - 1
 	var variables: Array[StoryVariable] = story_data.variable_library.variable_list
 
 	if variable_index < 0 or variable_index >= variables.size():
-		undo_redo.abort_action()
+		undo_redo.commit_action()
 		return
 
 	var variable: StoryVariable = variables[variable_index]
@@ -187,8 +187,13 @@ func _find_index_for_variable(variable: StoryVariable) -> int:
 	if story_data == null or story_data.variable_library == null:
 		return -1
 
+	if variable == null:
+		return -1
+
 	for i: int in range(story_data.variable_library.variable_list.size()):
 		var v: StoryVariable = story_data.variable_library.variable_list[i]
+		if v == null:
+			continue
 
 		if v.name == variable.name:
 			return i + 1
@@ -232,6 +237,8 @@ func _refresh_condition_rows() -> void:
 		if condition_row == null:
 			push_error('Failed to instantiate ConditionRow')
 			continue
+
+		condition_row.set_story_data(story_data)
 
 		var new_condition_index: int = get_children().find(new_condition_button)
 		add_child(condition_row)

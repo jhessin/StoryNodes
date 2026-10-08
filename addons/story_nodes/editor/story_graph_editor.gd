@@ -3,6 +3,12 @@ class_name StoryGraphEditor
 extends Control
 
 var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
+
+var undo_redo: UndoRedo:
+	get:
+		if _story_data != null:
+			return _story_data.undo_redo
+		return null
 var _standard_node_library: StoryNodeLibrary = preload(
 	'res://addons/story_nodes/resources/libraries/standard_node_library.tres'
 )
@@ -82,8 +88,6 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 
 	if nodes.is_empty():
 		return
-
-	var undo_redo := _story_data.undo_redo
 
 	undo_redo.create_action('Delete Story Nodes')
 
@@ -166,8 +170,6 @@ func _on_node_move() -> void:
 	if _story_data == null:
 		push_error('No Selected Story')
 		return
-
-	var undo_redo := _story_data.undo_redo
 
 	undo_redo.create_action('Move Story Nodes')
 
@@ -284,8 +286,6 @@ func _on_connection_request(
 		push_error('No Selected Story')
 		return
 
-	var undo_redo := _story_data.undo_redo
-
 	undo_redo.create_action('Create Story Link')
 
 	undo_redo.add_do_method(_story_data.add_link.bind(from_node, to_node, from_port, to_port))
@@ -319,7 +319,6 @@ func _on_disconnection_request(
 	if link == null:
 		push_error('Link does not exist.')
 		return
-	var undo_redo := _story_data.undo_redo
 
 	undo_redo.create_action('Delete Story Link')
 
@@ -362,8 +361,6 @@ func _add_node_from_node(node: StoryNode) -> void:
 	var story_node: StoryNode = node.duplicate(true)
 	story_node.instance_id = _new_instance_id(story_node.node_id)
 	story_node.position = _new_node_position
-
-	var undo_redo := _story_data.undo_redo
 
 	undo_redo.create_action('Add Story Node')
 

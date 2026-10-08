@@ -5,6 +5,11 @@ extends HSplitContainer
 const ITEM_HEIGHT: float = 32.0
 
 var selected_character: StoryCharacter
+var undo_redo: UndoRedo:
+	get:
+		if _character_library != null:
+			return _character_library.undo_redo
+		return null
 var _character_library: StoryCharacterLibrary
 
 @onready var character_list: ItemList = %CharacterList
@@ -54,8 +59,6 @@ func _on_color_changed(new_color: Color) -> void:
 	if selected_character == null:
 		return
 
-	var undo_redo := _character_library.undo_redo
-
 	undo_redo.create_action('Character Color Changed')
 
 	var old_color := selected_character.color
@@ -73,8 +76,6 @@ func _on_color_changed(new_color: Color) -> void:
 func _on_image_changed(resource: Resource) -> void:
 	if selected_character == null:
 		return
-
-	var undo_redo := _character_library.undo_redo
 
 	undo_redo.create_action('Character Image Changed')
 
@@ -97,8 +98,6 @@ func _on_delete_character_pressed() -> void:
 
 	if _character_library == null:
 		return
-
-	var undo_redo := _character_library.undo_redo
 
 	undo_redo.create_action('Delete Character')
 
@@ -123,8 +122,6 @@ func _on_name_changed(new_name: String) -> void:
 	if selected_items.is_empty():
 		return
 
-	var undo_redo := _character_library.undo_redo
-
 	undo_redo.create_action('Rename Character')
 
 	var old_name := selected_character.name
@@ -147,8 +144,6 @@ func _on_character_selected(index: int) -> void:
 			% new_character.id
 		)
 	var old_character := selected_character
-
-	var undo_redo := _character_library.undo_redo
 
 	undo_redo.create_action('Select Character')
 

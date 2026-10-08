@@ -81,8 +81,6 @@ func _on_resize_end(new_size: Vector2) -> void:
 	if new_size == old_size:
 		return
 
-	var undo_redo = story_data.undo_redo
-
 	undo_redo.create_action('Change node size')
 
 	undo_redo.add_do_property(story_node, 'size', new_size)

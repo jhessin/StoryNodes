@@ -5,6 +5,11 @@ extends HSplitContainer
 const ITEM_HEIGHT: float = 32.0
 
 var selected_variable: StoryVariable
+var undo_redo: UndoRedo:
+	get:
+		if _variable_library != null:
+			return _variable_library.undo_redo
+		return null
 var _variable_library: StoryVariableLibrary
 
 @onready var variable_list: ItemList = %VariableList
@@ -38,8 +43,6 @@ func set_variable_library(data: StoryVariableLibrary) -> void:
 func _on_delete_button_pressed() -> void:
 	if _variable_library == null or selected_variable == null:
 		return
-
-	var undo_redo := _variable_library.undo_redo
 
 	undo_redo.create_action('Delete Variable')
 
@@ -87,8 +90,6 @@ func _on_variable_selected(index: int) -> void:
 	var new_variable := variable_list.get_item_metadata(index) as StoryVariable
 	var old_variable := selected_variable
 
-	var undo_redo := _variable_library.undo_redo
-
 	undo_redo.create_action('Select Variable')
 
 	undo_redo.add_do_method(_select_variable.bind(new_variable))
@@ -104,8 +105,6 @@ func _on_new_variable_pressed() -> void:
 	var variable_name := _get_unique_variable_name()
 
 	var variable := StoryVariable.new(variable_name, StoryVariable.Type.STRING, '')
-
-	var undo_redo := _variable_library.undo_redo
 
 	undo_redo.create_action('Add New Variable')
 
@@ -281,7 +280,6 @@ func _on_bool_default_changed(new_value: bool) -> void:
 	if selected_variable == null:
 		return
 
-	var undo_redo := _variable_library.undo_redo
 	var old_value := bool(selected_variable.default_value)
 
 	undo_redo.create_action('Change default value')
@@ -302,7 +300,6 @@ func _on_int_default_changed(new_value: float) -> void:
 		return
 
 	var old_value := int(selected_variable.default_value)
-	var undo_redo := _variable_library.undo_redo
 
 	undo_redo.create_action('Change default value')
 
@@ -322,7 +319,6 @@ func _on_float_default_changed(new_value: float) -> void:
 		return
 
 	var old_value := float(selected_variable.default_value)
-	var undo_redo := _variable_library.undo_redo
 
 	undo_redo.create_action('Change default value')
 
@@ -342,7 +338,6 @@ func _on_string_default_changed(new_value: String) -> void:
 		return
 
 	var old_value := str(selected_variable.default_value)
-	var undo_redo := _variable_library.undo_redo
 
 	undo_redo.create_action('Change default value')
 
@@ -371,7 +366,6 @@ func _on_name_changed(new_name: StringName) -> void:
 	var old_variable := selected_variable
 	var old_value := old_variable.name
 	var new_value := _variable_library.resolve_name(old_value, new_name)
-	var undo_redo := _variable_library.undo_redo
 
 	if new_value.is_empty():
 		push_error('Could not update the name of %s to %s' % [old_value, new_value])

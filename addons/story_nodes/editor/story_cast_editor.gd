@@ -4,6 +4,12 @@ extends HSplitContainer
 
 const ITEM_HEIGHT: float = 32.0
 
+var undo_redo: UndoRedo:
+	get:
+		if _story_data != null:
+			return _story_data.undo_redo
+		return null
+
 var _story_data: StoryData
 var _character_library: StoryCharacterLibrary
 
@@ -44,8 +50,6 @@ func _on_character_dropped_to_cast(character: StoryCharacter) -> void:
 	if _story_data == null:
 		return
 
-	var undo_redo := _story_data.undo_redo
-
 	undo_redo.create_action('Add character to cast')
 
 	undo_redo.add_do_method(_story_data.add_to_cast.bind(character))
@@ -60,8 +64,6 @@ func _on_character_dropped_to_cast(character: StoryCharacter) -> void:
 func _on_character_dropped_to_library(character: StoryCharacter) -> void:
 	if _story_data == null:
 		return
-
-	var undo_redo := _story_data.undo_redo
 
 	undo_redo.create_action('Remove character from cast')
 

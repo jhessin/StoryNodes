@@ -91,8 +91,6 @@ func _on_new_condition_pressed() -> void:
 	if story_data == null:
 		return
 
-	var undo_redo := story_data.undo_redo
-
 	undo_redo.create_action('Add new condition')
 	undo_redo.add_do_method(_add_condition.bind(condition))
 	undo_redo.add_undo_method(_remove_condition.bind(condition))
@@ -122,8 +120,6 @@ func _remove_condition(condition: BranchCondition, notify: bool = false) -> void
 func _on_variable_selected(index: int) -> void:
 	if branch_node == null or story_data == null:
 		return
-
-	var undo_redo := story_data.undo_redo
 
 	undo_redo.create_action('Select Variable')
 	var previous_variable := branch_node.variable
@@ -288,7 +284,6 @@ func _on_condition_delete_requested(condition: BranchCondition) -> void:
 	if condition_index < 0:
 		return
 
-	var undo_redo := story_data.undo_redo
 	var links: Array[StoryLink] = story_data.get_links_from_port(
 		branch_node.instance_id,
 		condition_index,
@@ -304,11 +299,11 @@ func _on_condition_delete_requested(condition: BranchCondition) -> void:
 	undo_redo.add_do_method(_remove_condition.bind(condition, true))
 
 	undo_redo.add_undo_method(_add_condition.bind(condition, true))
-	undo_redo.add_undo_method(story_data.add_links.bind(links))
 	undo_redo.add_undo_method(story_data.unshift_link_ports.bind(
 			branch_node.instance_id,
 			condition_index,
 		))
+	undo_redo.add_undo_method(story_data.add_links.bind(links))
 
 	undo_redo.commit_action()
 
@@ -331,8 +326,6 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 
 	if target_index < 0 or target_index >= branch_node.conditions.size():
 		return
-
-	var undo_redo := story_data.undo_redo
 
 	undo_redo.create_action('Move Condition')
 

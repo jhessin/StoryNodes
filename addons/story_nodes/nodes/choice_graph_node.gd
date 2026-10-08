@@ -54,8 +54,6 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 	if target_index < 0 or target_index >= choice_node.choices.size():
 		return
 
-	var undo_redo := story_data.undo_redo
-
 	undo_redo.create_action('Move Choice')
 
 	undo_redo.add_do_method(_move_choice.bind(source_index, target_index))
@@ -127,7 +125,6 @@ func _on_choice_changed(new_choice: String, index: int) -> void:
 		return
 
 	var old_choice := choice_node.choices[index]
-	var undo_redo := story_data.undo_redo
 
 	if new_choice.is_empty():
 		undo_redo.create_action('Delete Choice')
@@ -217,8 +214,6 @@ func _on_add_choice(new_text: String) -> void:
 		return
 
 	var index := choice_node.choices.size()
-
-	var undo_redo := story_data.undo_redo
 
 	undo_redo.create_action('Add a choice')
 

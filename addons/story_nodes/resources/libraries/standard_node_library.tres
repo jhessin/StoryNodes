@@ -9,6 +9,8 @@
 [ext_resource type="Script" uid="uid://b6165fr82m4my" path="res://addons/story_nodes/resources/branch_condition.gd" id="6_am5tb"]
 [ext_resource type="PackedScene" uid="uid://dwyu0hkdrgten" path="res://addons/story_nodes/nodes/branch_graph_node.tscn" id="7_03dyx"]
 [ext_resource type="Script" uid="uid://dflbb5l7krrii" path="res://addons/story_nodes/resources/nodes/branch_node.gd" id="8_yplg2"]
+[ext_resource type="PackedScene" uid="uid://c7yr0tre6aac8" path="res://addons/story_nodes/nodes/set_variable_graph_node.tscn" id="9_yplg2"]
+[ext_resource type="Script" uid="uid://cekblurtsqt6n" path="res://addons/story_nodes/resources/nodes/set_variable_node.gd" id="10_c4q1b"]
 
 [sub_resource type="Resource" id="Resource_wkvgt"]
 script = ExtResource("8_yplg2")
@@ -34,11 +36,21 @@ display_name = "Dialogue"
 description = "An NPC conversation."
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
 
+[sub_resource type="Resource" id="Resource_n1qaf"]
+script = ExtResource("10_c4q1b")
+value = null
+node_id = &"set_variable"
+graph_scene = ExtResource("9_yplg2")
+display_name = "Set Variable"
+description = "Sets a variable."
+metadata/_custom_type_script = "uid://cekblurtsqt6n"
+
 [resource]
 script = ExtResource("2_wm86p")
 _nodes = Dictionary[StringName, ExtResource("1_urkge")]({
 &"branch": SubResource("Resource_wkvgt"),
 &"choice": SubResource("Resource_uuq3i"),
-&"dialogue": SubResource("Resource_f2eex")
+&"dialogue": SubResource("Resource_f2eex"),
+&"set_variable": SubResource("Resource_n1qaf")
 })
 metadata/_custom_type_script = "uid://1nv0k0n8sr8y"

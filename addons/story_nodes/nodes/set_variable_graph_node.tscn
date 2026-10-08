@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://c7yr0tre6aac8"]
+
+[ext_resource type="Script" uid="uid://d1ep14ird1cjo" path="res://addons/story_nodes/nodes/set_variable_graph_node.gd" id="1_uk4t0"]
+
+[node name="SetVariableGraphNode" type="GraphNode" unique_id=1975082951]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+title = "Set Variable"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("1_uk4t0")
+metadata/_custom_type_script = "uid://d1ep14ird1cjo"
+metadata/_edit_use_anchors_ = true
+
+[node name="VariableSection" type="HBoxContainer" parent="." unique_id=937693498]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VariableLabel" type="Label" parent="VariableSection" unique_id=679649541]
+layout_mode = 2
+text = "Variable"
+
+[node name="VariablePicker" type="OptionButton" parent="VariableSection" unique_id=314049673]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3

@@ -13,7 +13,7 @@ enum Type {
 @export var type: Type = Type.STRING
 @export var default_value: Variant = ''
 
-var current_value: Variant = default_value
+var value: Variant = default_value
 
 
 func _init(

@@ -295,7 +295,9 @@ func _on_connection_request(
 	link.from_port = from_port
 	link.to_port = to_port
 
-	undo_redo.add_undo_method(_story_data.remove_link.bind(link))
+	undo_redo.add_undo_method(
+		_remove_link_by_endpoints.bind(from_node, from_port, to_node, to_port)
+	)
 
 	undo_redo.add_do_method(_refresh)
 	undo_redo.add_undo_method(_refresh)
@@ -321,12 +323,12 @@ func _on_disconnection_request(
 
 	undo_redo.create_action('Delete Story Link')
 
-	undo_redo.add_do_method(_story_data.remove_link.bind(link))
+	undo_redo.add_do_method(_remove_link_by_endpoints.bind(from_node, from_port, to_node, to_port))
 
 	undo_redo.add_undo_method(_story_data.add_link.bind(from_node, to_node, from_port, to_port))
 
-	undo_redo.add_do_method(_refresh)
-	undo_redo.add_undo_method(_refresh)
+	undo_redo.add_do_method(_refresh_deferred)
+	undo_redo.add_undo_method(_refresh_deferred)
 
 	undo_redo.commit_action()
 
@@ -401,3 +403,25 @@ func _restore_node_sizes() -> void:
 	for id: StringName in graph_nodes:
 		var graph_node: StoryGraphNode = graph_nodes[id]
 		graph_node.restore_saved_size()
+
+
+func _refresh_deferred() -> void:
+	_refresh.call_deferred()
+
+
+func _remove_link_by_endpoints(
+	from_node: StringName,
+	from_port: int,
+	to_node: StringName,
+	to_port: int,
+) -> void:
+	if _story_data == null:
+		return
+
+	var link: StoryLink = _story_data.get_link(from_node, to_node, from_port, to_port)
+
+	if link == null:
+		push_error('Link does not exist when removing it.')
+		return
+
+	_story_data.remove_link(link)

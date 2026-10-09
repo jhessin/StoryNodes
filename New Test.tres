@@ -6,15 +6,30 @@
 [ext_resource type="PackedScene" uid="uid://ckunlsn4wdx0" path="res://addons/story_nodes/nodes/start_runtime_node.tscn" id="4_otx63"]
 [ext_resource type="Resource" uid="uid://brs44m3fdq7jh" path="res://character_library.tres" id="5_1p5mc"]
 [ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="5_26l3o"]
-[ext_resource type="PackedScene" uid="uid://c7yr0tre6aac8" path="res://addons/story_nodes/nodes/set_variable_graph_node.tscn" id="5_qi2dp"]
-[ext_resource type="Script" uid="uid://cekblurtsqt6n" path="res://addons/story_nodes/resources/nodes/set_variable_node.gd" id="6_fv2by"]
-[ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="7_5m41q"]
+[ext_resource type="PackedScene" uid="uid://c7yr0tre6aac8" path="res://addons/story_nodes/nodes/set_variable_graph_node.tscn" id="7_cuebt"]
 [ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="7_otx63"]
+[ext_resource type="Script" uid="uid://cekblurtsqt6n" path="res://addons/story_nodes/resources/nodes/set_variable_node.gd" id="8_ivuwg"]
+[ext_resource type="PackedScene" uid="uid://mmo7hvehf4yh" path="res://addons/story_nodes/nodes/dialogue_graph_node.tscn" id="9_0otey"]
+[ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="9_ivuwg"]
+[ext_resource type="Script" uid="uid://b6165fr82m4my" path="res://addons/story_nodes/resources/branch_condition.gd" id="10_an2p4"]
+[ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="10_bpkqa"]
+[ext_resource type="PackedScene" uid="uid://dwyu0hkdrgten" path="res://addons/story_nodes/nodes/branch_graph_node.tscn" id="11_0otey"]
+[ext_resource type="Script" uid="uid://dflbb5l7krrii" path="res://addons/story_nodes/resources/nodes/branch_node.gd" id="12_bpkqa"]
 
-[sub_resource type="Resource" id="Resource_5m41q"]
+[sub_resource type="Resource" id="Resource_ivuwg"]
 script = ExtResource("1_gk2xj")
 from = &"__start__"
+to = &"dialogue1"
+
+[sub_resource type="Resource" id="Resource_an2p4"]
+script = ExtResource("1_gk2xj")
+from = &"dialogue1"
 to = &"set_variable1"
+
+[sub_resource type="Resource" id="Resource_0otey"]
+script = ExtResource("1_gk2xj")
+from = &"set_variable1"
+to = &"branch1"
 
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
@@ -26,22 +41,41 @@ display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
-[sub_resource type="Resource" id="Resource_j6ouu"]
-script = ExtResource("7_5m41q")
-name = &"my_bool"
-type = 0
-default_value = false
+[sub_resource type="Resource" id="Resource_x33uo"]
+script = ExtResource("12_bpkqa")
+node_id = &"branch"
+instance_id = &"branch1"
+graph_scene = ExtResource("11_0otey")
+display_name = "Branch"
+description = "Branches the story depending on the value of a given variable."
+position = Vector2(1332.7194, -42.16006)
+metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
-[sub_resource type="Resource" id="Resource_fv2by"]
-script = ExtResource("6_fv2by")
-variable = SubResource("Resource_j6ouu")
+[sub_resource type="Resource" id="Resource_68cm5"]
+script = ExtResource("10_bpkqa")
+node_id = &"dialogue"
+instance_id = &"dialogue1"
+graph_scene = ExtResource("9_0otey")
+display_name = "Dialogue"
+description = "An NPC conversation."
+position = Vector2(300, -80)
+metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_c66mi"]
+script = ExtResource("9_ivuwg")
+name = &"mood"
+default_value = "Meh"
+
+[sub_resource type="Resource" id="Resource_btqi5"]
+script = ExtResource("8_ivuwg")
+variable = SubResource("Resource_c66mi")
 value = null
 node_id = &"set_variable"
 instance_id = &"set_variable1"
-graph_scene = ExtResource("5_qi2dp")
+graph_scene = ExtResource("7_cuebt")
 display_name = "Set Variable"
 description = "Sets a variable."
-position = Vector2(320, 20)
+position = Vector2(820, -20)
 metadata/_custom_type_script = "uid://cekblurtsqt6n"
 
 [resource]
@@ -56,8 +90,12 @@ _cast = Dictionary[StringName, bool]({
 })
 _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"__start__": SubResource("Resource_qi2dp"),
-&"set_variable1": SubResource("Resource_fv2by")
+&"branch1": SubResource("Resource_x33uo"),
+&"dialogue1": SubResource("Resource_68cm5"),
+&"set_variable1": SubResource("Resource_btqi5")
 })
 _links = Dictionary[ExtResource("1_gk2xj"), Object]({
-SubResource("Resource_5m41q"): null
+SubResource("Resource_ivuwg"): null,
+SubResource("Resource_an2p4"): null,
+SubResource("Resource_0otey"): null
 })

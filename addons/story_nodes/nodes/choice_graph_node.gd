@@ -146,7 +146,7 @@ func _on_choice_changed(new_choice: String, index: int) -> void:
 		undo_redo.add_undo_method(_focus_index.bind(index - 1 if index > 0 else 0))
 		undo_redo.add_undo_method(_refresh_choices_and_notify)
 
-		undo_redo.call_deferred('commit_action')
+		undo_redo.commit_action()
 		return
 
 	undo_redo.create_action('Update Choice')
@@ -254,5 +254,5 @@ func _delete_choice(index: int) -> void:
 
 
 func _refresh_choices_and_notify() -> void:
-	_refresh_choices()
-	ports_changed.emit()
+	_refresh_choices.call_deferred()
+	ports_changed.emit.call_deferred()

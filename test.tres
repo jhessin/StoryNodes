@@ -4,11 +4,8 @@
 [ext_resource type="Script" uid="uid://dohcg0p31tu1d" path="res://addons/story_nodes/resources/nodes/story_node.gd" id="3_y21bs"]
 [ext_resource type="PackedScene" uid="uid://3tvxrjqi7yvv" path="res://addons/story_nodes/nodes/start_graph_node.tscn" id="4_wjiom"]
 [ext_resource type="PackedScene" uid="uid://ckunlsn4wdx0" path="res://addons/story_nodes/nodes/start_runtime_node.tscn" id="5_05ey8"]
-[ext_resource type="PackedScene" uid="uid://dxsy2tpd13r4r" path="res://addons/story_nodes/nodes/modify_variable_graph_node.tscn" id="5_a7wtu"]
 [ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="6_a7wtu"]
-[ext_resource type="Script" uid="uid://c22wgscnql7lm" path="res://addons/story_nodes/resources/nodes/modify_variable_node.gd" id="6_lwo30"]
 [ext_resource type="Resource" uid="uid://brs44m3fdq7jh" path="res://character_library.tres" id="6_y21bs"]
-[ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="7_05ey8"]
 [ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="8_wjiom"]
 
 [sub_resource type="Resource" id="Resource_lwo30"]
@@ -20,22 +17,6 @@ runtime_scene = ExtResource("5_05ey8")
 display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
-
-[sub_resource type="Resource" id="Resource_c66mi"]
-script = ExtResource("7_05ey8")
-name = &"my_string"
-
-[sub_resource type="Resource" id="Resource_kg8mt"]
-script = ExtResource("6_lwo30")
-variable = SubResource("Resource_c66mi")
-value = "SomethingSpecial"
-node_id = &"modify_variable"
-instance_id = &"modify_variable1"
-graph_scene = ExtResource("5_a7wtu")
-display_name = "Modify Variable"
-description = "Modifies a variable"
-position = Vector2(320, 80)
-metadata/_custom_type_script = "uid://c22wgscnql7lm"
 
 [resource]
 script = ExtResource("6_a7wtu")
@@ -50,6 +31,5 @@ _cast = Dictionary[StringName, bool]({
 &"robert": true
 })
 _nodes = Dictionary[StringName, ExtResource("3_y21bs")]({
-&"__start__": SubResource("Resource_lwo30"),
-&"modify_variable1": SubResource("Resource_kg8mt")
+&"__start__": SubResource("Resource_lwo30")
 })

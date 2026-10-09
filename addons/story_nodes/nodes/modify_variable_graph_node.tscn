@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://dxsy2tpd13r4r"]
+
+[ext_resource type="Script" uid="uid://darjvu0crjcrr" path="res://addons/story_nodes/nodes/modify_variable_graph_node.gd" id="1_bc52m"]
+
+[node name="ModifyVariableGraphNode" type="GraphNode" unique_id=2135204080]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+title = "Set Variable"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+script = ExtResource("1_bc52m")
+metadata/_edit_use_anchors_ = true
+
+[node name="VariableSection" type="HBoxContainer" parent="." unique_id=937693498]
+layout_mode = 2
+
+[node name="VariableLabel" type="Label" parent="VariableSection" unique_id=679649541]
+layout_mode = 2
+text = "Variable"
+
+[node name="VariablePicker" type="OptionButton" parent="VariableSection" unique_id=314049673]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ModificationBox" type="HBoxContainer" parent="." unique_id=1571341731]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OperatorPicker" type="OptionButton" parent="ModificationBox" unique_id=840421476]
+unique_name_in_owner = true
+layout_mode = 2

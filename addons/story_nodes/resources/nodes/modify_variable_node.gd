@@ -3,6 +3,7 @@ class_name ModifyVariableNode
 extends StoryNode
 
 enum Operation {
+	CLEAR,
 	ADD,
 	SUBTRACT,
 	MULTIPLY,

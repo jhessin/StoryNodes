@@ -94,7 +94,7 @@ func _on_new_condition_pressed() -> void:
 	undo_redo.create_action('Add new condition')
 	undo_redo.add_do_method(_add_condition.bind(condition))
 	undo_redo.add_undo_method(_remove_condition.bind(condition))
-	undo_redo.commit_action(true)
+	undo_redo.commit_action()
 
 
 func _add_condition(condition: BranchCondition, notify: bool = false) -> void:

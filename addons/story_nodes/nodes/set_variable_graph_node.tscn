@@ -22,15 +22,21 @@ script = ExtResource("1_uk4t0")
 metadata/_custom_type_script = "uid://d1ep14ird1cjo"
 metadata/_edit_use_anchors_ = true
 
-[node name="VariableSection" type="HBoxContainer" parent="." unique_id=937693498]
-unique_name_in_owner = true
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=246691183]
 layout_mode = 2
 
-[node name="VariableLabel" type="Label" parent="VariableSection" unique_id=679649541]
+[node name="VariableSection" type="HBoxContainer" parent="VBoxContainer" unique_id=937693498]
+layout_mode = 2
+
+[node name="VariableLabel" type="Label" parent="VBoxContainer/VariableSection" unique_id=679649541]
 layout_mode = 2
 text = "Variable"
 
-[node name="VariablePicker" type="OptionButton" parent="VariableSection" unique_id=314049673]
+[node name="VariablePicker" type="OptionButton" parent="VBoxContainer/VariableSection" unique_id=314049673]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="VariableFields" type="VBoxContainer" parent="VBoxContainer" unique_id=430495471]
+unique_name_in_owner = true
+layout_mode = 2

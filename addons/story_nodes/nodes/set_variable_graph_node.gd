@@ -9,6 +9,7 @@ var set_variable_node: SetVariableNode:
 var variable_field: Control
 
 @onready var variable_picker: OptionButton = %VariablePicker
+@onready var variable_fields: BoxContainer = %VariableFields
 
 
 func _ready() -> void:
@@ -142,7 +143,7 @@ func _update_variable_field() -> void:
 			push_error('Invalid type for variable ', set_variable_node.variable.name)
 			return
 
-	add_child(variable_field)
+	variable_fields.add_child(variable_field)
 
 
 func _on_update_variable(value: Variant) -> void:

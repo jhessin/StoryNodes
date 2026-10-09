@@ -134,8 +134,17 @@ func _revert(index: int) -> void:
 
 	if story_data.edit_revision > saved_revision:
 		while story_data.edit_revision > saved_revision and story_data.undo_redo.has_undo():
+			var pre_vision := story_data.edit_revision
 			story_data.undo_redo.undo()
+			var post_vision := story_data.edit_revision
 			undo_count += 1
+
+			if pre_vision <= post_vision:
+				push_error(
+					'Revert stuck between revision: (%d) and (%d) for path: (%s)'
+					% [pre_vision, post_vision, path]
+				)
+				return
 
 			if undo_count >= 100:
 				push_error(
@@ -144,10 +153,28 @@ func _revert(index: int) -> void:
 					% [path, story_data.edit_revision, saved_revision]
 				)
 				break
+
 	elif story_data.edit_revision < saved_revision:
 		while story_data.edit_revision < saved_revision and story_data.undo_redo.has_redo():
+			var pre_vision := story_data.edit_revision
 			story_data.undo_redo.redo()
+			var post_vision := story_data.edit_revision
+			undo_count += 1
 
+			if pre_vision >= post_vision:
+				push_error(
+					'Revert stuck between revision: (%d) and (%d) for path: (%s)'
+					% [pre_vision, post_vision, path]
+				)
+				return
+
+			if undo_count >= 100:
+				push_error(
+					'Revert stopped after 100 redo operations. '
+					+ 'path: %s, revision: %d, saved_revision: %d'
+					% [path, story_data.edit_revision, saved_revision]
+				)
+				break
 	mark_dirty()
 
 

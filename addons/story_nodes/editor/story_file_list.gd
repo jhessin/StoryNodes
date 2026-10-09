@@ -130,10 +130,20 @@ func _revert(index: int) -> void:
 		return
 
 	var saved_revision: int = _saved_revisions.get(path, story_data.edit_revision)
+	var undo_count: int = 0
 
 	if story_data.edit_revision > saved_revision:
 		while story_data.edit_revision > saved_revision and story_data.undo_redo.has_undo():
 			story_data.undo_redo.undo()
+			undo_count += 1
+
+			if undo_count >= 100:
+				push_error(
+					'Revert stopped after 100 undo operations. '
+					+ 'path: %s, revision: %d, saved_revision: %d'
+					% [path, story_data.edit_revision, saved_revision]
+				)
+				break
 	elif story_data.edit_revision < saved_revision:
 		while story_data.edit_revision < saved_revision and story_data.undo_redo.has_redo():
 			story_data.undo_redo.redo()

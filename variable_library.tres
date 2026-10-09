@@ -23,13 +23,14 @@ default_value = 0
 
 [sub_resource type="Resource" id="Resource_c66mi"]
 script = ExtResource("1_e0v8j")
-name = &"my_string"
+name = &"mood"
+default_value = "Meh"
 
 [resource]
 script = ExtResource("2_e7d0r")
 _variables = Dictionary[StringName, ExtResource("1_e0v8j")]({
+&"mood": SubResource("Resource_c66mi"),
 &"my_bool": SubResource("Resource_j6ouu"),
 &"my_float": SubResource("Resource_ygrhq"),
-&"my_int": SubResource("Resource_sn2a2"),
-&"my_string": SubResource("Resource_c66mi")
+&"my_int": SubResource("Resource_sn2a2")
 })

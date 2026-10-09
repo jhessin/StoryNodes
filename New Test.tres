@@ -26,21 +26,22 @@ display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
-[sub_resource type="Resource" id="Resource_c66mi"]
+[sub_resource type="Resource" id="Resource_j6ouu"]
 script = ExtResource("7_5m41q")
-name = &"mood"
-default_value = "Meh"
+name = &"my_bool"
+type = 0
+default_value = false
 
 [sub_resource type="Resource" id="Resource_fv2by"]
 script = ExtResource("6_fv2by")
-variable = SubResource("Resource_c66mi")
+variable = SubResource("Resource_j6ouu")
 value = null
 node_id = &"set_variable"
 instance_id = &"set_variable1"
 graph_scene = ExtResource("5_qi2dp")
 display_name = "Set Variable"
 description = "Sets a variable."
-position = Vector2(320, 0)
+position = Vector2(320, 20)
 metadata/_custom_type_script = "uid://cekblurtsqt6n"
 
 [resource]

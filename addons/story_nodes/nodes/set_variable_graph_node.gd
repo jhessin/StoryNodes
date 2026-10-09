@@ -17,25 +17,6 @@ func _ready() -> void:
 	super._ready()
 
 
-func _process(_delta: float) -> void:
-	if not is_instance_valid(variable_field):
-		return
-
-	if variable_field.get_parent() != self:
-		return
-
-	if variable_field.size.y <= 0.0:
-		print(
-			"Variable field has zero height. ",
-			"Field size: ",
-			variable_field.size,
-			" | Node size: ",
-			size,
-			" | Minimum size: ",
-			get_combined_minimum_size(),
-		)
-
-
 func set_story_node(node: StoryNode) -> void:
 	if not node is SetVariableNode:
 		push_error('SetVariableGraphNode requires a SetVariableNode.')

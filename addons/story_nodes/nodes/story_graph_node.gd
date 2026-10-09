@@ -73,15 +73,6 @@ func restore_saved_size() -> void:
 
 
 func _on_resize_end(new_size: Vector2) -> void:
-	print(
-		"Resize ended: ",
-		name,
-		" | New size: ",
-		new_size,
-		" | Minimum size: ",
-		get_combined_minimum_size(),
-	)
-
 	if story_node == null:
 		return
 
@@ -99,17 +90,6 @@ func _on_resize_end(new_size: Vector2) -> void:
 func _on_story_node_changed() -> void:
 	if story_node == null:
 		return
-
-	print(
-		"Story node changed: ",
-		name,
-		" | Graph size: ",
-		size,
-		" | Model size: ",
-		story_node.size,
-		" | Children: ",
-		get_child_count(),
-	)
 
 	if size != story_node.size:
 		set_deferred("size", story_node.size)

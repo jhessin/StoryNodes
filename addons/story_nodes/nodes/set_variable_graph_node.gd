@@ -17,6 +17,25 @@ func _ready() -> void:
 	super._ready()
 
 
+func _process(_delta: float) -> void:
+	if not is_instance_valid(variable_field):
+		return
+
+	if variable_field.get_parent() != self:
+		return
+
+	if variable_field.size.y <= 0.0:
+		print(
+			"Variable field has zero height. ",
+			"Field size: ",
+			variable_field.size,
+			" | Node size: ",
+			size,
+			" | Minimum size: ",
+			get_combined_minimum_size(),
+		)
+
+
 func set_story_node(node: StoryNode) -> void:
 	if not node is SetVariableNode:
 		push_error('SetVariableGraphNode requires a SetVariableNode.')
@@ -28,6 +47,7 @@ func set_story_node(node: StoryNode) -> void:
 	if is_visible_in_tree():
 		var index := _find_index_for_variable(story_node.variable)
 		variable_picker.select(index)
+		_update_variable_field()
 	else:
 		if not visibility_changed.is_connected(_on_visibility_changed):
 			visibility_changed.connect(_on_visibility_changed)
@@ -103,9 +123,14 @@ func _select_variable(variable: StoryVariable) -> void:
 	variable_picker.select(index)
 
 
-func _update_variable_field() -> void:
-	if variable_field != null:
+func _clear_variable_field() -> void:
+	if is_instance_valid(variable_field):
 		variable_field.free()
+	variable_field = null
+
+
+func _update_variable_field() -> void:
+	_clear_variable_field()
 
 	if set_variable_node == null or set_variable_node.variable == null:
 		return

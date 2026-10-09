@@ -6,14 +6,15 @@
 [ext_resource type="PackedScene" uid="uid://ckunlsn4wdx0" path="res://addons/story_nodes/nodes/start_runtime_node.tscn" id="4_otx63"]
 [ext_resource type="Resource" uid="uid://brs44m3fdq7jh" path="res://character_library.tres" id="5_1p5mc"]
 [ext_resource type="Script" uid="uid://b6g4mknvinire" path="res://addons/story_nodes/resources/story_data.gd" id="5_26l3o"]
-[ext_resource type="PackedScene" uid="uid://mmo7hvehf4yh" path="res://addons/story_nodes/nodes/dialogue_graph_node.tscn" id="5_qi2dp"]
-[ext_resource type="Script" uid="uid://cbnuc0rxniwju" path="res://addons/story_nodes/resources/nodes/dialogue_node.gd" id="6_fv2by"]
+[ext_resource type="PackedScene" uid="uid://c7yr0tre6aac8" path="res://addons/story_nodes/nodes/set_variable_graph_node.tscn" id="5_qi2dp"]
+[ext_resource type="Script" uid="uid://cekblurtsqt6n" path="res://addons/story_nodes/resources/nodes/set_variable_node.gd" id="6_fv2by"]
+[ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="7_5m41q"]
 [ext_resource type="Resource" uid="uid://c2c7aht7mct8o" path="res://variable_library.tres" id="7_otx63"]
 
 [sub_resource type="Resource" id="Resource_5m41q"]
 script = ExtResource("1_gk2xj")
 from = &"__start__"
-to = &"dialogue1"
+to = &"set_variable1"
 
 [sub_resource type="Resource" id="Resource_qi2dp"]
 script = ExtResource("2_0ivhh")
@@ -25,17 +26,22 @@ display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
-[sub_resource type="Resource" id="Resource_btqi5"]
+[sub_resource type="Resource" id="Resource_c66mi"]
+script = ExtResource("7_5m41q")
+name = &"mood"
+default_value = "Meh"
+
+[sub_resource type="Resource" id="Resource_fv2by"]
 script = ExtResource("6_fv2by")
-dialogue = "How are you today?"
-node_id = &"dialogue"
-instance_id = &"dialogue1"
+variable = SubResource("Resource_c66mi")
+value = null
+node_id = &"set_variable"
+instance_id = &"set_variable1"
 graph_scene = ExtResource("5_qi2dp")
-display_name = "Dialogue"
-description = "An NPC conversation."
-position = Vector2(260.09964, -10.938871)
-size = Vector2(280, 300)
-metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+display_name = "Set Variable"
+description = "Sets a variable."
+position = Vector2(320, 0)
+metadata/_custom_type_script = "uid://cekblurtsqt6n"
 
 [resource]
 script = ExtResource("5_26l3o")
@@ -49,7 +55,7 @@ _cast = Dictionary[StringName, bool]({
 })
 _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"__start__": SubResource("Resource_qi2dp"),
-&"dialogue1": SubResource("Resource_btqi5")
+&"set_variable1": SubResource("Resource_fv2by")
 })
 _links = Dictionary[ExtResource("1_gk2xj"), Object]({
 SubResource("Resource_5m41q"): null

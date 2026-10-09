@@ -33,6 +33,7 @@ func set_story_node(node: StoryNode) -> void:
 	if is_visible_in_tree():
 		var index := _find_index_for_variable(story_node.variable)
 		variable_picker.select(index)
+		_update_operator_picker()
 	else:
 		if not visibility_changed.is_connected(_on_visibility_changed):
 			visibility_changed.connect(_on_visibility_changed)
@@ -52,9 +53,9 @@ func set_story_data(data: StoryData) -> void:
 
 
 func _clear_value_editor() -> void:
-	if value_editor != null:
+	if is_instance_valid(value_editor):
 		value_editor.free()
-		value_editor = null
+	value_editor = null
 
 
 func _on_value_updated(value: Variant) -> void:

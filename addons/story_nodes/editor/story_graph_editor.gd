@@ -187,11 +187,10 @@ func _on_node_move() -> void:
 			continue
 
 		undo_redo.add_do_property(story_node, 'position', new_position)
+		undo_redo.add_do_property(graph_node, 'position_offset', new_position)
 
 		undo_redo.add_undo_property(story_node, 'position', old_position)
-
-	undo_redo.add_do_method(_refresh)
-	undo_redo.add_undo_method(_refresh)
+		undo_redo.add_undo_property(graph_node, 'position_offset', old_position)
 
 	undo_redo.commit_action()
 

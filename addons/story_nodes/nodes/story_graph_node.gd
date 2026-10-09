@@ -95,4 +95,4 @@ func _on_story_node_changed() -> void:
 		return
 
 	if size != story_node.size:
-		size = story_node.size
+		set_deferred('size', story_node.size)

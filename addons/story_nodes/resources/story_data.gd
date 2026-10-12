@@ -121,9 +121,12 @@ func add_node(node: StoryNode) -> bool:
 
 
 func remove_node(id: StringName) -> void:
+	var node: StoryNode = get_node(id)
+
 	undo_redo.create_action('Remove Node')
 
 	undo_redo.add_do_method(_remove_node.bind(id))
+	undo_redo.add_undo_method(_add_node.bind(node))
 
 	undo_redo.commit_action()
 
@@ -206,28 +209,13 @@ func get_previous_nodes(id: StringName) -> Array[StoryNode]:
 ## ===
 ## MUTATING Link methods
 ## ===
-func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int = 0) -> StoryLink:
-	if not has_node(from):
-		push_error('Node: %s - is not in the story.' % from)
-		return null
-	if not has_node(to):
-		push_error('Node: %s - is not in the story.' % to)
-		return null
+func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int = 0) -> void:
+	undo_redo.create_action('Add Story Link')
 
-	var existing := get_link(from, from_port, to, to_port)
-	if existing != null:
-		return existing
+	undo_redo.add_do_method(_add_link.bind(from, from_port, to, to_port))
+	undo_redo.add_undo_method(_remove_link.bind(from, from_port, to, to_port))
 
-	var link := StoryLink.new()
-	link.from = from
-	link.to = to
-	link.from_port = from_port
-	link.to_port = to_port
-
-	_links[link] = null
-	emit_changed()
-
-	return link
+	undo_redo.commit_action()
 
 
 func remove_links_from(id: StringName) -> void:
@@ -482,6 +470,29 @@ func _remove_node(id: StringName) -> void:
 			remove_link(link)
 
 	_nodes.erase(id)
+	emit_changed()
+
+
+func _add_link(from_id: StringName, from_port: int, to_id: StringName, to_port: int) -> void:
+	if not has_node(from_id):
+		push_error('Node: %s - is not in the story.' % from_id)
+		return
+	if not has_node(to_id):
+		push_error('Node: %s - is not in the story.' % to_id)
+		return
+
+	var existing := get_link(from_id, from_port, to_id, to_port)
+	if existing != null:
+		push_error('Link already exists: %s' % existing.id)
+		return
+
+	var link := StoryLink.new()
+	link.from = from_id
+	link.to = to_id
+	link.from_port = from_port
+	link.to_port = to_port
+
+	_links[link] = null
 	emit_changed()
 
 

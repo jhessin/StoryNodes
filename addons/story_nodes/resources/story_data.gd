@@ -219,29 +219,39 @@ func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int
 
 
 func remove_links_from(id: StringName) -> void:
-	for link: StoryLink in get_links_from(id):
-		remove_link(link)
+	remove_links(get_links_from(id))
 
 
 func remove_links_to(id: StringName) -> void:
-	for link: StoryLink in get_links_to(id):
-		remove_link(link)
+	remove_links(get_links_to(id))
 
 
 # Remove the links provided
 func remove_links(links: Array[StoryLink]) -> void:
+	undo_redo.create_action('Remove Multiple links')
 	for link: StoryLink in links:
-		remove_link(link)
+		undo_redo.add_do_method(_remove_link.bind(link.from, link.from_port, link.to, link.to_port))
+		undo_redo.add_undo_method(_add_link.bind(link.from, link.from_port, link.to, link.to_port))
+	undo_redo.commit_action()
 
 
 func add_links(links: Array[StoryLink]) -> void:
+	undo_redo.create_action('Add multiple links')
 	for link: StoryLink in links:
-		add_link(link.from, link.to, link.from_port, link.to_port)
+		undo_redo.add_do_method(_add_link.bind(link.from, link.from_port, link.to, link.to_port))
+		undo_redo.add_undo_method(
+			_remove_link.bind(link.from, link.from_port, link.to, link.to_port)
+		)
+	undo_redo.commit_action()
 
 
 func remove_link(link: StoryLink) -> void:
-	_links.erase(link)
-	emit_changed()
+	undo_redo.create_action('Remove link')
+
+	undo_redo.add_do_method(_remove_link.bind(link.from, link.from_port, link.to, link.to_port))
+	undo_redo.add_undo_method(_add_link.bind(link.from, link.from_port, link.to, link.to_port))
+
+	undo_redo.commit_action()
 
 
 func remove_link_from_port(from: StringName, from_port: int) -> void:
@@ -250,42 +260,30 @@ func remove_link_from_port(from: StringName, from_port: int) -> void:
 
 
 func shift_link_ports(from: StringName, removed_port: int) -> void:
-	for link: StoryLink in _links:
-		if link.from != from:
-			continue
+	undo_redo.create_action('Shift link ports')
 
-		if link.from_port > removed_port:
-			link.from_port -= 1
+	undo_redo.add_do_method(_shift_link_ports.bind(from, removed_port))
+	undo_redo.add_undo_method(_unshift_link_ports.bind(from, removed_port))
 
-	emit_changed()
+	undo_redo.commit_action()
 
 
 func unshift_link_ports(from: StringName, replaced_port: int) -> void:
-	for link: StoryLink in _links:
-		if link.from != from:
-			continue
+	undo_redo.create_action('Unshift link ports')
 
-		if link.from_port >= replaced_port:
-			link.from_port += 1
+	undo_redo.add_do_method(_unshift_link_ports.bind(from, replaced_port))
+	undo_redo.add_undo_method(_shift_link_ports.bind(from, replaced_port))
 
-	emit_changed()
+	undo_redo.commit_action()
 
 
 func move_link_port(from: StringName, from_port: int, to_port: int) -> void:
-	if from_port == to_port:
-		return
+	undo_redo.create_action('Move link port')
 
-	for link: StoryLink in get_links_from(from):
-		if link.from_port == from_port:
-			link.from_port = to_port
-		elif from_port < to_port:
-			if link.from_port > from_port and link.from_port <= to_port:
-				link.from_port -= 1
-		else:
-			if link.from_port >= to_port and link.from_port < from_port:
-				link.from_port += 1
+	undo_redo.add_do_method(_move_link_port.bind(from, from_port, to_port))
+	undo_redo.add_undo_method(_move_link_port.bind(from, to_port, from_port))
 
-	emit_changed()
+	undo_redo.commit_action()
 
 
 ## ===
@@ -378,39 +376,21 @@ func is_valid() -> bool:
 ## MUTATING Cast methods
 ## ===
 func add_to_cast(character: StoryCharacter) -> void:
-	if character == null:
-		push_error('Cannot add a null character to the cast.')
-		return
+	undo_redo.create_action('Add to cast')
 
-	if character_library == null:
-		push_error('Cannot add character to cast: character library is null.')
-		return
+	undo_redo.add_do_method(_add_to_cast.bind(character))
+	undo_redo.add_undo_method(_remove_from_cast.bind(character))
 
-	if not character_library.has_character(character.id):
-		push_error(
-			'Cannot add character "%s" to cast: character is not in the library.' % character.id
-		)
-		return
-
-	if _cast.has(character.id):
-		push_error('Character "%s" is already in the cast.' % character.id)
-		return
-
-	_cast[character.id] = true
-	emit_changed()
+	undo_redo.commit_action()
 
 
 func remove_from_cast(character: StoryCharacter) -> void:
-	if character == null:
-		push_error('Cannot remove a null character from the cast.')
-		return
+	undo_redo.create_action('Remove from cast')
 
-	if not _cast.has(character.id):
-		push_error('Character "%s" is not in the cast.' % character.id)
-		return
+	undo_redo.add_do_method(_remove_from_cast.bind(character))
+	undo_redo.add_undo_method(_add_to_cast.bind(character))
 
-	_cast.erase(character.id)
-	emit_changed()
+	undo_redo.commit_action()
 
 
 ## ===
@@ -500,4 +480,79 @@ func _remove_link(from_id: StringName, from_port: int, to_id: StringName, to_por
 	var link := get_link(from_id, from_port, to_id, to_port)
 
 	_links.erase(link)
+	emit_changed()
+
+
+func _shift_link_ports(from: StringName, removed_port: int) -> void:
+	for link: StoryLink in _links:
+		if link.from != from:
+			continue
+
+		if link.from_port > removed_port:
+			link.from_port -= 1
+
+	emit_changed()
+
+
+func _unshift_link_ports(from: StringName, replaced_port: int) -> void:
+	for link: StoryLink in _links:
+		if link.from != from:
+			continue
+
+		if link.from_port >= replaced_port:
+			link.from_port += 1
+
+	emit_changed()
+
+
+func _move_link_port(from: StringName, from_port: int, to_port: int) -> void:
+	if from_port == to_port:
+		return
+
+	for link: StoryLink in get_links_from(from):
+		if link.from_port == from_port:
+			link.from_port = to_port
+		elif from_port < to_port:
+			if link.from_port > from_port and link.from_port <= to_port:
+				link.from_port -= 1
+		else:
+			if link.from_port >= to_port and link.from_port < from_port:
+				link.from_port += 1
+
+	emit_changed()
+
+
+func _add_to_cast(character: StoryCharacter) -> void:
+	if character == null:
+		push_error('Cannot add a null character to the cast.')
+		return
+
+	if character_library == null:
+		push_error('Cannot add character to cast: character library is null.')
+		return
+
+	if not character_library.has_character(character.id):
+		push_error(
+			'Cannot add character "%s" to cast: character is not in the library.' % character.id
+		)
+		return
+
+	if _cast.has(character.id):
+		push_error('Character "%s" is already in the cast.' % character.id)
+		return
+
+	_cast[character.id] = true
+	emit_changed()
+
+
+func _remove_from_cast(character: StoryCharacter) -> void:
+	if character == null:
+		push_error('Cannot remove a null character from the cast.')
+		return
+
+	if not _cast.has(character.id):
+		push_error('Character "%s" is not in the cast.' % character.id)
+		return
+
+	_cast.erase(character.id)
 	emit_changed()

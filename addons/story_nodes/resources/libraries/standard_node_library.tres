@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://cekblurtsqt6n" path="res://addons/story_nodes/resources/nodes/set_variable_node.gd" id="10_c4q1b"]
 [ext_resource type="PackedScene" uid="uid://dxsy2tpd13r4r" path="res://addons/story_nodes/nodes/modify_variable_graph_node.tscn" id="11_lx3co"]
 [ext_resource type="Script" uid="uid://c22wgscnql7lm" path="res://addons/story_nodes/resources/nodes/modify_variable_node.gd" id="12_ghxu6"]
+[ext_resource type="PackedScene" uid="uid://dhhh03rbhfko2" path="res://addons/story_nodes/nodes/restart_story_graph_node.tscn" id="13_pdpw5"]
+[ext_resource type="Script" uid="uid://ti5dxntm1ose" path="res://addons/story_nodes/resources/nodes/restart_story_node.gd" id="14_48lrl"]
 
 [sub_resource type="Resource" id="Resource_wkvgt"]
 script = ExtResource("8_yplg2")
@@ -47,6 +49,14 @@ display_name = "Modify Variable"
 description = "Modifies a variable"
 metadata/_custom_type_script = "uid://c22wgscnql7lm"
 
+[sub_resource type="Resource" id="Resource_e0v8j"]
+script = ExtResource("14_48lrl")
+node_id = &"restart"
+graph_scene = ExtResource("13_pdpw5")
+display_name = "Restart Node"
+description = "Restarts the story from the beginning without losing any changes to variables."
+metadata/_custom_type_script = "uid://ti5dxntm1ose"
+
 [sub_resource type="Resource" id="Resource_n1qaf"]
 script = ExtResource("10_c4q1b")
 value = null
@@ -63,6 +73,7 @@ _nodes = Dictionary[StringName, ExtResource("1_urkge")]({
 &"choice": SubResource("Resource_uuq3i"),
 &"dialogue": SubResource("Resource_f2eex"),
 &"modify_variable": SubResource("Resource_bc52m"),
+&"restart": SubResource("Resource_e0v8j"),
 &"set_variable": SubResource("Resource_n1qaf")
 })
 metadata/_custom_type_script = "uid://1nv0k0n8sr8y"

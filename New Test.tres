@@ -33,7 +33,7 @@ script = ExtResource("1_gk2xj")
 from = &"set_variable1"
 to = &"branch1"
 
-[sub_resource type="Resource" id="Resource_5ug4y"]
+[sub_resource type="Resource" id="Resource_bpkqa"]
 script = ExtResource("1_gk2xj")
 from = &"branch1"
 to = &"restart1"
@@ -48,16 +48,6 @@ display_name = "Start"
 description = "The beginning of every story."
 metadata/_custom_type_script = "uid://dohcg0p31tu1d"
 
-[sub_resource type="Resource" id="Resource_x33uo"]
-script = ExtResource("12_bpkqa")
-node_id = &"branch"
-instance_id = &"branch1"
-graph_scene = ExtResource("11_0otey")
-display_name = "Branch"
-description = "Branches the story depending on the value of a given variable."
-position = Vector2(1332.7194, -42.16006)
-metadata/_custom_type_script = "uid://dflbb5l7krrii"
-
 [sub_resource type="Resource" id="Resource_68cm5"]
 script = ExtResource("10_bpkqa")
 node_id = &"dialogue"
@@ -67,6 +57,16 @@ display_name = "Dialogue"
 description = "An NPC conversation."
 position = Vector2(300, -80)
 metadata/_custom_type_script = "uid://cbnuc0rxniwju"
+
+[sub_resource type="Resource" id="Resource_5ug4y"]
+script = ExtResource("14_bpkqa")
+node_id = &"restart"
+instance_id = &"restart1"
+graph_scene = ExtResource("13_0otey")
+display_name = "Restart Node"
+description = "Restarts the story from the beginning without losing any changes to variables."
+position = Vector2(1860.7856, 56.906723)
+metadata/_custom_type_script = "uid://ti5dxntm1ose"
 
 [sub_resource type="Resource" id="Resource_c66mi"]
 script = ExtResource("9_ivuwg")
@@ -85,15 +85,15 @@ description = "Sets a variable."
 position = Vector2(820, -20)
 metadata/_custom_type_script = "uid://cekblurtsqt6n"
 
-[sub_resource type="Resource" id="Resource_l266m"]
-script = ExtResource("14_bpkqa")
-node_id = &"restart"
-instance_id = &"restart1"
-graph_scene = ExtResource("13_0otey")
-display_name = "Restart Node"
-description = "Restarts the story from the beginning without losing any changes to variables."
-position = Vector2(1798.7856, 8.906723)
-metadata/_custom_type_script = "uid://ti5dxntm1ose"
+[sub_resource type="Resource" id="Resource_x33uo"]
+script = ExtResource("12_bpkqa")
+node_id = &"branch"
+instance_id = &"branch1"
+graph_scene = ExtResource("11_0otey")
+display_name = "Branch"
+description = "Branches the story depending on the value of a given variable."
+position = Vector2(1332.7194, -42.16006)
+metadata/_custom_type_script = "uid://dflbb5l7krrii"
 
 [resource]
 script = ExtResource("5_26l3o")
@@ -109,12 +109,12 @@ _nodes = Dictionary[StringName, ExtResource("2_0ivhh")]({
 &"__start__": SubResource("Resource_qi2dp"),
 &"branch1": SubResource("Resource_x33uo"),
 &"dialogue1": SubResource("Resource_68cm5"),
-&"restart1": SubResource("Resource_l266m"),
+&"restart1": SubResource("Resource_5ug4y"),
 &"set_variable1": SubResource("Resource_btqi5")
 })
 _links = Dictionary[ExtResource("1_gk2xj"), Object]({
 SubResource("Resource_ivuwg"): null,
 SubResource("Resource_an2p4"): null,
 SubResource("Resource_0otey"): null,
-SubResource("Resource_5ug4y"): null
+SubResource("Resource_bpkqa"): null
 })

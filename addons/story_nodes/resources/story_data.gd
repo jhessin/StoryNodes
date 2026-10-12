@@ -80,6 +80,15 @@ var _nodes: Dictionary[StringName, StoryNode] = { }
 var _links: Dictionary[StoryLink, Object] = { }
 
 
+static func reload_story(path: String) -> StoryData:
+	var resource: Resource = ResourceLoader.load(path, '', ResourceLoader.CACHE_MODE_REPLACE)
+	if resource is not StoryData:
+		push_error('Failed to reload StoryData: %s' % path)
+		return null
+
+	return resource as StoryData
+
+
 ## ===
 ## Lifecycle methods
 ## ===
@@ -87,8 +96,12 @@ func _init() -> void:
 	_ensure_start()
 
 
+func ensure_start_node() -> void:
+	_ensure_start()
+
+
 ## ===
-## Node methods
+## MUTATING Node methods
 ## ===
 func add_node(node: StoryNode) -> bool:
 	if (
@@ -97,12 +110,27 @@ func add_node(node: StoryNode) -> bool:
 	):
 		return false
 
-	_nodes[node.instance_id] = node
+	undo_redo.create_action('Add Node')
 
-	emit_changed()
+	undo_redo.add_do_method(_add_node.bind(node))
+	undo_redo.add_undo_method(_remove_node.bind(node.instance_id))
+
+	undo_redo.commit_action()
+
 	return true
 
 
+func remove_node(id: StringName) -> void:
+	undo_redo.create_action('Remove Node')
+
+	undo_redo.add_do_method(_remove_node.bind(id))
+
+	undo_redo.commit_action()
+
+
+## ===
+## Non-MUTATING Node methods
+## ===
 func get_node(id: StringName) -> StoryNode:
 	return _nodes.get(id, null)
 
@@ -175,27 +203,8 @@ func get_previous_nodes(id: StringName) -> Array[StoryNode]:
 	return results
 
 
-func remove_node(id: StringName) -> void:
-	if not has_node(id) or id == START_NODE_ID:
-		return
-
-	for link: StoryLink in _links.keys():
-		if link.from == id or link.to == id:
-			remove_link(link)
-
-	_nodes.erase(id)
-	emit_changed()
-
-
-func clear_nodes() -> void:
-	_links.clear()
-	_nodes.clear()
-	_ensure_start()
-	emit_changed()
-
-
 ## ===
-## Link methods
+## MUTATING Link methods
 ## ===
 func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int = 0) -> StoryLink:
 	if not has_node(from):
@@ -205,7 +214,7 @@ func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int
 		push_error('Node: %s - is not in the story.' % to)
 		return null
 
-	var existing := get_link(from, to, from_port, to_port)
+	var existing := get_link(from, from_port, to, to_port)
 	if existing != null:
 		return existing
 
@@ -219,34 +228,6 @@ func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int
 	emit_changed()
 
 	return link
-
-
-func get_link(from: StringName, to: StringName, from_port: int, to_port: int) -> StoryLink:
-	for link: StoryLink in _links:
-		if (
-			link.from == from and link.to == to
-			and link.from_port == from_port and link.to_port == to_port
-		):
-			return link
-
-	return null
-
-
-func get_links() -> Array[StoryLink]:
-	return link_list
-
-
-func has_link(from: StringName, to: StringName, from_port: int, to_port: int) -> bool:
-	return get_link(from, to, from_port, to_port) != null
-
-
-func has_links() -> bool:
-	return not _links.is_empty()
-
-
-func remove_link(link: StoryLink) -> void:
-	_links.erase(link)
-	emit_changed()
 
 
 func remove_links_from(id: StringName) -> void:
@@ -270,13 +251,9 @@ func add_links(links: Array[StoryLink]) -> void:
 		add_link(link.from, link.to, link.from_port, link.to_port)
 
 
-func get_links_from_port(from: StringName, from_port: int) -> Array[StoryLink]:
-	var result: Array[StoryLink] = []
-
-	for link: StoryLink in _links:
-		if link.from == from and link.from_port == from_port:
-			result.append(link)
-	return result
+func remove_link(link: StoryLink) -> void:
+	_links.erase(link)
+	emit_changed()
 
 
 func remove_link_from_port(from: StringName, from_port: int) -> void:
@@ -323,6 +300,41 @@ func move_link_port(from: StringName, from_port: int, to_port: int) -> void:
 	emit_changed()
 
 
+## ===
+## Non-MUTATING Link methods
+## ===
+func get_link(from_id: StringName, from_port: int, to_id: StringName, to_port: int) -> StoryLink:
+	for link: StoryLink in _links:
+		if (
+			link.from == from_id and link.to == to_id
+			and link.from_port == from_port and link.to_port == to_port
+		):
+			return link
+
+	return null
+
+
+func get_links() -> Array[StoryLink]:
+	return link_list
+
+
+func has_link(from: StringName, to: StringName, from_port: int, to_port: int) -> bool:
+	return get_link(from, from_port, to, to_port) != null
+
+
+func has_links() -> bool:
+	return not _links.is_empty()
+
+
+func get_links_from_port(from: StringName, from_port: int) -> Array[StoryLink]:
+	var result: Array[StoryLink] = []
+
+	for link: StoryLink in _links:
+		if link.from == from and link.from_port == from_port:
+			result.append(link)
+	return result
+
+
 func get_links_from(from: StringName) -> Array[StoryLink]:
 	var results: Array[StoryLink] = []
 
@@ -341,18 +353,6 @@ func get_links_to(to: StringName) -> Array[StoryLink]:
 			results.append(link)
 
 	return results
-
-
-func clear_links() -> void:
-	_links.clear()
-	emit_changed()
-
-
-func clear() -> void:
-	_links.clear()
-	_nodes.clear()
-	_ensure_start()
-	emit_changed()
 
 
 func is_valid() -> bool:
@@ -386,12 +386,8 @@ func is_valid() -> bool:
 	return true
 
 
-func ensure_start_node() -> void:
-	_ensure_start()
-
-
 ## ===
-## Cast methods
+## MUTATING Cast methods
 ## ===
 func add_to_cast(character: StoryCharacter) -> void:
 	if character == null:
@@ -429,6 +425,9 @@ func remove_from_cast(character: StoryCharacter) -> void:
 	emit_changed()
 
 
+## ===
+## Non-MUTATING Cast methods
+## ===
 func is_in_cast(character: StoryCharacter) -> bool:
 	if character == null:
 		return false
@@ -439,12 +438,14 @@ func is_in_cast(character: StoryCharacter) -> bool:
 	return _cast.has(character.id)
 
 
-func clear_cast() -> void:
-	if _cast.is_empty():
-		return
+func save() -> void:
+	var error := ResourceSaver.save(self)
 
-	_cast.clear()
-	emit_changed()
+	if error != OK:
+		push_error('Error saving story data: %s' % resource_path)
+		push_error(error_string(error))
+
+	undo_redo.clear_history()
 
 
 ## ===
@@ -465,3 +466,27 @@ func _ensure_start() -> void:
 	start_node_resource.instance_id = START_NODE_ID
 
 	_nodes[START_NODE_ID] = start_node_resource
+
+
+func _add_node(node: StoryNode) -> void:
+	_nodes[node.instance_id] = node
+	emit_changed()
+
+
+func _remove_node(id: StringName) -> void:
+	if not has_node(id) or id == START_NODE_ID:
+		return
+
+	for link: StoryLink in _links.keys():
+		if link.from == id or link.to == id:
+			remove_link(link)
+
+	_nodes.erase(id)
+	emit_changed()
+
+
+func _remove_link(from_id: StringName, from_port: int, to_id: StringName, to_port: int) -> void:
+	var link := get_link(from_id, from_port, to_id, to_port)
+
+	_links.erase(link)
+	emit_changed()

@@ -106,14 +106,8 @@ func _save(index: int) -> void:
 	if story_data == null:
 		return
 
-	var error := ResourceSaver.save(story_data)
+	story_data.save()
 
-	if error != OK:
-		push_error('Story save error: ', error)
-		push_error('Story save error string: ', error_string(error))
-		return
-
-	story_data.undo_redo.clear_history()
 	_saved_revisions[path] = story_data.edit_revision
 	mark_dirty()
 
@@ -124,58 +118,14 @@ func _revert(index: int) -> void:
 	if path.is_empty():
 		return
 
-	var story_data: StoryData = load(path) as StoryData
+	var story_data: StoryData = StoryData.reload_story(path)
 
 	if story_data == null:
 		return
 
-	var saved_revision: int = _saved_revisions.get(path, story_data.edit_revision)
-	var undo_count: int = 0
-
-	if story_data.edit_revision > saved_revision:
-		while story_data.edit_revision > saved_revision and story_data.undo_redo.has_undo():
-			var pre_vision := story_data.edit_revision
-			story_data.undo_redo.undo()
-			var post_vision := story_data.edit_revision
-			undo_count += 1
-
-			if pre_vision <= post_vision:
-				push_error(
-					'Revert stuck between revision: (%d) and (%d) for path: (%s)'
-					% [pre_vision, post_vision, path]
-				)
-				return
-
-			if undo_count >= 100:
-				push_error(
-					'Revert stopped after 100 undo operations. '
-					+ 'path: %s, revision: %d, saved_revision: %d'
-					% [path, story_data.edit_revision, saved_revision]
-				)
-				break
-
-	elif story_data.edit_revision < saved_revision:
-		while story_data.edit_revision < saved_revision and story_data.undo_redo.has_redo():
-			var pre_vision := story_data.edit_revision
-			story_data.undo_redo.redo()
-			var post_vision := story_data.edit_revision
-			undo_count += 1
-
-			if pre_vision >= post_vision:
-				push_error(
-					'Revert stuck between revision: (%d) and (%d) for path: (%s)'
-					% [pre_vision, post_vision, path]
-				)
-				return
-
-			if undo_count >= 100:
-				push_error(
-					'Revert stopped after 100 redo operations. '
-					+ 'path: %s, revision: %d, saved_revision: %d'
-					% [path, story_data.edit_revision, saved_revision]
-				)
-				break
+	_saved_revisions[path] = story_data.edit_revision
 	mark_dirty()
+	story_selected.emit(story_data)
 
 
 func _update_item_list_size() -> void:

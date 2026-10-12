@@ -55,9 +55,6 @@ func _ready() -> void:
 
 
 func set_story_data(data: StoryData) -> void:
-	if _story_data == data:
-		return
-
 	_story_data = data
 
 	_refresh()
@@ -204,7 +201,6 @@ func _refresh() -> void:
 			child.free()
 
 	if _story_data == null:
-		push_error('No Selected Story')
 		return
 
 	for node: StoryNode in _story_data.node_list:
@@ -254,7 +250,6 @@ func _refresh_links() -> void:
 		return
 
 	if _story_data == null:
-		push_error('No Selected Story')
 		return
 
 	for link: StoryLink in _story_data.link_list:
@@ -315,7 +310,7 @@ func _on_disconnection_request(
 		push_error('No Selected Story')
 		return
 
-	var link := _story_data.get_link(from_node, to_node, from_port, to_port)
+	var link := _story_data.get_link(from_node, from_port, to_node, to_port)
 
 	if link == null:
 		push_error('Link does not exist.')
@@ -418,7 +413,7 @@ func _remove_link_by_endpoints(
 	if _story_data == null:
 		return
 
-	var link: StoryLink = _story_data.get_link(from_node, to_node, from_port, to_port)
+	var link: StoryLink = _story_data.get_link(from_node, from_port, to_node, to_port)
 
 	if link == null:
 		push_error('Link does not exist when removing it.')

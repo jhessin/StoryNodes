@@ -3,34 +3,5 @@
 [ext_resource type="Script" uid="uid://deygedr0ul6xb" path="res://addons/story_nodes/resources/story_variable.gd" id="1_e0v8j"]
 [ext_resource type="Script" uid="uid://bnyn22r47o86c" path="res://addons/story_nodes/resources/story_variable_library.gd" id="2_e7d0r"]
 
-[sub_resource type="Resource" id="Resource_c66mi"]
-script = ExtResource("1_e0v8j")
-name = &"mood"
-default_value = "Meh"
-
-[sub_resource type="Resource" id="Resource_j6ouu"]
-script = ExtResource("1_e0v8j")
-name = &"my_bool"
-type = 0
-default_value = false
-
-[sub_resource type="Resource" id="Resource_ygrhq"]
-script = ExtResource("1_e0v8j")
-name = &"my_float"
-type = 2
-default_value = 0.0
-
-[sub_resource type="Resource" id="Resource_sn2a2"]
-script = ExtResource("1_e0v8j")
-name = &"my_int"
-type = 1
-default_value = 0
-
 [resource]
 script = ExtResource("2_e7d0r")
-_variables = Dictionary[StringName, ExtResource("1_e0v8j")]({
-&"mood": SubResource("Resource_c66mi"),
-&"my_bool": SubResource("Resource_j6ouu"),
-&"my_float": SubResource("Resource_ygrhq"),
-&"my_int": SubResource("Resource_sn2a2")
-})

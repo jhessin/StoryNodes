@@ -9,18 +9,29 @@ enum Type {
 	STRING,
 }
 
-@export var name: StringName = &''
-@export var type: Type = Type.STRING
-@export var default_value: Variant = ''
+@export var name: StringName:
+	get:
+		return _name
+
+@export var type: Type:
+	get:
+		return _type
+
+@export var default_value: Variant:
+	get:
+		return _default_value
 
 var value: Variant = default_value
 
+var _name: StringName = &''
+var _type: Type = Type.STRING
+var _default_value: Variant = ''
+var _undo_redo: UndoRedo
 
-func _init(
-	variable_name: StringName = &'',
-	variable_type: Type = Type.STRING,
-	variable_default_value: Variant = '',
-) -> void:
-	name = variable_name
-	type = variable_type
-	default_value = variable_default_value
+
+func set_undo_redo(undo_redo: UndoRedo) -> void:
+	if undo_redo == null:
+		push_error('Every story variable needs access to the story\'s UndoRedo!')
+		return
+
+	_undo_redo = undo_redo

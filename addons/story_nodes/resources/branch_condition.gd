@@ -18,6 +18,8 @@ enum Operator {
 @export var operator: Operator = Operator.IS_EMPTY
 @export var value: Variant
 
+var _undo_redo: UndoRedo
+
 
 func initialize_for_variable(variable: StoryVariable) -> void:
 	if variable == null:
@@ -35,3 +37,11 @@ func initialize_for_variable(variable: StoryVariable) -> void:
 		StoryVariable.Type.BOOL:
 			operator = Operator.IS_FALSE
 			value = false
+
+
+func set_undo_redo(undo_redo: UndoRedo) -> void:
+	if undo_redo == null:
+		push_error('Every Branch Condition needs access to the story\'s UndoRedo!')
+		return
+
+	_undo_redo = undo_redo

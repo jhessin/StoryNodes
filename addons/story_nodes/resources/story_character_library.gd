@@ -33,8 +33,14 @@ func add_character(character: StoryCharacter) -> void:
 		push_error('Character "%s" already exists.' % character.id)
 		return
 
-	_characters[character.id] = character
-	emit_changed()
+	character.set_undo_redo(undo_redo)
+
+	undo_redo.create_action('Add character')
+
+	undo_redo.add_do_method(_add_character.bind(character))
+	undo_redo.add_undo_method(_remove_character.bind(character.id))
+
+	undo_redo.commit_action()
 
 
 func remove_character(id: StringName) -> void:
@@ -42,8 +48,14 @@ func remove_character(id: StringName) -> void:
 		push_error('Cannot delete character that doesn\'t exist: "%s"' % id)
 		return
 
-	_characters.erase(id)
-	emit_changed()
+	var character: StoryCharacter = _characters[id]
+
+	undo_redo.create_action('Remove character')
+
+	undo_redo.add_do_method(_remove_character.bind(id))
+	undo_redo.add_undo_method(_add_character.bind(character))
+
+	undo_redo.commit_action()
 
 
 func get_character(id: StringName) -> StoryCharacter:
@@ -52,11 +64,6 @@ func get_character(id: StringName) -> StoryCharacter:
 
 func has_character(id: StringName) -> bool:
 	return _characters.has(id)
-
-
-func clear() -> void:
-	_characters.clear()
-	emit_changed()
 
 
 func get_unique_id(base_name: String = 'bob') -> StringName:
@@ -70,3 +77,13 @@ func get_unique_id(base_name: String = 'bob') -> StringName:
 		index += 1
 
 	return result as StringName
+
+
+func _add_character(character: StoryCharacter) -> void:
+	_characters[character.id] = character
+	emit_changed()
+
+
+func _remove_character(id: StringName) -> void:
+	_characters.erase(id)
+	emit_changed()

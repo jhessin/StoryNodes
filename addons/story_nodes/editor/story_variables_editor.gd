@@ -104,7 +104,9 @@ func _on_new_variable_pressed() -> void:
 
 	var variable_name := _get_unique_variable_name()
 
-	var variable := StoryVariable.new(variable_name, StoryVariable.Type.STRING, '')
+	var variable := StoryVariable.new()
+	variable.name = variable_name
+	variable.type = StoryVariable.Type.STRING
 
 	undo_redo.create_action('Add New Variable')
 

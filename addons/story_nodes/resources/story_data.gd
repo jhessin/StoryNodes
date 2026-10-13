@@ -93,11 +93,16 @@ static func reload_story(path: String) -> StoryData:
 ## Lifecycle methods
 ## ===
 func _init() -> void:
-	_ensure_start()
+	ensure_start_node()
+	_undo_redo_setup()
 
 
 func ensure_start_node() -> void:
 	_ensure_start()
+
+
+func unde_redo_setup() -> void:
+	_undo_redo_setup()
 
 
 ## ===
@@ -109,6 +114,8 @@ func add_node(node: StoryNode) -> bool:
 		or has_node(node.instance_id) or node.instance_id == START_NODE_ID
 	):
 		return false
+
+	node.set_undo_redo(undo_redo)
 
 	undo_redo.create_action('Add Node')
 
@@ -556,3 +563,8 @@ func _remove_from_cast(character: StoryCharacter) -> void:
 
 	_cast.erase(character.id)
 	emit_changed()
+
+
+func _undo_redo_setup():
+	for node: StoryNode in _nodes.values():
+		node.set_undo_redo(undo_redo)

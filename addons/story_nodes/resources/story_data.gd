@@ -21,6 +21,15 @@ const START_NODE_ID: StringName = &'__start__'
 @export var character_library: StoryCharacterLibrary
 @export var variable_library: StoryVariableLibrary
 
+@export_storage
+var _cast: Dictionary[StringName, bool] = { }
+
+@export_storage
+var _nodes: Dictionary[StringName, StoryNode] = { }
+
+@export_storage
+var _links: Dictionary[StoryLink, Object] = { }
+
 var undo_redo: UndoRedo = UndoRedo.new()
 
 var node_list: Array[StoryNode]:
@@ -68,16 +77,8 @@ var cast_count: int:
 
 var edit_revision: int:
 	get:
-		return undo_redo.get_version()
-
-@export_storage
-var _cast: Dictionary[StringName, bool] = { }
-
-@export_storage
-var _nodes: Dictionary[StringName, StoryNode] = { }
-
-@export_storage
-var _links: Dictionary[StoryLink, Object] = { }
+		return _history.undo_redo.get_version()
+var _history: StoryHistory = StoryHistory.new()
 
 
 static func reload_story(path: String) -> StoryData:
@@ -94,15 +95,36 @@ static func reload_story(path: String) -> StoryData:
 ## ===
 func _init() -> void:
 	ensure_start_node()
-	_undo_redo_setup()
+
+
+func undo() -> void:
+	_history.undo_redo.undo()
+
+
+func redo() -> void:
+	_history.undo_redo.redo()
+
+
+func has_undo() -> bool:
+	return _history.undo_redo.has_undo()
+
+
+func has_redo() -> bool:
+	return _history.undo_redo.has_redo()
+
+
+## Group several API calls into ONE undo step.
+func transact(action_name: String, build: Callable) -> void:
+	_history.transact(action_name, build)
+
+
+func setup_history() -> void:
+	for node: StoryNode in _nodes.values():
+		node.set_history(_history)
 
 
 func ensure_start_node() -> void:
 	_ensure_start()
-
-
-func unde_redo_setup() -> void:
-	_undo_redo_setup()
 
 
 ## ===
@@ -115,27 +137,45 @@ func add_node(node: StoryNode) -> bool:
 	):
 		return false
 
-	node.set_undo_redo(undo_redo)
-
-	undo_redo.create_action('Add Node')
-
-	undo_redo.add_do_method(_add_node.bind(node))
-	undo_redo.add_undo_method(_remove_node.bind(node.instance_id))
-
-	undo_redo.commit_action()
-
+	node.set_history(_history)
+	_history.record('Add Node', _add_node.bind(node), _remove_node.bind([node.instance_id]))
 	return true
 
 
 func remove_node(id: StringName) -> void:
-	var node: StoryNode = get_node(id)
+	remove_nodes([id] as Array[StringName])
 
-	undo_redo.create_action('Remove Node')
 
-	undo_redo.add_do_method(_remove_node.bind(id))
-	undo_redo.add_undo_method(_add_node.bind(node))
+func remove_nodes(ids: Array[StringName]) -> void:
+	var targets: Array[StoryNode] = []
+	var target_ids: Array[StringName] = []
+	for id: StringName in ids:
+		var node: StoryNode = get_node(id)
+		if node != null and id != START_NODE_ID and id not in target_ids:
+			targets.append(node)
+			target_ids.append(id)
+	if targets.is_empty():
+		return
 
-	undo_redo.commit_action()
+	var snapshot: Array[StoryLink] = [] # endpoint copies, not live objects
+	for link: StoryLink in _links:
+		if link.from in target_ids or link.to in target_ids:
+			snapshot.append(link.duplicate())
+
+	_history.record(
+		'Remove Nodes',
+		_remove_nodes.bind(target_ids),
+		_restore_nodes.bind(targets, snapshot),
+	)
+
+
+func move_nodes(positions: Dictionary[StringName, Vector2]) -> void:
+	_history.begin('Move Nodes')
+	for id: StringName in positions:
+		var node: StoryNode = get_node(id)
+		if node != null:
+			node.position = positions[id] # setter records via history
+	_history.commit()
 
 
 ## ===
@@ -217,12 +257,11 @@ func get_previous_nodes(id: StringName) -> Array[StoryNode]:
 ## MUTATING Link methods
 ## ===
 func add_link(from: StringName, to: StringName, from_port: int = 0, to_port: int = 0) -> void:
-	undo_redo.create_action('Add Story Link')
-
-	undo_redo.add_do_method(_add_link.bind(from, from_port, to, to_port))
-	undo_redo.add_undo_method(_remove_link.bind(from, from_port, to, to_port))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Add Story Link',
+		_add_link.bind(from, from_port, to, to_port),
+		_remove_link.bind(from, from_port, to, to_port),
+	)
 
 
 func remove_links_from(id: StringName) -> void:
@@ -235,30 +274,27 @@ func remove_links_to(id: StringName) -> void:
 
 # Remove the links provided
 func remove_links(links: Array[StoryLink]) -> void:
-	undo_redo.create_action('Remove Multiple links')
-	for link: StoryLink in links:
-		undo_redo.add_do_method(_remove_link.bind(link.from, link.from_port, link.to, link.to_port))
-		undo_redo.add_undo_method(_add_link.bind(link.from, link.from_port, link.to, link.to_port))
-	undo_redo.commit_action()
+	_history.record(
+		'Remove Links',
+		_remove_links.bind(links.duplicate(true)),
+		_add_links.bind(links.duplicate(true)),
+	)
 
 
 func add_links(links: Array[StoryLink]) -> void:
-	undo_redo.create_action('Add multiple links')
-	for link: StoryLink in links:
-		undo_redo.add_do_method(_add_link.bind(link.from, link.from_port, link.to, link.to_port))
-		undo_redo.add_undo_method(
-			_remove_link.bind(link.from, link.from_port, link.to, link.to_port)
-		)
-	undo_redo.commit_action()
+	_history.record(
+		'Add Links',
+		_add_links.bind(links.duplicate(true)),
+		_remove_links.bind(links.duplicate(true)),
+	)
 
 
 func remove_link(link: StoryLink) -> void:
-	undo_redo.create_action('Remove link')
-
-	undo_redo.add_do_method(_remove_link.bind(link.from, link.from_port, link.to, link.to_port))
-	undo_redo.add_undo_method(_add_link.bind(link.from, link.from_port, link.to, link.to_port))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Remove Link',
+		_remove_link.bind(link.from, link.from_port, link.to, link.to_port),
+		_add_link.bind(link.from, link.from_port, link.to, link.to_port),
+	)
 
 
 func remove_link_from_port(from: StringName, from_port: int) -> void:
@@ -267,30 +303,27 @@ func remove_link_from_port(from: StringName, from_port: int) -> void:
 
 
 func shift_link_ports(from: StringName, removed_port: int) -> void:
-	undo_redo.create_action('Shift link ports')
-
-	undo_redo.add_do_method(_shift_link_ports.bind(from, removed_port))
-	undo_redo.add_undo_method(_unshift_link_ports.bind(from, removed_port))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Shift Link Ports',
+		_shift_link_ports.bind(from, removed_port),
+		_unshift_link_ports.bind(from, removed_port),
+	)
 
 
 func unshift_link_ports(from: StringName, replaced_port: int) -> void:
-	undo_redo.create_action('Unshift link ports')
-
-	undo_redo.add_do_method(_unshift_link_ports.bind(from, replaced_port))
-	undo_redo.add_undo_method(_shift_link_ports.bind(from, replaced_port))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Unshift Link Ports',
+		_unshift_link_ports.bind(from, replaced_port),
+		_shift_link_ports.bind(from, replaced_port),
+	)
 
 
 func move_link_port(from: StringName, from_port: int, to_port: int) -> void:
-	undo_redo.create_action('Move link port')
-
-	undo_redo.add_do_method(_move_link_port.bind(from, from_port, to_port))
-	undo_redo.add_undo_method(_move_link_port.bind(from, to_port, from_port))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Move Link Port',
+		_move_link_port.bind(from, from_port, to_port),
+		_move_link_port.bind(from, to_port, from_port),
+	)
 
 
 ## ===
@@ -383,21 +416,19 @@ func is_valid() -> bool:
 ## MUTATING Cast methods
 ## ===
 func add_to_cast(character: StoryCharacter) -> void:
-	undo_redo.create_action('Add to cast')
-
-	undo_redo.add_do_method(_add_to_cast.bind(character))
-	undo_redo.add_undo_method(_remove_from_cast.bind(character))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Add To Cast',
+		_add_to_cast.bind(character.duplicate()),
+		_remove_from_cast.bind(character.duplicate()),
+	)
 
 
 func remove_from_cast(character: StoryCharacter) -> void:
-	undo_redo.create_action('Remove from cast')
-
-	undo_redo.add_do_method(_remove_from_cast.bind(character))
-	undo_redo.add_undo_method(_add_to_cast.bind(character))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Remove From Cast',
+		_remove_from_cast.bind(character.duplicate()),
+		_add_to_cast.bind(character.duplicate()),
+	)
 
 
 ## ===
@@ -421,6 +452,16 @@ func save() -> void:
 		push_error(error_string(error))
 
 	undo_redo.clear_history()
+
+
+func _remove_links(links: Array[StoryLink]) -> void:
+	for link: StoryLink in links:
+		_remove_link(link.from, link.from_port, link.to, link.to_port)
+
+
+func _add_links(links: Array[StoryLink]) -> void:
+	for link: StoryLink in links:
+		_add_link(link.from, link.from_port, link.to, link.to_port)
 
 
 ## ===
@@ -565,6 +606,17 @@ func _remove_from_cast(character: StoryCharacter) -> void:
 	emit_changed()
 
 
-func _undo_redo_setup():
-	for node: StoryNode in _nodes.values():
-		node.set_undo_redo(undo_redo)
+func _remove_nodes(ids: Array[StringName]) -> void:
+	for link: StoryLink in _links.keys(): # keys() is a copy, safe to erase
+		if link.from in ids or link.to in ids:
+			_links.erase(link)
+	for id: StringName in ids:
+		_nodes.erase(id)
+	emit_changed()
+
+
+func _restore_nodes(nodes: Array[StoryNode], links: Array[StoryLink]) -> void:
+	for node: StoryNode in nodes:
+		_nodes[node.instance_id] = node
+	for link: StoryLink in links:
+		_add_link(link.from, link.from_port, link.to, link.to_port)

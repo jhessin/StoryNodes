@@ -13,76 +13,58 @@ enum Type {
 	get:
 		return _name
 	set(new_value):
-		var old_value = _name
-		if old_value == new_value:
+		if _name == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_name = new_value
 			emit_changed()
 			return
-
-		_undo_redo.create_action('Set name')
-
-		_undo_redo.add_do_property(self, '_name', new_value)
-		_undo_redo.add_undo_property(self, '_name', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property('Set Name', self, &'_name', new_value, _name, emit_changed)
 
 @export var type: Type:
 	get:
 		return _type
 	set(new_value):
-		var old_value = _type
-		if old_value == new_value:
+		if _type == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_type = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set name')
-
-		_undo_redo.add_do_property(self, '_type', new_value)
-		_undo_redo.add_undo_property(self, '_type', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property('Set Type', self, &'_type', new_value, _type, emit_changed)
 
 @export var default_value: Variant:
 	get:
 		return _default_value
 	set(new_value):
-		var old_value = _default_value
-		if old_value == new_value:
+		if _default_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_default_value = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set name')
-
-		_undo_redo.add_do_property(self, '_default_value', new_value)
-		_undo_redo.add_undo_property(self, '_default_value', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property(
+			'Set Default Value',
+			self,
+			&'_default_value',
+			new_value,
+			_default_value,
+			emit_changed,
+		)
 
 var value: Variant = default_value
 
 var _name: StringName = &''
 var _type: Type = Type.STRING
 var _default_value: Variant = ''
-var _undo_redo: UndoRedo
+var _history: StoryHistory
 
 
-func set_undo_redo(undo_redo: UndoRedo) -> void:
-	if undo_redo == null:
-		push_error('Every story variable needs access to the story\'s UndoRedo!')
+func set_history(history: StoryHistory) -> void:
+	if history == null:
+		push_error('Every story variable needs access to the story\'s history!')
 		return
 
-	_undo_redo = undo_redo
+	_history = history

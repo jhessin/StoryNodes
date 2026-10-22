@@ -6,25 +6,24 @@ extends StoryNode
 	get:
 		return _variable
 	set(new_value):
-		var old_value = variable
-		if old_value == new_value:
+		if _variable == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_variable = new_value
 			emit_changed()
 			return
 
 		if new_value != null:
-			new_value.set_undo_redo(_undo_redo)
+			new_value.set_history(_history)
 
-		_undo_redo.create_action('Set variable')
-
-		_undo_redo.add_do_property(self, '_variable', new_value)
-		_undo_redo.add_undo_property(self, '_variable', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property(
+			'Set Variable',
+			self,
+			&'_variable',
+			new_value,
+			_variable,
+			emit_changed,
+		)
 
 @export var conditions: Array[BranchCondition]:
 	get:
@@ -39,17 +38,16 @@ func add_condition(condition: BranchCondition, index: int = -1) -> void:
 	if index < 0:
 		index = _conditions.size()
 
-	condition.set_undo_redo(_undo_redo)
-	if _undo_redo == null:
-		push_error('UndoRedo for story node: %s (%s) was not initialized!' % [node_id, instance_id])
+	condition.set_history(_history)
+	if _history == null:
+		push_error('History for story node: %s (%s) was not initialized!' % [node_id, instance_id])
 		return
 
-	_undo_redo.create_action('Add a condition')
-
-	_undo_redo.add_do_method(_add_condition.bind(condition, index))
-	_undo_redo.add_undo_method(_remove_condition.bind(index))
-
-	_undo_redo.commit_action()
+	_history.record(
+		'Add A Condition',
+		_add_condition.bind(condition, index),
+		_remove_condition.bind(index),
+	)
 
 
 func remove_condition(index: int) -> void:
@@ -59,27 +57,26 @@ func remove_condition(index: int) -> void:
 		)
 		return
 
-	if _undo_redo == null:
-		push_error('UndoRedo for story node: %s (%s) was not initialized!' % [node_id, instance_id])
+	if _history == null:
+		push_error('History for story node: %s (%s) was not initialized!' % [node_id, instance_id])
 		return
 
-	_undo_redo.create_action('Remove condition')
 	var condition: BranchCondition = _conditions[index]
+	_history.record(
+		'Remove Condition',
+		_remove_condition.bind(index),
+		_add_condition.bind(condition, index),
+	)
 
-	_undo_redo.add_do_method(_remove_condition.bind(index))
-	_undo_redo.add_undo_method(_add_condition.bind(condition, index))
 
-	_undo_redo.commit_action()
-
-
-func set_undo_redo(undo_redo: UndoRedo) -> void:
+func set_history(history: StoryHistory) -> void:
 	if variable != null:
-		variable.set_undo_redo(undo_redo)
+		variable.set_history(history)
 
 	for condition: BranchCondition in _conditions:
-		condition.set_undo_redo(undo_redo)
+		condition.set_history(history)
 
-	super.set_undo_redo(undo_redo)
+	super.set_history(history)
 
 
 func _add_condition(condition: BranchCondition, index: int) -> void:

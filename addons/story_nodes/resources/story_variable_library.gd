@@ -2,6 +2,9 @@
 class_name StoryVariableLibrary
 extends Resource
 
+@export_storage
+var _variables: Dictionary[StringName, StoryVariable] = { }
+
 var variable_list: Array[StoryVariable]:
 	get:
 		return _variables.values()
@@ -15,9 +18,6 @@ var variable_names: Array[StringName]:
 		return _variables.keys()
 
 var undo_redo: UndoRedo = UndoRedo.new()
-
-@export_storage
-var _variables: Dictionary[StringName, StoryVariable] = { }
 
 
 func _init() -> void:

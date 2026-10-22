@@ -527,6 +527,9 @@ func _add_link(from_id: StringName, from_port: int, to_id: StringName, to_port: 
 func _remove_link(from_id: StringName, from_port: int, to_id: StringName, to_port: int) -> void:
 	var link := get_link(from_id, from_port, to_id, to_port)
 
+	if link == null:
+		return
+
 	_links.erase(link)
 	emit_changed()
 

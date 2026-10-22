@@ -20,19 +20,19 @@ var position: Vector2:
 		var old_value = _position
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_position = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set position')
-
-		_undo_redo.add_do_property(self, '_position', new_value)
-		_undo_redo.add_undo_property(self, '_position', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property(
+			'Set Position',
+			self,
+			&'_position',
+			new_value,
+			_position,
+			emit_changed,
+		)
 
 @export_storage
 var size: Vector2:
@@ -42,29 +42,22 @@ var size: Vector2:
 		var old_value = _size
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_size = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set size')
-
-		_undo_redo.add_do_property(self, '_size', new_value)
-		_undo_redo.add_undo_property(self, '_size', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property('Set Size', self, &'_size', new_value, _size, emit_changed)
 
 var _size: Vector2 = Vector2.ZERO
 var _position: Vector2 = Vector2.ZERO
 
-var _undo_redo: UndoRedo
+var _history: StoryHistory
 
 
-func set_undo_redo(undo_redo: UndoRedo) -> void:
-	if undo_redo == null:
-		push_error('Every story node needs access to the story\'s UndoRedo!')
+func set_history(history: StoryHistory) -> void:
+	if history == null:
+		push_error('Every story node needs access to the story\'s history!')
 		return
 
-	_undo_redo = undo_redo
+	_history = history

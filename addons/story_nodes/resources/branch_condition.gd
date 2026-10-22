@@ -22,19 +22,20 @@ enum Operator {
 		var old_value = _operator
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_operator = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set name')
+		_history.record_property(
+			'Set Operator',
+			self,
+			&'_operator',
+			new_value,
+			_operator,
+			emit_changed,
+		)
 
-		_undo_redo.add_do_property(self, '_operator', new_value)
-		_undo_redo.add_undo_property(self, '_operator', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
 @export var value: Variant:
 	get:
 		return _value
@@ -42,21 +43,14 @@ enum Operator {
 		var old_value = _value
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_value = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set name')
+		_history.record_property('Set Value', self, &'_value', new_value, _value, emit_changed)
 
-		_undo_redo.add_do_property(self, '_value', new_value)
-		_undo_redo.add_undo_property(self, '_value', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
-
-var _undo_redo: UndoRedo
+var _history: StoryHistory
 var _operator: Operator = Operator.IS_EMPTY
 var _value: Variant
 
@@ -79,9 +73,9 @@ func initialize_for_variable(variable: StoryVariable) -> void:
 			value = false
 
 
-func set_undo_redo(undo_redo: UndoRedo) -> void:
-	if undo_redo == null:
-		push_error('Every Branch Condition needs access to the story\'s UndoRedo!')
+func set_history(history: StoryHistory) -> void:
+	if history == null:
+		push_error('Every Branch Condition needs access to the story\'s history!')
 		return
 
-	_undo_redo = undo_redo
+	_history = history

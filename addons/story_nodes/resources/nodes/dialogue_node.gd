@@ -9,19 +9,12 @@ extends StoryNode
 		var old_value = _character
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_character = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set character')
-
-		_undo_redo.add_do_property(self, '_character', new_value)
-		_undo_redo.add_undo_property(self, '_character', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property('Set Character', self, &'_character', new_value, old_value, emit_changed)
 
 @export_multiline var dialogue: String = '':
 	get:
@@ -30,19 +23,12 @@ extends StoryNode
 		var old_value = _dialogue
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_dialogue = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set dialogue')
-
-		_undo_redo.add_do_property(self, '_dialogue', new_value)
-		_undo_redo.add_undo_property(self, '_dialogue', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property('Set Dialogue', self, '_dialogue', new_value, old_value, emit_changed)
 
 var _character: StringName = &''
 var _dialogue: String = ''

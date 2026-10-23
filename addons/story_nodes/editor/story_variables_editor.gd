@@ -367,7 +367,7 @@ func _on_name_changed(new_name: StringName) -> void:
 	# TODO
 	var old_variable := selected_variable
 	var old_value := old_variable.name
-	var new_value := _variable_library.resolve_name(old_value, new_name)
+	var new_value: StringName = _variable_library.resolve_name(old_value, new_name)
 
 	if new_value.is_empty():
 		push_error('Could not update the name of %s to %s' % [old_value, new_value])

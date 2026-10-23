@@ -13,16 +13,12 @@ func add_choice(new_choice: String, index: int = -1) -> void:
 	if index == -1:
 		index = _choices.size()
 
-	if _undo_redo == null:
+	if _history == null:
 		push_error('UndoRedo for story node: %s (%s) was not initialized!' % [node_id, instance_id])
 		return
 
-	_undo_redo.create_action('Add a choice')
+	_history.record('Add A Choice', _add_choice.bind(new_choice, index), _remove_choice.bind(index))
 
-	_undo_redo.add_do_method(_add_choice.bind(new_choice, index))
-	_undo_redo.add_undo_method(_remove_choice.bind(index))
-
-	_undo_redo.commit_action()
 
 
 func remove_choice(index: int) -> void:
@@ -30,17 +26,12 @@ func remove_choice(index: int) -> void:
 		push_error('Invalid index for choice to remove: %s of %s' % [index, _choices.size()])
 		return
 
-	if _undo_redo == null:
+	if _history == null:
 		push_error('UndoRedo for story node: %s (%s) was not initialized!' % [node_id, instance_id])
 		return
 
-	_undo_redo.create_action('Remove a choice')
 	var choice: String = _choices[index]
-
-	_undo_redo.add_do_method(_remove_choice.bind(index))
-	_undo_redo.add_undo_method(_add_choice.bind(choice, index))
-
-	_undo_redo.commit_action()
+	_history.record('Remove A Choice', _remove_choice.bind(index), _add_choice.bind(choice, index))
 
 
 func move_choice(from_index: int, to_index: int) -> void:

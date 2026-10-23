@@ -9,19 +9,12 @@ extends StoryNode
 		var old_value = _variable
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_variable = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set variable')
-
-		_undo_redo.add_do_property(self, '_variable', new_value)
-		_undo_redo.add_undo_property(self, '_variable', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property('Set Variable', self, &'_variable', new_value, old_value, emit_changed)
 
 @export var value: Variant:
 	get:
@@ -30,19 +23,12 @@ extends StoryNode
 		var old_value = _value
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_value = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set value')
-
-		_undo_redo.add_do_property(self, '_value', new_value)
-		_undo_redo.add_undo_property(self, '_value', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
+		_history.record_property('Set Value', self, &'_value', new_value, old_value, emit_changed)
 
 var _value: Variant
 

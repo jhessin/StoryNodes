@@ -217,7 +217,6 @@ func _create_new_character(character: StoryCharacter) -> void:
 	character_list.select(index)
 	_on_character_selected(index)
 	new_character_name.grab_focus()
-	new_character_name.select_all()
 
 
 func _uncreate_new_character(id: StringName, name: String) -> void:
@@ -226,7 +225,6 @@ func _uncreate_new_character(id: StringName, name: String) -> void:
 	_select_character()
 	new_character_name.grab_focus()
 	new_character_name.text = name
-	new_character_name.select_all()
 
 
 func _find_index_for_character(character: StoryCharacter) -> int:

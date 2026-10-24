@@ -39,7 +39,14 @@ func _on_delete_button_pressed() -> void:
 	if _variable_library == null or selected_variable == null:
 		return
 
-	_variable_library.remove_variable(selected_variable.name)
+	var variable = selected_variable.duplicate()
+
+	_variable_library.remove_variable(variable.name)
+	_variable_library.history.record(
+		'Delete Variable',
+		_remove_variable.bind(variable.name),
+		_add_variable.bind(variable),
+	)
 
 
 func _build_type_options() -> void:
@@ -94,7 +101,23 @@ func _on_new_variable_pressed() -> void:
 	variable.name = variable_name
 	variable.type = StoryVariable.Type.STRING
 
+	_variable_library.history.record(
+		'Add A New Variable',
+		_add_variable.bind(variable),
+		_remove_variable.bind(variable.name),
+	)
+
+
+func _add_variable(variable: StoryVariable) -> void:
 	_variable_library.add_variable(variable)
+	_variable_library.emit_changed()
+	_refresh()
+
+
+func _remove_variable(id: StringName) -> void:
+	_variable_library.remove_variable(id)
+	_variable_library.emit_changed()
+	_refresh()
 
 
 func _select_variable(variable: StoryVariable = null) -> void:

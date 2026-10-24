@@ -14,6 +14,8 @@ var _merge: UndoRedo.MergeMode = UndoRedo.MERGE_DISABLE
 
 
 func begin(action_name: String, merge: UndoRedo.MergeMode = UndoRedo.MERGE_DISABLE) -> void:
+	if undo_redo.is_committing_action():
+		return
 	if _depth == 0:
 		_name = action_name
 		_merge = merge
@@ -21,6 +23,8 @@ func begin(action_name: String, merge: UndoRedo.MergeMode = UndoRedo.MERGE_DISAB
 
 
 func commit() -> void:
+	if undo_redo.is_committing_action():
+		return
 	if _depth == 0:
 		push_error('StoryHistory.commit() without begin().')
 		return
@@ -42,6 +46,12 @@ func record(
 	undo_call: Callable,
 	notify: Callable = Callable(),
 ) -> void:
+	if undo_redo.is_committing_action():
+		do_call.call()
+		if notify.is_valid():
+			notify.call()
+		return
+
 	begin(action_name)
 	_ensure_open()
 	undo_redo.add_do_method(do_call)
@@ -60,6 +70,12 @@ func record_property(
 	old_value: Variant,
 	notify: Callable = Callable(),
 ) -> void:
+	if undo_redo.is_committing_action():
+		object.set(property, new_value)
+		if notify.is_valid():
+			notify.call()
+		return
+
 	begin(action_name)
 	_ensure_open()
 	undo_redo.add_do_property(object, property, new_value)

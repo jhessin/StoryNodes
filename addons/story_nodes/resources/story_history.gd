@@ -49,8 +49,9 @@ func record(
 	_ensure_open()
 	undo_redo.add_do_method(do_call)
 	undo_redo.add_undo_method(undo_call)
-	undo_redo.add_do_method(notify)
-	undo_redo.add_undo_method(notify)
+	if notify.is_valid():
+		undo_redo.add_do_method(notify)
+		undo_redo.add_undo_method(notify)
 	commit()
 
 

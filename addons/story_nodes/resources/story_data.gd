@@ -141,7 +141,7 @@ func add_node(node: StoryNode) -> bool:
 		return false
 
 	node.set_history(_history)
-	_history.record('Add Node', _add_node.bind(node), _remove_node.bind([node.instance_id]))
+	_history.record('Add Node', _add_node.bind(node), _remove_node.bind(node.instance_id))
 	return true
 
 

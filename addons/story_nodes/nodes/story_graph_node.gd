@@ -7,11 +7,11 @@ signal ports_changed
 var story_node: StoryNode
 var story_data: StoryData
 
-var undo_redo: UndoRedo:
+var history: StoryHistory:
 	get:
 		if story_data == null:
 			return null
-		return story_data.undo_redo
+		return story_data.history
 
 
 # var _restoring_size: bool = false
@@ -81,10 +81,14 @@ func _on_resize_end(new_size: Vector2) -> void:
 	if new_size == old_size:
 		return
 
-	undo_redo.create_action('Change node size')
-	undo_redo.add_do_property(story_node, 'size', new_size)
-	undo_redo.add_undo_property(story_node, 'size', old_size)
-	undo_redo.commit_action()
+	history.record_property(
+		'Change Node Size',
+		story_node,
+		&'size',
+		new_size,
+		old_size,
+		story_node.emit_changed,
+	)
 
 
 func _on_story_node_changed() -> void:

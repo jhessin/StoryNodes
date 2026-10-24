@@ -41,18 +41,17 @@ func _on_character_selected(index: int) -> void:
 	if not story_node is DialogueNode:
 		return
 
-	if undo_redo == null:
+	if story_data == null:
 		push_error('StoryData must be assigned to DialogueGraphNode')
 
 	var new_character := character_picker.get_item_metadata(index) as StoryCharacter
 	var old_character := dialogue_node.character
 
-	undo_redo.create_action('Select Character')
-
-	undo_redo.add_do_method(_select_character.bind(new_character))
-	undo_redo.add_undo_method(_select_character.bind(old_character))
-
-	undo_redo.commit_action()
+	history.record(
+		'Select Character',
+		_select_character.bind(new_character),
+		_select_character.bind(old_character),
+	)
 
 
 func _select_character(character: StoryCharacter) -> void:
@@ -105,12 +104,11 @@ func _on_dialogue_changed() -> void:
 	var old_text := dialogue_node.dialogue
 	var new_text := dialogue_edit.text
 
-	undo_redo.create_action('Update Dialogue')
-
-	undo_redo.add_do_method(_update_dialogue.bind(new_text))
-	undo_redo.add_undo_method(_update_dialogue.bind(old_text))
-
-	undo_redo.commit_action()
+	history.record(
+		'Update Dialogue',
+		_update_dialogue.bind(new_text),
+		_update_dialogue.bind(old_text),
+	)
 
 
 func _update_dialogue(text: String) -> void:

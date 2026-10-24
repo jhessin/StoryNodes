@@ -39,11 +39,18 @@ func transact(action_name: String, build: Callable) -> void:
 	commit()
 
 
-func record(action_name: String, do_call: Callable, undo_call: Callable) -> void:
+func record(
+	action_name: String,
+	do_call: Callable,
+	undo_call: Callable,
+	notify: Callable = Callable(),
+) -> void:
 	begin(action_name)
 	_ensure_open()
 	undo_redo.add_do_method(do_call)
 	undo_redo.add_undo_method(undo_call)
+	undo_redo.add_do_method(notify)
+	undo_redo.add_undo_method(notify)
 	commit()
 
 

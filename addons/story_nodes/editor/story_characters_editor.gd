@@ -5,11 +5,6 @@ extends HSplitContainer
 const ITEM_HEIGHT: float = 32.0
 
 var selected_character: StoryCharacter
-var undo_redo: UndoRedo:
-	get:
-		if _character_library != null:
-			return _character_library.undo_redo
-		return null
 var _character_library: StoryCharacterLibrary
 
 @onready var character_list: ItemList = %CharacterList
@@ -59,37 +54,34 @@ func _on_color_changed(new_color: Color) -> void:
 	if selected_character == null:
 		return
 
-	undo_redo.create_action('Character Color Changed')
-
 	var old_color := selected_character.color
-
-	undo_redo.add_do_property(selected_character, 'color', new_color)
-	undo_redo.add_do_method(_character_library.emit_changed)
-
-	undo_redo.add_undo_property(selected_character, 'color', old_color)
-	undo_redo.add_undo_property(color_edit, 'color', old_color)
-	undo_redo.add_undo_method(_character_library.emit_changed)
-
-	undo_redo.commit_action()
+	_character_library.history.record_property(
+		'Character Color Changed',
+		selected_character,
+		&'color',
+		new_color,
+		old_color,
+		_character_library.emit_changed,
+	)
 
 
 func _on_image_changed(resource: Resource) -> void:
 	if selected_character == null:
 		return
 
-	undo_redo.create_action('Character Image Changed')
-
 	var old_image := selected_character.image
 	var new_image := resource as Texture2D
+	_character_library.history.record(
+		'Character Image Changed',
+		_image_change.bind(new_image),
+		_image_change.bind(old_image),
+	)
 
-	undo_redo.add_do_property(selected_character, 'image', new_image)
-	undo_redo.add_do_method(_character_library.emit_changed)
 
-	undo_redo.add_undo_property(selected_character, 'image', old_image)
-	undo_redo.add_undo_property(image_edit, 'edited_resource', old_image)
-	undo_redo.add_undo_method(_character_library.emit_changed)
-
-	undo_redo.commit_action()
+func _image_change(image: Texture2D) -> void:
+	selected_character.image = image
+	image_edit.edited_resource = image
+	_character_library.emit_changed()
 
 
 func _on_delete_character_pressed() -> void:
@@ -99,19 +91,25 @@ func _on_delete_character_pressed() -> void:
 	if _character_library == null:
 		return
 
-	undo_redo.create_action('Delete Character')
+	_character_library.history.record(
+		'Delete Character',
+		_delete_character.bind(selected_character.id),
+		_add_character.bind(selected_character.duplicate()),
+	)
 
-	undo_redo.add_do_method(_character_library.remove_character.bind(selected_character.id))
-	undo_redo.add_do_method(_refresh)
-	undo_redo.add_do_method(_select_character)
-	undo_redo.add_do_property(self, 'selected_character', null)
 
-	undo_redo.add_undo_method(_character_library.add_character.bind(selected_character))
-	undo_redo.add_undo_method(_refresh)
-	undo_redo.add_undo_method(_select_character.bind(selected_character))
-	undo_redo.add_undo_property(self, 'selected_character', selected_character)
+func _delete_character(character_id: StringName) -> void:
+	_character_library.remove_character(character_id)
+	_refresh()
+	_select_character()
+	selected_character = null
 
-	undo_redo.commit_action()
+
+func _add_character(character: StoryCharacter) -> void:
+	_character_library.add_character(character)
+	_refresh()
+	_select_character(character)
+	selected_character = character
 
 
 func _on_name_changed(new_name: String) -> void:
@@ -122,18 +120,20 @@ func _on_name_changed(new_name: String) -> void:
 	if selected_items.is_empty():
 		return
 
-	undo_redo.create_action('Rename Character')
-
 	var old_name := selected_character.name
+	_character_library.history.record(
+		'Rename Character',
+		_name_change.bind(selected_character.id, new_name),
+		_name_change.bind(selected_character.id, old_name),
+	)
 
-	undo_redo.add_do_property(selected_character, 'name', new_name)
-	undo_redo.add_do_method(_character_library.emit_changed)
 
-	undo_redo.add_undo_property(selected_character, 'name', old_name)
-	undo_redo.add_undo_property(name_edit, 'text', old_name)
-	undo_redo.add_undo_method(_character_library.emit_changed)
+func _name_change(id: StringName, name: String) -> void:
+	var character := _character_library.get_character(id)
 
-	undo_redo.commit_action()
+	character.name = name
+	name_edit.text = name
+	_character_library.emit_changed()
 
 
 func _on_character_selected(index: int) -> void:
@@ -145,25 +145,16 @@ func _on_character_selected(index: int) -> void:
 		)
 	var old_character := selected_character
 
-	undo_redo.create_action('Select Character')
-
-	undo_redo.add_do_property(self, 'selected_character', new_character)
-	undo_redo.add_do_property(name_edit, 'text', new_character.name)
-	undo_redo.add_do_property(id_edit, 'text', new_character.id)
-	undo_redo.add_do_property(image_edit, 'edited_resource', new_character.image)
-	undo_redo.add_do_property(color_edit, 'color', new_character.color)
-
-	undo_redo.add_do_property(name_edit, 'editable', new_character != null)
-	undo_redo.add_do_property(image_edit, 'editable', new_character != null)
-	undo_redo.add_do_property(color_edit, 'disabled', new_character == null)
-
-	undo_redo.add_undo_property(self, 'selected_character', old_character)
-	undo_redo.add_undo_method(_select_character.bind(old_character))
-
-	undo_redo.commit_action()
+	_character_library.history.record(
+		'Select Character',
+		_select_character.bind(new_character),
+		_select_character.bind(old_character),
+	)
 
 
 func _select_character(character: StoryCharacter = null) -> void:
+	selected_character = character
+
 	if character == null:
 		character_list.deselect_all()
 		name_edit.text = ''

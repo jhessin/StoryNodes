@@ -91,10 +91,11 @@ func _on_new_condition_pressed() -> void:
 	if story_data == null:
 		return
 
-	undo_redo.create_action('Add new condition')
-	undo_redo.add_do_method(_add_condition.bind(condition))
-	undo_redo.add_undo_method(_remove_condition.bind(condition))
-	undo_redo.commit_action()
+	history.record(
+		'Add New Condition',
+		_add_condition.bind(condition),
+		_remove_condition.bind(condition),
+	)
 
 
 func _add_condition(condition: BranchCondition, notify: bool = false) -> void:
@@ -124,13 +125,11 @@ func _on_variable_selected(index: int) -> void:
 	var previous_variable := branch_node.variable
 
 	if index == 0:
-		undo_redo.create_action('Select Variable')
-
-		undo_redo.add_do_method(_select_variable.bind(null))
-
-		undo_redo.add_undo_method(_select_variable.bind(previous_variable))
-
-		undo_redo.commit_action()
+		history.record(
+			'Select Variable',
+			_select_variable.bind(null),
+			_select_variable.bind(previous_variable),
+		)
 		return
 
 	var variable_index: int = index - 1
@@ -147,13 +146,11 @@ func _on_variable_selected(index: int) -> void:
 	if story_data == null or story_data.variable_library == null:
 		return
 
-	undo_redo.create_action('Select Variable')
-
-	undo_redo.add_do_method(_select_variable.bind(variable))
-
-	undo_redo.add_undo_method(_select_variable.bind(previous_variable))
-
-	undo_redo.commit_action()
+	history.record(
+		'Select Variable',
+		_select_variable.bind(variable),
+		_select_variable.bind(previous_variable),
+	)
 
 
 func _select_variable(variable: StoryVariable) -> void:
@@ -285,23 +282,26 @@ func _on_condition_delete_requested(condition: BranchCondition) -> void:
 		condition_index,
 	)
 
-	undo_redo.create_action('Delete Condition')
+	history.record(
+		'Delete Condition',
+		_delete_condition.bind(condition_index, condition, links),
+		_readd_condition.bind(condition_index, condition, links),
+	)
 
-	undo_redo.add_do_method(story_data.remove_links.bind(links))
-	undo_redo.add_do_method(story_data.shift_link_ports.bind(
-			branch_node.instance_id,
-			condition_index,
-		))
-	undo_redo.add_do_method(_remove_condition.bind(condition, true))
 
-	undo_redo.add_undo_method(_add_condition.bind(condition, true))
-	undo_redo.add_undo_method(story_data.unshift_link_ports.bind(
-			branch_node.instance_id,
-			condition_index,
-		))
-	undo_redo.add_undo_method(story_data.add_links.bind(links))
+func _delete_condition(index: int, condition: BranchCondition, links: Array[StoryLink]) -> void:
+	if story_data == null:
+		return
 
-	undo_redo.commit_action()
+	story_data.remove_links(links)
+	story_data.shift_link_ports(branch_node.instance_id, index)
+	_remove_condition(condition, true)
+
+
+func _readd_condition(index: int, condition: BranchCondition, links: Array[StoryLink]) -> void:
+	_add_condition(condition, true)
+	story_data.unshift_link_ports(branch_node.instance_id, index)
+	story_data.add_links(links)
 
 
 func _drop_from(target_position: Vector2, data: Variant, source_control: Control) -> void:
@@ -323,13 +323,11 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 	if target_index < 0 or target_index >= branch_node.conditions.size():
 		return
 
-	undo_redo.create_action('Move Condition')
-
-	undo_redo.add_do_method(_move_condition.bind(source_index, target_index))
-
-	undo_redo.add_undo_method(_move_condition.bind(target_index, source_index))
-
-	undo_redo.commit_action()
+	history.record(
+		'Move Condition',
+		_move_condition.bind(source_index, target_index),
+		_move_condition.bind(target_index, source_index),
+	)
 
 
 func _move_condition(source_index: int, target_index: int) -> void:

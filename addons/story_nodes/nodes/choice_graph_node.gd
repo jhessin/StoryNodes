@@ -54,12 +54,11 @@ func _drop_from(target_position: Vector2, data: Variant, source_control: Control
 	if target_index < 0 or target_index >= choice_node.choices.size():
 		return
 
-	undo_redo.create_action('Move Choice')
-
-	undo_redo.add_do_method(_move_choice.bind(source_index, target_index))
-	undo_redo.add_undo_method(_move_choice.bind(target_index, source_index))
-
-	undo_redo.commit_action()
+	history.record(
+		'Move Choice',
+		_move_choice.bind(source_index, target_index),
+		_move_choice.bind(target_index, source_index),
+	)
 
 
 func _move_choice(source_index: int, target_index: int) -> void:
@@ -127,34 +126,27 @@ func _on_choice_changed(new_choice: String, index: int) -> void:
 	var old_choice := choice_node.choices[index]
 
 	if new_choice.is_empty():
-		undo_redo.create_action('Delete Choice')
-
 		var links: Array[StoryLink] = story_data.get_links_from_port(choice_node.instance_id, index)
-
-		undo_redo.add_do_method(_delete_choice.bind(index))
-		undo_redo.add_do_method(_focus_index.bind(index - 1 if index > 0 else 0))
-
-		undo_redo.add_undo_method(_add_choice.bind(index, old_choice))
-		undo_redo.add_undo_method(story_data.unshift_link_ports.bind(choice_node.instance_id, index))
-		for link: StoryLink in links:
-			undo_redo.add_undo_method(story_data.add_link.bind(
-					link.from,
-					link.to,
-					link.from_port,
-					link.to_port,
-				))
-		undo_redo.add_undo_method(_focus_index.bind(index - 1 if index > 0 else 0))
-		undo_redo.add_undo_method(_refresh_choices_and_notify)
-
-		undo_redo.commit_action()
+		history.record(
+			'Delete Choice',
+			_delete_choice.bind(index),
+			_readd_choice.bind(index, old_choice, links),
+		)
 		return
 
-	undo_redo.create_action('Update Choice')
+	history.record(
+		'Update Choice',
+		_update_choice.bind(index, new_choice),
+		_update_choice.bind(index, old_choice),
+	)
 
-	undo_redo.add_do_method(_update_choice.bind(index, new_choice))
-	undo_redo.add_undo_method(_update_choice.bind(index, old_choice))
 
-	undo_redo.commit_action()
+func _readd_choice(index: int, choice: String, links: Array[StoryLink]) -> void:
+	_add_choice(index, choice)
+	story_data.unshift_link_ports(choice_node.instance_id, index)
+	story_data.add_links(links)
+	_focus_index(index - 1 if index > 0 else 0)
+	_refresh_choices_and_notify()
 
 
 func _update_choice(index: int, new_value: String) -> void:
@@ -215,12 +207,7 @@ func _on_add_choice(new_text: String) -> void:
 
 	var index := choice_node.choices.size()
 
-	undo_redo.create_action('Add a choice')
-
-	undo_redo.add_do_method(_add_choice.bind(index, new_text))
-	undo_redo.add_undo_method(_delete_choice.bind(index))
-
-	undo_redo.commit_action()
+	history.record('Add A Choice', _add_choice.bind(index, new_text), _delete_choice.bind(index))
 
 
 func _add_choice(index: int, new_text: String) -> void:
@@ -247,6 +234,7 @@ func _delete_choice(index: int) -> void:
 
 	choice_node.choices.remove_at(index)
 	choice_node.emit_changed()
+	_focus_index(index - 1 if index > 0 else 0)
 
 	story_data.emit_changed()
 

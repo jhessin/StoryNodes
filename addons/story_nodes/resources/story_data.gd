@@ -78,6 +78,17 @@ var cast_count: int:
 var edit_revision: int:
 	get:
 		return _history.undo_redo.get_version()
+var history: StoryHistory:
+	get:
+		return _history
+
+var has_undo: bool:
+	get:
+		return _history.undo_redo.has_undo()
+
+var has_redo: bool:
+	get:
+		return _history.undo_redo.has_redo()
 var _history: StoryHistory = StoryHistory.new()
 
 
@@ -103,14 +114,6 @@ func undo() -> void:
 
 func redo() -> void:
 	_history.undo_redo.redo()
-
-
-func has_undo() -> bool:
-	return _history.undo_redo.has_undo()
-
-
-func has_redo() -> bool:
-	return _history.undo_redo.has_redo()
 
 
 ## Group several API calls into ONE undo step.

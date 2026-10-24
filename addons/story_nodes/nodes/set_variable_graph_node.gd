@@ -62,13 +62,11 @@ func _on_variable_selected(index: int) -> void:
 	var previous_variable := set_variable_node.variable
 
 	if index == 0:
-		undo_redo.create_action('Select Variable')
-
-		undo_redo.add_do_method(_select_variable.bind(null))
-
-		undo_redo.add_undo_method(_select_variable.bind(previous_variable))
-
-		undo_redo.commit_action()
+		history.record(
+			'Select Variable',
+			_select_variable.bind(null),
+			_select_variable.bind(previous_variable),
+		)
 		return
 
 	var variable_index: int = index - 1
@@ -85,13 +83,11 @@ func _on_variable_selected(index: int) -> void:
 	if story_data == null or story_data.variable_library == null:
 		return
 
-	undo_redo.create_action('Select Variable')
-
-	undo_redo.add_do_method(_select_variable.bind(variable))
-
-	undo_redo.add_undo_method(_select_variable.bind(previous_variable))
-
-	undo_redo.commit_action()
+	history.record(
+		'Select Variable',
+		_select_variable.bind(variable),
+		_select_variable.bind(previous_variable),
+	)
 
 
 func _select_variable(variable: StoryVariable) -> void:
@@ -147,18 +143,16 @@ func _update_variable_field() -> void:
 
 
 func _on_update_variable(value: Variant) -> void:
-	if undo_redo == null:
+	if history == null:
 		push_error('SetVariableGraphNode needs a reference to the StoryData')
 		return
 
-	undo_redo.create_action('Update Variable')
 	var old_value: Variant = set_variable_node.variable.value
-
-	undo_redo.add_do_method(_update_variable.bind(value))
-
-	undo_redo.add_undo_method(_update_variable.bind(old_value))
-
-	undo_redo.commit_action()
+	history.record(
+		'Update Variable',
+		_update_variable.bind(value),
+		_update_variable.bind(old_value),
+	)
 
 
 func _update_variable(value: Variant) -> void:

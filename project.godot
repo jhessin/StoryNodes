@@ -22,7 +22,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot-neovim/plugin.cfg", "res://addons/story_nodes/plugin.cfg")
+enabled=PackedStringArray("res://addons/story_nodes/plugin.cfg")
 
 [physics]
 

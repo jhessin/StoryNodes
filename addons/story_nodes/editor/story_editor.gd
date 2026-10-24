@@ -41,31 +41,31 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed('ui_redo'):
 		if file_list.is_visible_in_tree():
-			if _story_data == null or _story_data.undo_redo.has_redo():
-				_story_data.undo_redo.redo()
+			if _story_data == null or _story_data.has_redo:
+				_story_data.redo()
 				get_viewport().set_input_as_handled()
 		if characters_editor.is_visible_in_tree():
-			if _character_library.undo_redo.has_redo():
-				_character_library.undo_redo.redo()
+			if _character_library.has_redo:
+				_character_library.redo()
 				get_viewport().set_input_as_handled()
 		if variables_editor.is_visible_in_tree():
-			if _variable_library.undo_redo.has_redo():
-				_variable_library.undo_redo.redo()
+			if _variable_library.has_redo:
+				_variable_library.redo()
 				get_viewport().set_input_as_handled()
 		return
 
 	if event.is_action_pressed('ui_undo'):
 		if file_list.is_visible_in_tree():
-			if _story_data == null or _story_data.undo_redo.has_undo():
-				_story_data.undo_redo.undo()
+			if _story_data == null or _story_data.has_undo:
+				_story_data.undo()
 				get_viewport().set_input_as_handled()
 		if characters_editor.is_visible_in_tree():
-			if _character_library.undo_redo.has_undo():
-				_character_library.undo_redo.undo()
+			if _character_library.has_undo:
+				_character_library.undo()
 				get_viewport().set_input_as_handled()
 		if variables_editor.is_visible_in_tree():
-			if _variable_library.undo_redo.has_undo():
-				_variable_library.undo_redo.undo()
+			if _variable_library.has_undo:
+				_variable_library.undo()
 				get_viewport().set_input_as_handled()
 		return
 

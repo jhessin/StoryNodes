@@ -8,12 +8,6 @@ var condition: BranchCondition
 var variable: StoryVariable
 var story_data: StoryData
 
-var undo_redo: UndoRedo:
-	get:
-		if story_data == null:
-			return null
-		return story_data.undo_redo
-
 @onready var operator_picker: OptionButton = %OperatorPicker
 @onready var value_field: LineEdit = %ValueField
 @onready var delete_button: Button = %DeleteButton
@@ -84,19 +78,18 @@ func _on_operator_selected(index: int) -> void:
 	if condition == null:
 		return
 
-	if undo_redo == null:
+	if story_data == null:
 		push_error('Must Set story data for ConditionRow')
 		return
 
 	var old_value: BranchCondition.Operator = condition.operator
 	var new_value: BranchCondition.Operator = operator_picker.get_item_id(index) as BranchCondition.Operator
 
-	undo_redo.create_action('Update Operator')
-
-	undo_redo.add_do_method(_update_operator.bind(new_value))
-	undo_redo.add_undo_method(_update_operator.bind(old_value))
-
-	undo_redo.commit_action()
+	story_data.history.record(
+		'Update Operator',
+		_update_operator.bind(new_value),
+		_update_operator.bind(old_value),
+	)
 
 
 func _update_operator(operator: BranchCondition.Operator) -> void:
@@ -219,18 +212,17 @@ func _refresh_value() -> void:
 func _on_value_changed(value: String) -> void:
 	if condition == null or variable == null:
 		return
-	if undo_redo == null:
+	if story_data == null:
 		push_error('Must Set story data for ConditionRow')
 		return
 
-	undo_redo.create_action('Update value')
 	var old_value = str(condition.value)
 	var new_value = value
-
-	undo_redo.add_do_method(_update_value.bind(new_value))
-	undo_redo.add_undo_method(_update_value.bind(old_value))
-
-	undo_redo.commit_action()
+	story_data.history.record(
+		'Update Value',
+		_update_value.bind(new_value),
+		_update_value.bind(old_value),
+	)
 
 
 func _update_value(value: String) -> void:

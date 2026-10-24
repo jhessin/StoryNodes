@@ -5,11 +5,6 @@ extends HSplitContainer
 const ITEM_HEIGHT: float = 32.0
 
 var selected_variable: StoryVariable
-var undo_redo: UndoRedo:
-	get:
-		if _variable_library != null:
-			return _variable_library.undo_redo
-		return null
 var _variable_library: StoryVariableLibrary
 
 @onready var variable_list: ItemList = %VariableList
@@ -44,15 +39,7 @@ func _on_delete_button_pressed() -> void:
 	if _variable_library == null or selected_variable == null:
 		return
 
-	undo_redo.create_action('Delete Variable')
-
-	undo_redo.add_do_method(_variable_library.remove_variable.bind(selected_variable.name))
-	undo_redo.add_do_method(_refresh)
-
-	undo_redo.add_undo_method(_variable_library.add_variable.bind(selected_variable))
-	undo_redo.add_undo_method(_refresh)
-
-	undo_redo.commit_action()
+	_variable_library.remove_variable(selected_variable.name)
 
 
 func _build_type_options() -> void:
@@ -90,12 +77,11 @@ func _on_variable_selected(index: int) -> void:
 	var new_variable := variable_list.get_item_metadata(index) as StoryVariable
 	var old_variable := selected_variable
 
-	undo_redo.create_action('Select Variable')
-
-	undo_redo.add_do_method(_select_variable.bind(new_variable))
-	undo_redo.add_undo_method(_select_variable.bind(old_variable))
-
-	undo_redo.commit_action()
+	_variable_library.history.record(
+		'Select Variable',
+		_select_variable.bind(new_variable),
+		_select_variable.bind(old_variable),
+	)
 
 
 func _on_new_variable_pressed() -> void:
@@ -108,19 +94,7 @@ func _on_new_variable_pressed() -> void:
 	variable.name = variable_name
 	variable.type = StoryVariable.Type.STRING
 
-	undo_redo.create_action('Add New Variable')
-
-	undo_redo.add_do_method(_variable_library.add_variable.bind(variable))
-	undo_redo.add_do_method(_refresh)
-	undo_redo.add_do_method(_select_variable.bind(variable))
-	undo_redo.add_do_method(name_edit.grab_focus)
-	undo_redo.add_do_method(name_edit.select_all)
-
-	undo_redo.add_undo_method(_variable_library.remove_variable.bind(variable.name))
-	undo_redo.add_undo_method(_refresh)
-	undo_redo.add_undo_method(_select_variable)
-
-	undo_redo.commit_action()
+	_variable_library.add_variable(variable)
 
 
 func _select_variable(variable: StoryVariable = null) -> void:
@@ -284,17 +258,14 @@ func _on_bool_default_changed(new_value: bool) -> void:
 
 	var old_value := bool(selected_variable.default_value)
 
-	undo_redo.create_action('Change default value')
-
-	undo_redo.add_do_property(selected_variable, 'default_value', bool(new_value))
-	undo_redo.add_do_method(_update_default_value_editor)
-	undo_redo.add_do_method(_variable_library.emit_changed)
-
-	undo_redo.add_undo_property(selected_variable, 'default_value', old_value)
-	undo_redo.add_undo_method(_update_default_value_editor)
-	undo_redo.add_undo_method(_variable_library.emit_changed)
-
-	undo_redo.commit_action()
+	_variable_library.history.record_property(
+		'Change Default Value',
+		selected_variable,
+		&'default_value',
+		bool(new_value),
+		old_value,
+		_update_default_value_editor,
+	)
 
 
 func _on_int_default_changed(new_value: float) -> void:
@@ -303,17 +274,14 @@ func _on_int_default_changed(new_value: float) -> void:
 
 	var old_value := int(selected_variable.default_value)
 
-	undo_redo.create_action('Change default value')
-
-	undo_redo.add_do_property(selected_variable, 'default_value', int(new_value))
-	undo_redo.add_do_method(_update_default_value_editor)
-	undo_redo.add_do_method(_variable_library.emit_changed)
-
-	undo_redo.add_undo_property(selected_variable, 'default_value', old_value)
-	undo_redo.add_undo_method(_update_default_value_editor)
-	undo_redo.add_undo_method(_variable_library.emit_changed)
-
-	undo_redo.commit_action()
+	_variable_library.history.record_property(
+		'Change Default Value',
+		selected_variable,
+		&'default_value',
+		int(new_value),
+		old_value,
+		_update_default_value_editor,
+	)
 
 
 func _on_float_default_changed(new_value: float) -> void:
@@ -322,17 +290,14 @@ func _on_float_default_changed(new_value: float) -> void:
 
 	var old_value := float(selected_variable.default_value)
 
-	undo_redo.create_action('Change default value')
-
-	undo_redo.add_do_property(selected_variable, 'default_value', float(new_value))
-	undo_redo.add_do_method(_update_default_value_editor)
-	undo_redo.add_do_method(_variable_library.emit_changed)
-
-	undo_redo.add_undo_property(selected_variable, 'default_value', old_value)
-	undo_redo.add_undo_method(_update_default_value_editor)
-	undo_redo.add_undo_method(_variable_library.emit_changed)
-
-	undo_redo.commit_action()
+	_variable_library.history.record_property(
+		'Change Default Value',
+		selected_variable,
+		&'default_value',
+		float(new_value),
+		old_value,
+		_update_default_value_editor,
+	)
 
 
 func _on_string_default_changed(new_value: String) -> void:
@@ -341,17 +306,14 @@ func _on_string_default_changed(new_value: String) -> void:
 
 	var old_value := str(selected_variable.default_value)
 
-	undo_redo.create_action('Change default value')
-
-	undo_redo.add_do_property(selected_variable, 'default_value', str(new_value))
-	undo_redo.add_do_method(_update_default_value_editor)
-	undo_redo.add_do_method(_variable_library.emit_changed)
-
-	undo_redo.add_undo_property(selected_variable, 'default_value', old_value)
-	undo_redo.add_undo_method(_update_default_value_editor)
-	undo_redo.add_undo_method(_variable_library.emit_changed)
-
-	undo_redo.commit_action()
+	_variable_library.history.record_property(
+		'Change Default Value',
+		selected_variable,
+		&'default_value',
+		str(new_value),
+		old_value,
+		_update_default_value_editor,
+	)
 
 
 func _on_name_changed(new_name: StringName) -> void:
@@ -376,17 +338,17 @@ func _on_name_changed(new_name: StringName) -> void:
 	var new_variable := old_variable.duplicate()
 	new_variable.name = new_value
 
-	undo_redo.create_action('Change variable name')
+	_variable_library.history.record(
+		'Change Variable Name',
+		_change_name.bind(old_value, new_value, new_variable),
+		_change_name.bind(new_value, old_value, old_variable),
+	)
 
-	undo_redo.add_do_method(_variable_library.rename_variable.bind(old_value, new_value))
-	undo_redo.add_do_method(_refresh)
-	undo_redo.add_do_method(_select_variable.bind(new_variable))
 
-	undo_redo.add_undo_method(_variable_library.rename_variable.bind(new_value, old_value))
-	undo_redo.add_undo_method(_refresh)
-	undo_redo.add_undo_method(_select_variable.bind(old_variable))
-
-	undo_redo.commit_action()
+func _change_name(old_name: StringName, new_name: StringName, variable: StoryVariable) -> void:
+	_variable_library.rename_variable(old_name, new_name)
+	_refresh()
+	_select_variable(variable)
 
 
 func _on_type_selected(index: int) -> void:

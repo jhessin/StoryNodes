@@ -16,16 +16,18 @@ var variable_count: int:
 var variable_names: Array[StringName]:
 	get:
 		return _variables.keys()
+var history: StoryHistory:
+	get:
+		return _history
 
-var undo_redo: UndoRedo = UndoRedo.new()
+var has_undo: bool:
+	get:
+		return _history.undo_redo.has_undo()
 
-
-func _init() -> void:
-	_undo_redo_setup()
-
-
-func undo_redo_setup() -> void:
-	_undo_redo_setup()
+var has_redo: bool:
+	get:
+		return _history.undo_redo.has_redo()
+var _history: StoryHistory = StoryHistory.new()
 
 
 func add_variable(variable: StoryVariable) -> void:
@@ -41,14 +43,13 @@ func add_variable(variable: StoryVariable) -> void:
 		push_error('Variable "%s" already exists.' % variable.name)
 		return
 
-	variable.set_undo_redo(undo_redo)
+	variable.set_history(_history)
 
-	undo_redo.create_action('Add variable')
-
-	undo_redo.add_do_method(_add_variable.bind(variable))
-	undo_redo.add_undo_method(_remove_variable.bind(variable.name))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Add Variable',
+		_add_variable.bind(variable),
+		_remove_variable.bind(variable.name),
+	)
 
 
 func remove_variable(id: StringName) -> void:
@@ -58,12 +59,12 @@ func remove_variable(id: StringName) -> void:
 
 	var variable: StoryVariable = _variables[id]
 
-	undo_redo.create_action('Remove variable')
-
-	undo_redo.add_do_method(_remove_variable.bind(id))
-	undo_redo.add_undo_method(_add_variable.bind(variable))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Remove Variable',
+		_remove_variable.bind(id),
+		_add_variable.bind(variable),
+		emit_changed,
+	)
 
 
 func rename_variable(old_name: StringName, new_name: StringName) -> void:
@@ -73,12 +74,11 @@ func rename_variable(old_name: StringName, new_name: StringName) -> void:
 		push_error('Cannot rename a variable with an empty name!')
 		return
 
-	undo_redo.create_action('Rename variable')
-
-	undo_redo.add_do_method(_rename_variable.bind(old_name, new_name))
-	undo_redo.add_undo_method(_remove_variable.bind(new_name, old_name))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Rename Variable',
+		_rename_variable.bind(old_name, new_name),
+		_rename_variable.bind(new_name, old_name),
+	)
 
 
 func get_variable(variable_name: StringName) -> StoryVariable:
@@ -87,6 +87,14 @@ func get_variable(variable_name: StringName) -> StoryVariable:
 
 func has_variable(variable_name: StringName) -> bool:
 	return get_variable(variable_name) != null
+
+
+func undo() -> void:
+	_history.undo_redo.undo()
+
+
+func redo() -> void:
+	_history.undo_redo.redo()
 
 
 func _rename_variable(old_name: StringName, new_name: StringName) -> void:
@@ -117,8 +125,3 @@ func _add_variable(variable: StoryVariable) -> void:
 func _remove_variable(id: StringName) -> void:
 	_variables.erase(id)
 	emit_changed()
-
-
-func _undo_redo_setup() -> void:
-	for variable: StoryVariable in _variables.values():
-		variable.set_undo_redo(undo_redo)

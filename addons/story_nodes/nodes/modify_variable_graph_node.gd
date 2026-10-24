@@ -62,12 +62,7 @@ func _on_value_updated(value: Variant) -> void:
 	var old_value: Variant = modify_variable_node.value
 	var new_value: Variant = value
 
-	undo_redo.create_action('ModifyVariableNode update value')
-
-	undo_redo.add_do_method(_update_value.bind(new_value))
-	undo_redo.add_undo_method(_update_value.bind(old_value))
-
-	undo_redo.commit_action()
+	history.record('Update Value', _update_value.bind(new_value), _update_value.bind(old_value))
 
 
 func _update_value(value: Variant) -> void:
@@ -156,13 +151,11 @@ func _on_operator_changed(index: int) -> void:
 	var new_operator := operator_picker.get_item_metadata(index) as ModifyVariableNode.Operation
 	var old_operator := modify_variable_node.operation
 
-	undo_redo.create_action('Change operator')
-
-	undo_redo.add_do_method(_update_operator.bind(new_operator))
-
-	undo_redo.add_undo_method(_update_operator.bind(old_operator))
-
-	undo_redo.commit_action()
+	history.record(
+		'Change Operator',
+		_update_operator.bind(new_operator),
+		_update_operator.bind(old_operator),
+	)
 
 
 func _select_operator(operator: ModifyVariableNode.Operation) -> void:
@@ -235,13 +228,11 @@ func _on_variable_selected(index: int) -> void:
 	var previous_variable := modify_variable_node.variable
 
 	if index == 0:
-		undo_redo.create_action('Select Variable')
-
-		undo_redo.add_do_method(_select_variable.bind(null))
-
-		undo_redo.add_undo_method(_select_variable.bind(previous_variable))
-
-		undo_redo.commit_action()
+		history.record(
+			'Select Variable',
+			_select_variable.bind(null),
+			_select_variable.bind(previous_variable),
+		)
 		return
 
 	var variable_index: int = index - 1
@@ -258,13 +249,11 @@ func _on_variable_selected(index: int) -> void:
 	if story_data == null or story_data.variable_library == null:
 		return
 
-	undo_redo.create_action('Select Variable')
-
-	undo_redo.add_do_method(_select_variable.bind(variable))
-
-	undo_redo.add_undo_method(_select_variable.bind(previous_variable))
-
-	undo_redo.commit_action()
+	history.record(
+		'Select Variable',
+		_select_variable.bind(variable),
+		_select_variable.bind(previous_variable),
+	)
 
 
 func _select_variable(variable: StoryVariable) -> void:

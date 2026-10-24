@@ -9,19 +9,13 @@ extends Resource
 		var old_value = _name
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_name = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set name')
+		_history.record_property('Set Name', self, &'_name', new_value, old_value, emit_changed)
 
-		_undo_redo.add_do_property(self, '_name', new_value)
-		_undo_redo.add_undo_property(self, '_name', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
 @export var image: Texture2D:
 	get:
 		return _image
@@ -29,19 +23,13 @@ extends Resource
 		var old_value = _image
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_image = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set image')
+		_history.record_property('Set Image', self, &'_image', new_value, old_value, emit_changed)
 
-		_undo_redo.add_do_property(self, '_image', new_value)
-		_undo_redo.add_undo_property(self, '_image', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
 @export var color: Color:
 	get:
 		return _color
@@ -49,19 +37,13 @@ extends Resource
 		var old_value = _color
 		if old_value == new_value:
 			return
-		if _undo_redo == null:
+		if _history == null:
 			_color = new_value
 			emit_changed()
 			return
 
-		_undo_redo.create_action('Set color')
+		_history.record_property('Set Color', self, &'_color', new_value, old_value, emit_changed)
 
-		_undo_redo.add_do_property(self, '_color', new_value)
-		_undo_redo.add_undo_property(self, '_color', old_value)
-
-		_undo_redo.add_do_method(emit_changed)
-		_undo_redo.add_undo_method(emit_changed)
-		_undo_redo.commit_action()
 
 @export var id: StringName:
 	get:
@@ -70,7 +52,7 @@ extends Resource
 var _name: String = ''
 var _image: Texture2D
 var _color: Color = Color.WHITE
-var _undo_redo: UndoRedo
+var _history: StoryHistory
 
 var _id: StringName = &''
 
@@ -80,9 +62,9 @@ func _init(character_name: String = '') -> void:
 	name = character_name
 
 
-func set_undo_redo(undo_redo: UndoRedo) -> void:
-	if undo_redo == null:
-		push_error('Every story node needs access to the story\'s UndoRedo!')
+func set_history(history: StoryHistory) -> void:
+	if history == null:
+		push_error('Every story node needs access to the story\'s history!')
 		return
 
-	_undo_redo = undo_redo
+	_history = history

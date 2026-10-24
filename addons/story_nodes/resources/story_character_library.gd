@@ -2,6 +2,8 @@
 class_name StoryCharacterLibrary
 extends Resource
 
+@export_storage var _characters: Dictionary[StringName, StoryCharacter] = { }
+
 var character_list: Array[StoryCharacter]:
 	get:
 		return _characters.values()
@@ -13,11 +15,26 @@ var character_ids: Array[StringName]:
 var character_count: int:
 	get:
 		return _characters.size()
+var history: StoryHistory:
+	get:
+		return _history
 
-var undo_redo: UndoRedo = UndoRedo.new()
+var has_undo: bool:
+	get:
+		return _history.undo_redo.has_undo()
 
-@export_storage
-var _characters: Dictionary[StringName, StoryCharacter] = { }
+var has_redo: bool:
+	get:
+		return _history.undo_redo.has_redo()
+var _history: StoryHistory = StoryHistory.new()
+
+
+func undo() -> void:
+	_history.undo_redo.undo()
+
+
+func redo() -> void:
+	_history.undo_redo.redo()
 
 
 func add_character(character: StoryCharacter) -> void:
@@ -33,14 +50,13 @@ func add_character(character: StoryCharacter) -> void:
 		push_error('Character "%s" already exists.' % character.id)
 		return
 
-	character.set_undo_redo(undo_redo)
+	character.set_history(_history)
 
-	undo_redo.create_action('Add character')
-
-	undo_redo.add_do_method(_add_character.bind(character))
-	undo_redo.add_undo_method(_remove_character.bind(character.id))
-
-	undo_redo.commit_action()
+	_history.record(
+		'Add Character',
+		_add_character.bind(character),
+		_remove_character.bind(character.id),
+	)
 
 
 func remove_character(id: StringName) -> void:
@@ -50,12 +66,7 @@ func remove_character(id: StringName) -> void:
 
 	var character: StoryCharacter = _characters[id]
 
-	undo_redo.create_action('Remove character')
-
-	undo_redo.add_do_method(_remove_character.bind(id))
-	undo_redo.add_undo_method(_add_character.bind(character))
-
-	undo_redo.commit_action()
+	_history.record('Remove character', _remove_character.bind(id), _add_character.bind(character))
 
 
 func get_character(id: StringName) -> StoryCharacter:

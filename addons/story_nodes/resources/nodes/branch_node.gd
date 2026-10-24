@@ -70,9 +70,6 @@ func remove_condition(index: int) -> void:
 
 
 func set_history(history: StoryHistory) -> void:
-	if variable != null:
-		variable.set_history(history)
-
 	for condition: BranchCondition in _conditions:
 		condition.set_history(history)
 

@@ -196,10 +196,16 @@ func _on_new_character_submitted(text: String) -> void:
 	var character := StoryCharacter.new(_character_library.get_unique_id(new_character_name.text))
 	character.name = new_character_name.text
 
+	_character_library.history.record(
+		'Add Character To Library',
+		_create_new_character.bind(character),
+		_uncreate_new_character.bind(character.id, character.name),
+	)
+
+
+func _create_new_character(character: StoryCharacter) -> void:
 	_character_library.add_character(character)
-
 	new_character_name.text = ''
-
 	_refresh()
 
 	var index := _find_index_for_character(character)
@@ -211,6 +217,15 @@ func _on_new_character_submitted(text: String) -> void:
 	character_list.select(index)
 	_on_character_selected(index)
 	new_character_name.grab_focus()
+	new_character_name.select_all()
+
+
+func _uncreate_new_character(id: StringName, name: String) -> void:
+	_character_library.remove_character(id)
+	_refresh()
+	_select_character()
+	new_character_name.grab_focus()
+	new_character_name.text = name
 	new_character_name.select_all()
 
 

@@ -14,9 +14,6 @@ var _merge: UndoRedo.MergeMode = UndoRedo.MERGE_DISABLE
 
 
 func begin(action_name: String, merge: UndoRedo.MergeMode = UndoRedo.MERGE_DISABLE) -> void:
-	if undo_redo.is_committing_action():
-		push_error('Public StoryData API called during undo/redo; register a private method.')
-		return
 	if _depth == 0:
 		_name = action_name
 		_merge = merge

@@ -44,8 +44,10 @@ extends Resource
 
 		_history.record_property('Set Color', self, &'_color', new_value, old_value, emit_changed)
 
+@export_storage
+var _id: StringName = &''
 
-@export var id: StringName:
+var id: StringName:
 	get:
 		return _id
 
@@ -53,8 +55,6 @@ var _name: String = ''
 var _image: Texture2D
 var _color: Color = Color.WHITE
 var _history: StoryHistory
-
-var _id: StringName = &''
 
 
 func _init(character_name: String = '') -> void:

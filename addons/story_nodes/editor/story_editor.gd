@@ -84,7 +84,6 @@ func set_story_data(data: StoryData) -> void:
 			_story_data.variable_library = _variable_library
 
 		_story_data.ensure_start_node()
-		_story_data.unde_redo_setup()
 		_story_data.changed.connect(_on_story_changed)
 
 		file_list.mark_dirty()

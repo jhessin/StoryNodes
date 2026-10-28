@@ -30,11 +30,11 @@ var _history: StoryHistory = StoryHistory.new()
 
 
 func undo() -> void:
-	_history.undo_redo.undo()
+	_history.undo()
 
 
 func redo() -> void:
-	_history.undo_redo.redo()
+	_history.redo()
 
 
 func add_character(character: StoryCharacter) -> void:

@@ -11,10 +11,29 @@ var _depth: int = 0
 var _open: bool = false
 var _name: String = ''
 var _merge: UndoRedo.MergeMode = UndoRedo.MERGE_DISABLE
+var _replaying: int = 0
+
+
+func is_replaying() -> bool:
+	return _replaying > 0
+
+
+func undo() -> bool:
+	_replaying += 1
+	var result: bool = undo_redo.undo()
+	_replaying -= 1
+	return result
+
+
+func redo() -> bool:
+	_replaying += 1
+	var result: bool = undo_redo.redo()
+	_replaying -= 1
+	return result
 
 
 func begin(action_name: String, merge: UndoRedo.MergeMode = UndoRedo.MERGE_DISABLE) -> void:
-	if undo_redo.is_committing_action():
+	if is_replaying():
 		return
 	if _depth == 0:
 		_name = action_name
@@ -23,7 +42,7 @@ func begin(action_name: String, merge: UndoRedo.MergeMode = UndoRedo.MERGE_DISAB
 
 
 func commit() -> void:
-	if undo_redo.is_committing_action():
+	if is_replaying():
 		return
 	if _depth == 0:
 		push_error('StoryHistory.commit() without begin().')
@@ -31,7 +50,9 @@ func commit() -> void:
 	_depth -= 1
 	if _depth == 0 and _open:
 		_open = false
+		_replaying += 1
 		undo_redo.commit_action()
+		_replaying -= 1
 
 
 func transact(action_name: String, build: Callable) -> void:
@@ -46,7 +67,7 @@ func record(
 	undo_call: Callable,
 	notify: Callable = Callable(),
 ) -> void:
-	if undo_redo.is_committing_action():
+	if is_replaying():
 		do_call.call()
 		if notify.is_valid():
 			notify.call()
@@ -70,7 +91,7 @@ func record_property(
 	old_value: Variant,
 	notify: Callable = Callable(),
 ) -> void:
-	if undo_redo.is_committing_action():
+	if is_replaying():
 		object.set(property, new_value)
 		if notify.is_valid():
 			notify.call()

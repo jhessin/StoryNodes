@@ -109,11 +109,11 @@ func _init() -> void:
 
 
 func undo() -> void:
-	_history.undo_redo.undo()
+	_history.undo()
 
 
 func redo() -> void:
-	_history.undo_redo.redo()
+	_history.redo()
 
 
 ## Group several API calls into ONE undo step.

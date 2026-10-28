@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://pehcg0rvkd53"]
+
+[node name="StoryRuntime" type="Control" unique_id=711188803]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StoryRunner" type="Node" parent="." unique_id=359858161]
+
+[node name="ContentPanel" type="PanelContainer" parent="." unique_id=2123136435]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="ContentPanel" unique_id=1422287165]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="ContentPanel/Content" unique_id=1482291237]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="ContentPanel/Content" unique_id=531984994]
+layout_mode = 2
+
+[node name="ChoicesContainer" type="VBoxContainer" parent="ContentPanel/Content" unique_id=607468926]
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="ContentPanel/Content" unique_id=662080472]
+layout_mode = 2
+text = "Continue"

@@ -91,9 +91,25 @@ func _on_resize_end(new_size: Vector2) -> void:
 	)
 
 
+## Takes `child` out of the tree immediately but frees it once the current call
+## stack unwinds. Use instead of free(), which fails when called from one of the
+## child's own signals (for example a button that rebuilds its row).
+static func discard(child: Node) -> void:
+	var parent: Node = child.get_parent()
+
+	if parent != null:
+		parent.remove_child(child)
+
+	child.queue_free()
+
+
 func _on_story_node_changed() -> void:
 	if story_node == null:
 		return
 
 	if size != story_node.size:
 		set_deferred("size", story_node.size)
+
+	# Keeps the graph in step with undo/redo of moves.
+	if position_offset != story_node.position:
+		position_offset = story_node.position

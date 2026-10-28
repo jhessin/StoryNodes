@@ -103,7 +103,7 @@ func _select_variable(variable: StoryVariable) -> void:
 
 func _clear_variable_field() -> void:
 	if is_instance_valid(variable_field):
-		variable_field.free()
+		discard(variable_field)
 	variable_field = null
 
 

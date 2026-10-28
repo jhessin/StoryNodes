@@ -215,7 +215,7 @@ func _refresh_variable_picker() -> void:
 func _refresh_condition_rows() -> void:
 	for child: Control in get_children():
 		if child is ConditionRow:
-			child.free()
+			discard(child)
 
 	if branch_node == null or branch_node.variable == null:
 		return

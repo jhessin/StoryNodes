@@ -54,7 +54,7 @@ func set_story_data(data: StoryData) -> void:
 
 func _clear_value_editor() -> void:
 	if is_instance_valid(value_editor):
-		value_editor.free()
+		discard(value_editor)
 	value_editor = null
 
 

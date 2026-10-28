@@ -1,14 +1,15 @@
 @tool
 class_name StoryGraphEditor
 extends Control
+## Shows a StoryData as a GraphEdit. The graph is built once per story and then
+## kept in step through StoryData's granular signals, so an edit only touches
+## the nodes and connections it actually changed.
+##
+## Every edit goes through StoryData's public API (which records undo/redo);
+## this class never mutates story data directly.
 
 var graph_nodes: Dictionary[StringName, StoryGraphNode] = { }
 
-var undo_redo: UndoRedo:
-	get:
-		if _story_data != null:
-			return _story_data.undo_redo
-		return null
 var _standard_node_library: StoryNodeLibrary = preload(
 	'res://addons/story_nodes/resources/libraries/standard_node_library.tres'
 )
@@ -20,11 +21,14 @@ var _connection_from_port: int = 0
 var _connection_to_node: StringName = &''
 var _connection_to_port: int = 0
 
+## Nodes whose connections must be re-checked on the next flush.
+var _dirty_link_nodes: Dictionary[StringName, bool] = { }
+var _link_flush_queued: bool = false
+
 @onready var graph_edit: GraphEdit = %GraphEdit
 @onready var add_node_menu: PopupMenu = %AddNodeMenu
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
 
@@ -54,10 +58,76 @@ func _ready() -> void:
 	_populate_add_node_menu()
 
 
+## Shows `data`. This is the only full rebuild; later edits update in place.
 func set_story_data(data: StoryData) -> void:
+	if _story_data == data:
+		return
+
+	if _story_data != null:
+		_disconnect_story(_story_data)
+
 	_story_data = data
 
-	_refresh()
+	if _story_data != null:
+		_connect_story(_story_data)
+
+	_rebuild()
+
+
+## ===
+## Story signals -> targeted updates
+## ===
+func _connect_story(data: StoryData) -> void:
+	data.node_added.connect(_on_node_added)
+	data.node_removed.connect(_on_node_removed)
+	data.link_added.connect(_on_link_added)
+	data.link_removed.connect(_on_link_removed)
+	data.links_changed.connect(_mark_links_dirty)
+
+
+func _disconnect_story(data: StoryData) -> void:
+	data.node_added.disconnect(_on_node_added)
+	data.node_removed.disconnect(_on_node_removed)
+	data.link_added.disconnect(_on_link_added)
+	data.link_removed.disconnect(_on_link_removed)
+	data.links_changed.disconnect(_mark_links_dirty)
+
+
+func _on_node_added(node: StoryNode) -> void:
+	_add_graph_node(node)
+	_mark_links_dirty(node.instance_id)
+
+
+func _on_node_removed(id: StringName) -> void:
+	var graph_node: StoryGraphNode = graph_nodes.get(id)
+
+	if graph_node == null:
+		return
+
+	graph_nodes.erase(id)
+
+	# Drop its connections now; the surviving ends are re-checked by the
+	# link_removed signals.
+	for connection: Dictionary in graph_edit.get_connection_list():
+		if connection.from_node == graph_node.name or connection.to_node == graph_node.name:
+			graph_edit.disconnect_node(
+				connection.from_node,
+				connection.from_port,
+				connection.to_node,
+				connection.to_port,
+			)
+
+	StoryGraphNode.discard(graph_node)
+
+
+func _on_link_added(link: StoryLink) -> void:
+	_mark_links_dirty(link.from)
+	_mark_links_dirty(link.to)
+
+
+func _on_link_removed(link: StoryLink) -> void:
+	_mark_links_dirty(link.from)
+	_mark_links_dirty(link.to)
 
 
 func _on_visibility_changed() -> void:
@@ -65,56 +135,280 @@ func _on_visibility_changed() -> void:
 		return
 
 	_restore_node_sizes()
-	_refresh()
+	_queue_link_flush()
 
 
-func _restore_deleted_nodes(nodes: Array[StoryNode], links: Array[StoryLink]) -> void:
-	for node: StoryNode in nodes:
-		_story_data.add_node(node)
+## ===
+## Building the graph
+## ===
+func _rebuild() -> void:
+	graph_nodes.clear()
+	_dirty_link_nodes.clear()
+	graph_edit.clear_connections()
 
-	for link: StoryLink in links:
-		_story_data.add_link(link.from, link.to, link.from_port, link.to_port)
+	for child: Node in graph_edit.get_children():
+		if child is GraphNode:
+			StoryGraphNode.discard(child)
 
-	_refresh()
+	if _story_data == null:
+		return
+
+	for node: StoryNode in _story_data.node_list:
+		_add_graph_node(node)
+		_mark_links_dirty(node.instance_id)
+
+	if is_visible_in_tree():
+		_restore_node_sizes()
 
 
+func _add_graph_node(node: StoryNode) -> StoryGraphNode:
+	var existing: StoryGraphNode = graph_nodes.get(node.instance_id)
+
+	if existing != null:
+		return existing
+
+	var graph_scene: PackedScene = node.graph_scene
+
+	if graph_scene == null:
+		var prototype: StoryNode = _standard_node_library.get_node(node.node_id)
+
+		if prototype == null:
+			push_error('No node prototype found for "%s"' % node.node_id)
+			return null
+
+		graph_scene = prototype.graph_scene
+
+	var graph_node: StoryGraphNode = graph_scene.instantiate() as StoryGraphNode
+
+	if graph_node == null:
+		push_error('Graph scene for "%s" is not a StoryGraphNode.' % node.display_name)
+		return null
+
+	graph_edit.add_child(graph_node)
+
+	graph_node.set_story_data(_story_data)
+	graph_node.set_story_node(node)
+	graph_node.ports_changed.connect(_mark_links_dirty.bind(node.instance_id))
+
+	graph_nodes[node.instance_id] = graph_node
+
+	if is_visible_in_tree():
+		graph_node.restore_saved_size()
+
+	return graph_node
+
+
+func _restore_node_sizes() -> void:
+	for id: StringName in graph_nodes:
+		var graph_node: StoryGraphNode = graph_nodes[id]
+		graph_node.restore_saved_size()
+
+
+## ===
+## Connections
+## ===
+func _mark_links_dirty(id: StringName) -> void:
+	_dirty_link_nodes[id] = true
+	_queue_link_flush()
+
+
+func _queue_link_flush() -> void:
+	if _link_flush_queued:
+		return
+
+	_link_flush_queued = true
+	_flush_links.call_deferred()
+
+
+func _flush_links() -> void:
+	if not is_inside_tree():
+		_link_flush_queued = false
+		return
+
+	# Graph nodes work out their port counts when laid out, one frame later.
+	await get_tree().process_frame
+
+	_link_flush_queued = false
+
+	# Stay dirty while hidden; _on_visibility_changed flushes again.
+	if _story_data == null or not is_visible_in_tree():
+		return
+
+	var ids: Array[StringName] = _dirty_link_nodes.keys()
+	_dirty_link_nodes.clear()
+
+	for id: StringName in ids:
+		_reconcile_links(id)
+
+
+## Makes the GraphEdit connections touching `id` match the story's links.
+func _reconcile_links(id: StringName) -> void:
+	if not graph_nodes.has(id):
+		return
+
+	var wanted: Dictionary[String, StoryLink] = { }
+
+	for link: StoryLink in _story_data.link_list:
+		if link.from == id or link.to == id:
+			wanted[_connection_key(link.from, link.from_port, link.to, link.to_port)] = link
+
+	for connection: Dictionary in graph_edit.get_connection_list():
+		if connection.from_node != id and connection.to_node != id:
+			continue
+
+		var key: String = _connection_key(
+			connection.from_node,
+			connection.from_port,
+			connection.to_node,
+			connection.to_port,
+		)
+
+		if wanted.has(key):
+			wanted.erase(key) # Already drawn.
+		else:
+			graph_edit.disconnect_node(
+				connection.from_node,
+				connection.from_port,
+				connection.to_node,
+				connection.to_port,
+			)
+
+	for link: StoryLink in wanted.values():
+		_connect_link(link)
+
+
+func _connect_link(link: StoryLink) -> void:
+	var from_node: StoryGraphNode = graph_nodes.get(link.from)
+	var to_node: StoryGraphNode = graph_nodes.get(link.to)
+
+	if from_node == null or to_node == null:
+		return
+
+	if link.from_port < 0 or link.from_port >= from_node.get_output_port_count():
+		push_warning('Invalid output port %d on node %s.' % [link.from_port, from_node.name])
+		return
+
+	if link.to_port < 0 or link.to_port >= to_node.get_input_port_count():
+		push_warning('Invalid input port %d on node %s.' % [link.to_port, to_node.name])
+		return
+
+	graph_edit.connect_node(from_node.name, link.from_port, to_node.name, link.to_port)
+
+
+func _connection_key(from: StringName, from_port: int, to: StringName, to_port: int) -> String:
+	return '%s|%d|%s|%d' % [from, from_port, to, to_port]
+
+
+## ===
+## User actions -> StoryData API (which records undo/redo)
+## ===
 func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 	if _story_data == null:
 		push_error('No Selected Story')
 		return
 
-	if nodes.is_empty():
+	_story_data.remove_nodes(nodes)
+
+
+func _on_node_move() -> void:
+	if _story_data == null:
+		push_error('No Selected Story')
 		return
 
-	undo_redo.create_action('Delete Story Nodes')
+	var positions: Dictionary[StringName, Vector2] = { }
 
-	var removed_links: Array[StoryLink] = []
-	var removed_nodes: Array[StoryNode] = []
+	for id: StringName in graph_nodes:
+		var graph_node: StoryGraphNode = graph_nodes[id]
 
-	for link: StoryLink in _story_data.link_list:
-		for id: StringName in nodes:
-			var node = _story_data.get_node(id)
-			if node not in removed_nodes:
-				removed_nodes.append(node)
-			if link.from == id or link.to == id:
-				removed_links.append(link)
-
-	for id: StringName in nodes:
-		var story_node: StoryNode = _story_data.get_node(id)
-
-		if story_node == null:
+		if graph_node.story_node == null:
 			continue
 
-		undo_redo.add_do_method(_story_data.remove_node.bind(id))
+		if graph_node.story_node.position != graph_node.position_offset:
+			positions[id] = graph_node.position_offset
 
-		undo_redo.add_undo_method(_restore_deleted_nodes.bind(removed_nodes, removed_links))
-
-	undo_redo.add_do_method(_refresh)
-	undo_redo.add_undo_method(_refresh)
-
-	undo_redo.commit_action()
+	if not positions.is_empty():
+		_story_data.move_nodes(positions)
 
 
+func _on_connection_request(
+	from_node: StringName,
+	from_port: int,
+	to_node: StringName,
+	to_port: int,
+) -> void:
+	if _story_data == null:
+		push_error('No Selected Story')
+		return
+
+	if _story_data.has_link(from_node, to_node, from_port, to_port):
+		return
+
+	_story_data.add_link(from_node, to_node, from_port, to_port)
+
+
+func _on_disconnection_request(
+	from_node: StringName,
+	from_port: int,
+	to_node: StringName,
+	to_port: int,
+) -> void:
+	if _story_data == null:
+		push_error('No Selected Story')
+		return
+
+	var link: StoryLink = _story_data.get_link(from_node, from_port, to_node, to_port)
+
+	if link == null:
+		push_error('Link does not exist.')
+		return
+
+	_story_data.remove_link(link)
+
+
+func _add_node_from_node(node: StoryNode) -> void:
+	if _story_data == null:
+		push_error('No Selected Story')
+		return
+
+	var story_node: StoryNode = node.duplicate(true)
+	story_node.instance_id = _new_instance_id(story_node.node_id)
+	story_node.position = _new_node_position
+
+	# Take the pending connection (from dragging out of a port) and clear it.
+	var from_id: StringName = _connection_from_node
+	var from_port: int = _connection_from_port
+	var to_id: StringName = _connection_to_node
+	var to_port: int = _connection_to_port
+
+	_connection_from_node = &''
+	_connection_from_port = 0
+	_connection_to_node = &''
+	_connection_to_port = 0
+
+	var build: Callable = func() -> void:
+		_story_data.add_node(story_node)
+
+		if not from_id.is_empty():
+			_story_data.add_link(from_id, story_node.instance_id, from_port, 0)
+
+		if not to_id.is_empty():
+			_story_data.add_link(story_node.instance_id, to_id, 0, to_port)
+
+	_story_data.transact('Add Story Node', build)
+
+
+func _new_instance_id(base_name: String = 'node') -> StringName:
+	var index := 1
+
+	while _story_data.has_node(base_name + str(index)):
+		index += 1
+
+	return (base_name + str(index)) as StringName
+
+
+## ===
+## Add-node menu
+## ===
 func _on_graph_edit_gui_input(event: InputEvent) -> void:
 	if event is not InputEventMouseButton:
 		return
@@ -130,7 +424,6 @@ func _on_graph_edit_gui_input(event: InputEvent) -> void:
 	_connection_to_node = &''
 	_connection_to_port = 0
 
-	_new_node_position = (graph_edit.get_local_mouse_position() + graph_edit.scroll_offset) / graph_edit.zoom
 	_show_menu()
 
 
@@ -163,171 +456,6 @@ func _show_menu() -> void:
 	add_node_menu.popup(Rect2(screen_position, Vector2.ZERO))
 
 
-func _on_node_move() -> void:
-	if _story_data == null:
-		push_error('No Selected Story')
-		return
-
-	undo_redo.create_action('Move Story Nodes')
-
-	for id: StringName in graph_nodes:
-		var graph_node: StoryGraphNode = graph_nodes.get(id)
-
-		if graph_node == null or graph_node.story_node == null:
-			continue
-
-		var story_node: StoryNode = graph_node.story_node
-		var old_position: Vector2 = graph_node.story_node.position
-		var new_position: Vector2 = graph_node.position_offset
-
-		if old_position == new_position:
-			continue
-
-		undo_redo.add_do_property(story_node, 'position', new_position)
-		undo_redo.add_do_property(graph_node, 'position_offset', new_position)
-
-		undo_redo.add_undo_property(story_node, 'position', old_position)
-		undo_redo.add_undo_property(graph_node, 'position_offset', old_position)
-
-	undo_redo.commit_action()
-
-
-func _refresh() -> void:
-	graph_nodes.clear()
-	graph_edit.clear_connections()
-
-	for child: Node in graph_edit.get_children():
-		if child is GraphNode:
-			child.free()
-
-	if _story_data == null:
-		return
-
-	for node: StoryNode in _story_data.node_list:
-		var graph_scene: PackedScene = node.graph_scene
-
-		if graph_scene == null:
-			var prototype: StoryNode = _standard_node_library.get_node(node.node_id)
-
-			if prototype == null:
-				push_error('No node prototype found for "%s"' % node.node_id)
-				continue
-
-			graph_scene = prototype.graph_scene
-
-		var graph_node: StoryGraphNode = graph_scene.instantiate() as StoryGraphNode
-
-		if graph_node == null:
-			push_error('Graph scene for "%s" is not a StoryGraphNode.' % node.display_name)
-			continue
-
-		graph_edit.add_child(graph_node)
-
-		graph_node.set_story_data(_story_data)
-		graph_node.set_story_node(node)
-		graph_node.ports_changed.connect(_on_ports_changed)
-
-		graph_nodes[node.instance_id] = graph_node
-
-	if is_visible_in_tree():
-		_restore_node_sizes()
-
-	await get_tree().process_frame
-
-	_refresh_links()
-
-
-func _on_ports_changed() -> void:
-	graph_edit.clear_connections()
-
-	await get_tree().process_frame
-
-	_refresh_links()
-
-
-func _refresh_links() -> void:
-	if not is_visible_in_tree():
-		return
-
-	if _story_data == null:
-		return
-
-	for link: StoryLink in _story_data.link_list:
-		var from_node: StoryGraphNode = graph_nodes.get(link.from)
-		var to_node: StoryGraphNode = graph_nodes.get(link.to)
-
-		if from_node == null or to_node == null:
-			continue
-
-		if link.from_port < 0 or link.from_port >= from_node.get_output_port_count():
-			push_error('Invalid output port %d on node %s.' % [link.from_port, from_node.name])
-			continue
-
-		if link.to_port < 0 or link.to_port >= to_node.get_input_port_count():
-			push_error('Invalid input port %d on node %s.' % [link.to_port, to_node.name])
-			continue
-
-		graph_edit.connect_node(from_node.name, link.from_port, to_node.name, link.to_port)
-
-
-func _on_connection_request(
-	from_node: StringName,
-	from_port: int,
-	to_node: StringName,
-	to_port: int,
-) -> void:
-	if _story_data == null:
-		push_error('No Selected Story')
-		return
-
-	undo_redo.create_action('Create Story Link')
-
-	undo_redo.add_do_method(_story_data.add_link.bind(from_node, to_node, from_port, to_port))
-
-	var link: StoryLink = StoryLink.new()
-	link.from = from_node
-	link.to = to_node
-	link.from_port = from_port
-	link.to_port = to_port
-
-	undo_redo.add_undo_method(
-		_remove_link_by_endpoints.bind(from_node, from_port, to_node, to_port)
-	)
-
-	undo_redo.add_do_method(_refresh)
-	undo_redo.add_undo_method(_refresh)
-
-	undo_redo.commit_action()
-
-
-func _on_disconnection_request(
-	from_node: StringName,
-	from_port: int,
-	to_node: StringName,
-	to_port: int,
-) -> void:
-	if _story_data == null:
-		push_error('No Selected Story')
-		return
-
-	var link := _story_data.get_link(from_node, from_port, to_node, to_port)
-
-	if link == null:
-		push_error('Link does not exist.')
-		return
-
-	undo_redo.create_action('Delete Story Link')
-
-	undo_redo.add_do_method(_remove_link_by_endpoints.bind(from_node, from_port, to_node, to_port))
-
-	undo_redo.add_undo_method(_story_data.add_link.bind(from_node, to_node, from_port, to_port))
-
-	undo_redo.add_do_method(_refresh_deferred)
-	undo_redo.add_undo_method(_refresh_deferred)
-
-	undo_redo.commit_action()
-
-
 func _populate_add_node_menu() -> void:
 	add_node_menu.clear()
 
@@ -347,76 +475,3 @@ func _on_add_node_menu_id_pressed(id: int) -> void:
 		return
 
 	_add_node_from_node(node)
-
-
-func _add_node_from_node(node: StoryNode) -> void:
-	if _story_data == null:
-		push_error('No Selected Story')
-		return
-
-	var story_node: StoryNode = node.duplicate(true)
-	story_node.instance_id = _new_instance_id(story_node.node_id)
-	story_node.position = _new_node_position
-
-	undo_redo.create_action('Add Story Node')
-
-	undo_redo.add_do_method(_story_data.add_node.bind(story_node))
-	undo_redo.add_undo_method(_story_data.remove_node.bind(story_node.instance_id))
-
-	if not _connection_from_node.is_empty():
-		_on_connection_request(
-			_connection_from_node,
-			_connection_from_port,
-			story_node.instance_id,
-			0,
-		)
-		_connection_from_node = &''
-		_connection_from_port = 0
-
-	if not _connection_to_node.is_empty():
-		_on_connection_request(story_node.instance_id, 0, _connection_to_node, _connection_to_port)
-		_connection_to_node = &''
-		_connection_to_port = 0
-
-	undo_redo.add_do_method(_refresh)
-	undo_redo.add_undo_method(_refresh)
-
-	undo_redo.commit_action()
-
-
-func _new_instance_id(base_name: String = 'node') -> StringName:
-	var result: StringName
-	var index := 1
-
-	while _story_data.has_node(base_name + str(index)):
-		index += 1
-
-	return (base_name + str(index)) as StringName
-
-
-func _restore_node_sizes() -> void:
-	for id: StringName in graph_nodes:
-		var graph_node: StoryGraphNode = graph_nodes[id]
-		graph_node.restore_saved_size()
-
-
-func _refresh_deferred() -> void:
-	_refresh.call_deferred()
-
-
-func _remove_link_by_endpoints(
-	from_node: StringName,
-	from_port: int,
-	to_node: StringName,
-	to_port: int,
-) -> void:
-	if _story_data == null:
-		return
-
-	var link: StoryLink = _story_data.get_link(from_node, from_port, to_node, to_port)
-
-	if link == null:
-		push_error('Link does not exist when removing it.')
-		return
-
-	_story_data.remove_link(link)

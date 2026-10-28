@@ -84,6 +84,7 @@ func set_story_data(data: StoryData) -> void:
 			_story_data.variable_library = _variable_library
 
 		_story_data.ensure_start_node()
+		_story_data.setup_history()
 		_story_data.changed.connect(_on_story_changed)
 
 		file_list.mark_dirty()
@@ -133,5 +134,5 @@ func _on_story_selected(data: StoryData) -> void:
 
 
 func _on_story_changed() -> void:
+	# The graph follows StoryData's granular signals; nothing to rebuild here.
 	file_list.mark_dirty()
-	graph_editor.set_story_data(_story_data)

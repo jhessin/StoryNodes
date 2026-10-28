@@ -2,6 +2,15 @@
 class_name StoryData
 extends Resource
 
+## Granular signals let views update only what changed. `changed` still fires
+## for every edit (use it for dirty tracking and saving).
+signal node_added(node: StoryNode)
+signal node_removed(id: StringName)
+signal link_added(link: StoryLink)
+signal link_removed(link: StoryLink)
+## The ports of this node's outgoing links were shifted or moved.
+signal links_changed(node_id: StringName)
+
 const START_NODE_ID: StringName = &'__start__'
 
 @export var title: String = '':
@@ -29,8 +38,6 @@ var _nodes: Dictionary[StringName, StoryNode] = { }
 
 @export_storage
 var _links: Dictionary[StoryLink, Object] = { }
-
-var undo_redo: UndoRedo = UndoRedo.new()
 
 var node_list: Array[StoryNode]:
 	get:
@@ -121,9 +128,12 @@ func transact(action_name: String, build: Callable) -> void:
 	_history.transact(action_name, build)
 
 
+## Gives every node (including ones loaded from disk) the story's history and
+## relays their changes to `changed`. Safe to call more than once.
 func setup_history() -> void:
 	for node: StoryNode in _nodes.values():
 		node.set_history(_history)
+		_track_node(node)
 
 
 func ensure_start_node() -> void:
@@ -179,6 +189,25 @@ func move_nodes(positions: Dictionary[StringName, Vector2]) -> void:
 		if node != null:
 			node.position = positions[id] # setter records via history
 	_history.commit()
+
+
+## Removes a choice, its links, and closes the gap in the node's ports, as one
+## undo step. Use this instead of ChoiceNode.remove_choice() from the editor.
+func remove_choice(node_id: StringName, index: int) -> void:
+	var node: ChoiceNode = get_node(node_id) as ChoiceNode
+	if node == null or index < 0 or index >= node.choices.size():
+		push_error('Cannot remove choice %d of node "%s".' % [index, node_id])
+		return
+
+	var snapshot: Array[StoryLink] = [] # endpoint copies, not live objects
+	for link: StoryLink in get_links_from_port(node_id, index):
+		snapshot.append(link.duplicate())
+
+	_history.record(
+		'Remove Choice',
+		_remove_choice_at.bind(node_id, index),
+		_insert_choice_at.bind(node_id, index, node.choices[index], snapshot),
+	)
 
 
 ## ===
@@ -454,8 +483,6 @@ func save() -> void:
 		push_error('Error saving story data: %s' % resource_path)
 		push_error(error_string(error))
 
-	undo_redo.clear_history()
-
 
 func _remove_links(links: Array[StoryLink]) -> void:
 	for link: StoryLink in links:
@@ -485,23 +512,30 @@ func _ensure_start() -> void:
 	start_node_resource.instance_id = START_NODE_ID
 
 	_nodes[START_NODE_ID] = start_node_resource
+	start_node_resource.set_history(_history)
+	_track_node(start_node_resource)
+
+
+func _track_node(node: StoryNode) -> void:
+	if not node.changed.is_connected(emit_changed):
+		node.changed.connect(emit_changed)
+
+
+func _untrack_node(node: StoryNode) -> void:
+	if node.changed.is_connected(emit_changed):
+		node.changed.disconnect(emit_changed)
 
 
 func _add_node(node: StoryNode) -> void:
+	_track_node(node)
 	_nodes[node.instance_id] = node
+	node_added.emit(node)
 	emit_changed()
 
 
 func _remove_node(id: StringName) -> void:
-	if not has_node(id) or id == START_NODE_ID:
-		return
-
-	for link: StoryLink in _links.keys():
-		if link.from == id or link.to == id:
-			remove_link(link)
-
-	_nodes.erase(id)
-	emit_changed()
+	var ids: Array[StringName] = [id]
+	_remove_nodes(ids)
 
 
 func _add_link(from_id: StringName, from_port: int, to_id: StringName, to_port: int) -> void:
@@ -524,6 +558,7 @@ func _add_link(from_id: StringName, from_port: int, to_id: StringName, to_port: 
 	link.to_port = to_port
 
 	_links[link] = null
+	link_added.emit(link)
 	emit_changed()
 
 
@@ -534,6 +569,7 @@ func _remove_link(from_id: StringName, from_port: int, to_id: StringName, to_por
 		return
 
 	_links.erase(link)
+	link_removed.emit(link)
 	emit_changed()
 
 
@@ -545,6 +581,7 @@ func _shift_link_ports(from: StringName, removed_port: int) -> void:
 		if link.from_port > removed_port:
 			link.from_port -= 1
 
+	links_changed.emit(from)
 	emit_changed()
 
 
@@ -556,6 +593,7 @@ func _unshift_link_ports(from: StringName, replaced_port: int) -> void:
 		if link.from_port >= replaced_port:
 			link.from_port += 1
 
+	links_changed.emit(from)
 	emit_changed()
 
 
@@ -573,6 +611,7 @@ func _move_link_port(from: StringName, from_port: int, to_port: int) -> void:
 			if link.from_port >= to_port and link.from_port < from_port:
 				link.from_port += 1
 
+	links_changed.emit(from)
 	emit_changed()
 
 
@@ -616,13 +655,57 @@ func _remove_nodes(ids: Array[StringName]) -> void:
 	for link: StoryLink in _links.keys(): # keys() is a copy, safe to erase
 		if link.from in ids or link.to in ids:
 			_links.erase(link)
+			link_removed.emit(link)
+
 	for id: StringName in ids:
+		var node: StoryNode = _nodes.get(id)
+		if node == null or id == START_NODE_ID:
+			continue
+
+		_untrack_node(node)
 		_nodes.erase(id)
+		node_removed.emit(id)
+
 	emit_changed()
 
 
 func _restore_nodes(nodes: Array[StoryNode], links: Array[StoryLink]) -> void:
 	for node: StoryNode in nodes:
+		_track_node(node)
 		_nodes[node.instance_id] = node
+		node_added.emit(node)
+
+	for link: StoryLink in links:
+		_add_link(link.from, link.from_port, link.to, link.to_port)
+
+	emit_changed()
+
+
+func _remove_choice_at(node_id: StringName, index: int) -> void:
+	var node: ChoiceNode = get_node(node_id) as ChoiceNode
+	if node == null:
+		return
+
+	for link: StoryLink in get_links_from_port(node_id, index):
+		_links.erase(link)
+		link_removed.emit(link)
+
+	_shift_link_ports(node_id, index)
+	node._remove_choice(index)
+
+
+func _insert_choice_at(
+	node_id: StringName,
+	index: int,
+	text: String,
+	links: Array[StoryLink],
+) -> void:
+	var node: ChoiceNode = get_node(node_id) as ChoiceNode
+	if node == null:
+		return
+
+	node._add_choice(text, index)
+	_unshift_link_ports(node_id, index)
+
 	for link: StoryLink in links:
 		_add_link(link.from, link.from_port, link.to, link.to_port)

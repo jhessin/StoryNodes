@@ -43,8 +43,9 @@ func select_path(path: String) -> void:
 
 	if not selected_path.is_empty():
 		_selected_story = load(path) as StoryData
-		if not _selected_story.undo_redo.version_changed.is_connected(mark_dirty):
-			_selected_story.undo_redo.version_changed.connect(mark_dirty)
+		var undo_redo: UndoRedo = _selected_story.history.undo_redo
+		if not undo_redo.version_changed.is_connected(mark_dirty):
+			undo_redo.version_changed.connect(mark_dirty)
 		if not _selected_story.changed.is_connected(mark_dirty):
 			_selected_story.changed.connect(mark_dirty)
 

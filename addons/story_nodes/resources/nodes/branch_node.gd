@@ -25,9 +25,13 @@ extends StoryNode
 			emit_changed,
 		)
 
+## Read-only copy. Edit through add_condition() and remove_condition(). The
+## setter only exists so the resource loads from disk.
 @export var conditions: Array[BranchCondition]:
 	get:
 		return _conditions.duplicate()
+	set(new_value):
+		_conditions.assign(new_value)
 
 var _conditions: Array[BranchCondition] = []
 

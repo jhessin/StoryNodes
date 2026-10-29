@@ -24,9 +24,9 @@ signal variable_changed(variable_name: StringName, value: Variant)
 ## Hide the whole scene while no story is running.
 @export var hide_when_inactive: bool = true
 ## Text of the button for lines that have something after them.
-@export var continue_text: String = 'Continue'
+@export var continue_text: String = '->'
 ## Text of the button for the last line of a story.
-@export var end_text: String = 'End'
+@export var end_text: String = 'Goodbye'
 
 ## The execution currently playing, or null before start_story() is called.
 var execution: StoryExecution:
@@ -37,8 +37,7 @@ var execution: StoryExecution:
 var is_running: bool:
 	get:
 		return (
-			_execution != null
-			and _execution.state != StoryExecution.State.IDLE
+			_execution != null and _execution.state != StoryExecution.State.IDLE
 			and _execution.state != StoryExecution.State.ENDED
 		)
 

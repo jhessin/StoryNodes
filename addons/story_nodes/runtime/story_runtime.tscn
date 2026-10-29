@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://pehcg0rvkd53"]
 
-[ext_resource type="Script" path="res://addons/story_nodes/runtime/story_runtime.gd" id="1_runtime"]
+[ext_resource type="Script" uid="uid://col6qtnlyoxjp" path="res://addons/story_nodes/runtime/story_runtime.gd" id="1_runtime"]
+[ext_resource type="Resource" uid="uid://bpw176a5nk1l8" path="res://test_story.tres" id="2_xww32"]
 
 [node name="StoryRuntime" type="Control" unique_id=711188803]
 layout_mode = 3
@@ -10,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_runtime")
+story = ExtResource("2_xww32")
 
 [node name="StoryRunner" type="Node" parent="." unique_id=359858161]
 
@@ -25,20 +27,20 @@ grow_vertical = 2
 layout_mode = 2
 
 [node name="TitleLabel" type="Label" parent="ContentPanel/Content" unique_id=1482291237]
-layout_mode = 2
 unique_name_in_owner = true
+layout_mode = 2
 
 [node name="DescriptionLabel" type="RichTextLabel" parent="ContentPanel/Content" unique_id=531984994]
-layout_mode = 2
 unique_name_in_owner = true
+layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 
 [node name="ChoicesContainer" type="VBoxContainer" parent="ContentPanel/Content" unique_id=607468926]
-layout_mode = 2
 unique_name_in_owner = true
+layout_mode = 2
 
 [node name="ContinueButton" type="Button" parent="ContentPanel/Content" unique_id=662080472]
-layout_mode = 2
 unique_name_in_owner = true
+layout_mode = 2
 text = "Continue"

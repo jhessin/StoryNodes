@@ -8,6 +8,7 @@ signal node_added(node: StoryNode)
 signal node_removed(id: StringName)
 signal link_added(link: StoryLink)
 signal link_removed(link: StoryLink)
+
 ## The ports of this node's outgoing links were shifted or moved.
 signal links_changed(node_id: StringName)
 

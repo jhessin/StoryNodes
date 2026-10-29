@@ -55,6 +55,13 @@ var _position: Vector2 = Vector2.ZERO
 var _history: StoryHistory
 
 
+## Runtime hook for custom node types (built-in nodes are handled by
+## StoryExecution). Return the output port to follow, StoryExecution.WAIT to
+## pause until StoryExecution.advance() is called, or StoryExecution.END.
+func execute(_execution: StoryExecution) -> int:
+	return 0
+
+
 func set_history(history: StoryHistory) -> void:
 	if history == null:
 		push_error('Every story node needs access to the story\'s history!')

@@ -43,6 +43,7 @@ var is_running: bool:
 
 var _execution: StoryExecution
 
+@onready var character_image: TextureRect = %CharacterImage
 @onready var title_label: Label = %TitleLabel
 @onready var description_label: RichTextLabel = %DescriptionLabel
 @onready var choices_container: VBoxContainer = %ChoicesContainer
@@ -165,10 +166,15 @@ func _on_story_ended() -> void:
 
 func _show_speaker(character: StoryCharacter) -> void:
 	if character == null:
+		print('No character assigned to dialogue')
+		character_image.hide()
 		title_label.hide()
 		title_label.remove_theme_color_override('font_color')
 		return
 
+	print('Character name: %s' % character.name)
+	character_image.texture = character.image
+	character_image.show()
 	title_label.text = character.name
 	title_label.add_theme_color_override('font_color', character.color)
 	title_label.show()

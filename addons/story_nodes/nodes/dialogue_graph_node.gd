@@ -44,7 +44,11 @@ func _on_character_selected(index: int) -> void:
 	if story_data == null:
 		push_error('StoryData must be assigned to DialogueGraphNode')
 
-	var new_character := character_picker.get_item_metadata(index) as StoryCharacter
+	var new_character: StoryCharacter
+	if index == 0:
+		new_character = null
+	else:
+		new_character = character_picker.get_item_metadata(index) as StoryCharacter
 	var old_character := dialogue_node.character
 
 	history.record(
@@ -54,7 +58,13 @@ func _on_character_selected(index: int) -> void:
 	)
 
 
-func _select_character(character: StoryCharacter) -> void:
+func _select_character(character: StoryCharacter = null) -> void:
+	if character == null:
+		character_picker.select(0)
+		dialogue_node.character = &''
+		dialogue_node.emit_changed()
+		return
+
 	character_picker.select(_find_character_index(character))
 
 	dialogue_node.character = character.id
@@ -65,7 +75,9 @@ func _select_character(character: StoryCharacter) -> void:
 
 
 func _find_character_index(character: StoryCharacter) -> int:
-	for i: int in range(character_picker.item_count):
+	for i: int in range(1, character_picker.item_count):
+		if i == 0:
+			continue
 		var this_char := character_picker.get_item_metadata(i) as StoryCharacter
 		if this_char.id == character.id:
 			return i
@@ -77,6 +89,9 @@ func _refresh_character_picker() -> void:
 		return
 
 	character_picker.clear()
+
+	character_picker.add_item('None')
+	character_picker.set_item_metadata(0, null)
 
 	if story_data == null:
 		push_error('DialogueGraphNode: story_data is null.')

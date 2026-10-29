@@ -13,8 +13,6 @@ grow_vertical = 2
 script = ExtResource("1_runtime")
 story = ExtResource("2_xww32")
 
-[node name="StoryRunner" type="Node" parent="." unique_id=359858161]
-
 [node name="ContentPanel" type="PanelContainer" parent="." unique_id=2123136435]
 layout_mode = 1
 anchors_preset = 15
@@ -26,7 +24,14 @@ grow_vertical = 2
 [node name="Content" type="VBoxContainer" parent="ContentPanel" unique_id=1422287165]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="ContentPanel/Content" unique_id=1482291237]
+[node name="TitleBox" type="HBoxContainer" parent="ContentPanel/Content" unique_id=208783112]
+layout_mode = 2
+
+[node name="CharacterImage" type="TextureRect" parent="ContentPanel/Content/TitleBox" unique_id=95730021]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="ContentPanel/Content/TitleBox" unique_id=1482291237]
 unique_name_in_owner = true
 layout_mode = 2
 

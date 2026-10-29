@@ -95,6 +95,20 @@ func set_story_data(data: StoryData) -> void:
 	cast_editor.set_story_data(_story_data)
 
 
+func save_all_data() -> void:
+	var error := ResourceSaver.save(_character_library)
+
+	if error != OK:
+		push_error('Failed to create character library: %s' % error_string(error))
+
+	error = ResourceSaver.save(_variable_library)
+
+	if error != OK:
+		push_error('Failed to create variable library: %s' % error_string(error))
+
+	file_list.save_all()
+
+
 func _load_character_library() -> void:
 	if ResourceLoader.exists(_character_library_path):
 		_character_library = ResourceLoader.load(_character_library_path) as StoryCharacterLibrary

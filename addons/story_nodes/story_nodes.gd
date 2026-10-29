@@ -39,3 +39,13 @@ func _get_plugin_icon() -> Texture2D:
 func _make_visible(visible: bool) -> void:
 	if story_editor != null:
 		story_editor.visible = visible
+
+
+func _apply_changes() -> void:
+	if story_editor != null:
+		story_editor.save_all_data()
+
+
+func _save_external_data() -> void:
+	if story_editor != null:
+		story_editor.save_all_data()

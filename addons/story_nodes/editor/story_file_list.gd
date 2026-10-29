@@ -57,6 +57,11 @@ func select_path(path: String) -> void:
 			return
 
 
+func save_all() -> void:
+	for i: int in range(item_list.item_count):
+		_save(i)
+
+
 func _refresh_dirty_state() -> void:
 	for i: int in item_list.item_count:
 		var path := item_list.get_item_metadata(i) as String
@@ -82,8 +87,7 @@ func _on_save_menu_selected(id: int) -> void:
 			if context_index >= 0 and context_index < item_list.item_count:
 				_save(context_index)
 		'Save All':
-			for i: int in range(item_list.item_count):
-				_save(i)
+			save_all()
 		'Revert':
 			if context_index >= 0 and context_index < item_list.item_count:
 				_revert(context_index)

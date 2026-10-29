@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="StoryCharacterLibrary" format=3 uid="uid://brs44m3fdq7jh"]
-
-[ext_resource type="Script" uid="uid://c0hnlj3b8r0ny" path="res://addons/story_nodes/resources/story_character.gd" id="1_8r5x3"]
-[ext_resource type="Script" uid="uid://cr5rg4cyxqvt" path="res://addons/story_nodes/resources/story_character_library.gd" id="2_6i7d2"]
-
-[resource]
-script = ExtResource("2_6i7d2")

@@ -3,3 +3,5 @@
 /android/
 /addons/ziva_agent
 /addons/godot-neovim
+/*.*
+!/README.md
